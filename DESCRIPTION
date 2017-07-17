@@ -1,4 +1,6 @@
-Package: MTFM Title: Multi-trait fine-mapping
+Package: MTFM 
+
+Title: Multi-trait fine-mapping
 
 Description: A Bayesian multinomial stochastic search with a sharing
 scale parameter is used to identify the best SNP models for each trait.
@@ -33,5 +35,10 @@ data.table
 gtools
 fields
 dplyr
+
+License: What license is it under?
+Encoding: UTF-8
+LazyData: true
+
 
 
