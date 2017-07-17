@@ -10,7 +10,7 @@ library(data.table)
 library(gtools)
 library(fields)
 library(dplyr)
-source("/home/ja628/scratch/scripts/IL2RA_general_scripts/myglib.R")
+
 options(scipen=999)
 
 
