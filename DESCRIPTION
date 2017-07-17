@@ -36,7 +36,7 @@ gtools
 fields
 dplyr
 
-License: What license is it under?
+License: GPL
 Encoding: UTF-8
 LazyData: true
 
