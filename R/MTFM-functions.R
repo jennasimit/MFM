@@ -272,6 +272,7 @@ return(out)
 #'     logprior, logBF, and for each trait, model, logBF, model size)
 #'     and logBF0, the offset term needed to calculate joint BFs
 #' @export
+#' @author Jenn Asimit
 PPBF.tags.fn <- function(t1snp.data,t1pheno,t2snp.data,t2pheno,
 			tags,mppthr,mT1,MT1,mT2,MT2,
 			trait1="T1",trait2="T2") {
@@ -318,6 +319,7 @@ PPBF.tags.fn <- function(t1snp.data,t1pheno,t2snp.data,t2pheno,
 #' @param trait1 name of trait 1, for filename purposes
 #' @param trait2 name of trait 2, for filename purposes
 #' @export
+#' @author Jenn Asimit
 BFexpanded.fn <- function(ppbf,tags,t1snp.data,t1pheno,t2snp.data,t2pheno,
 			mydir,trait1,trait2) {
  pp <- ppbf$pp
@@ -445,10 +447,11 @@ return(t(mpp1))
 #' @param tags set of tag SNPs for control set
 #' @param trait1 name of trait 1, for filename purposes
 #' @param trait2 name of trait 2, for filename purposes
-#' @mydir directory to save output to
+#' @param mydir directory to save output to
 #' @return a list of PPmarg (PP for each trait) and mpp (marginal PP
 #'     for each trait) evalauted at each sharing scale value
 #' @export
+#' @author Jenn Asimit
 PPshared.fn <- function(shared,bf,tags,trait1,trait2,mydir) {
 
  ns <- length(shared)
