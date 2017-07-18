@@ -1,7 +1,7 @@
 #library(Rcpp)
-library(RcppArmadillo)
+## library(RcppArmadillo)
 #sourceCpp("/path/to/myglib.cpp")
-sourceCpp("/home/ja628/scratch/scripts/IL2RA_general_scripts/myglib.cpp")
+## sourceCpp("/home/ja628/scratch/scripts/IL2RA_general_scripts/myglib.cpp")
 
 ## force the following options
 ## n = rep(1, nrow(x)), error = "binomial", link = "logit", 
