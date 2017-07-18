@@ -262,13 +262,15 @@ return(out)
 #' @param t1pheno a phenotype vector for trait 1
 #' @param t2snp.data a SnpMatrix object for trait 2
 #' @param t2pheno a phenotype vector for trait 2
-#' @param tags tag SNPs from common controls 
+#' @param tags tag SNPs from common controls
 #' @param mppthr threshold for "best" SNPs MPP
 #' @param mT1 minimum model size for trait 1
 #' @param MT1 maximum model size for trait 1
 #' @param mT2 minimum model size for trait 2
 #' @param MT2 maximum model size for trait 2
-#' @return a list with components pp (data.frame of joint PP, prior, logprior, logBF, and for each trait, model, logBF, model size) and logBF0, the offset term needed to calculate joint BFs
+#' @return a list with components pp (data.frame of joint PP, prior,
+#'     logprior, logBF, and for each trait, model, logBF, model size)
+#'     and logBF0, the offset term needed to calculate joint BFs
 #' @export
 PPBF.tags.fn <- function(t1snp.data,t1pheno,t2snp.data,t2pheno,
 			tags,mppthr,mT1,MT1,mT2,MT2,
@@ -438,13 +440,14 @@ return(t(mpp1))
 
 ####
 #' @title Calculate joint PP at a set of sharing scales
-#' @param shared vector of sharing scales 
+#' @param shared vector of sharing scales
 #' @param bf output from BFexpanded.fn
 #' @param tags set of tag SNPs for control set
 #' @param trait1 name of trait 1, for filename purposes
 #' @param trait2 name of trait 2, for filename purposes
 #' @mydir directory to save output to
-#' @return a list of PPmarg (PP for each trait) and mpp (marginal PP for each trait) evalauted at each sharing scale value
+#' @return a list of PPmarg (PP for each trait) and mpp (marginal PP
+#'     for each trait) evalauted at each sharing scale value
 #' @export
 PPshared.fn <- function(shared,bf,tags,trait1,trait2,mydir) {
 

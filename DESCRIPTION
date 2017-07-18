@@ -1,41 +1,35 @@
 Package: MTFM 
-
 Title: Multi-trait fine-mapping
-
 Description: A Bayesian multinomial stochastic search with a sharing
-scale parameter is used to identify the best SNP models for each trait.
-The sharing scale is used in the joint prior probabilities to
-give higher weight to joint models that have at least one shared variant
-between the traits. The best SNP models are summarised in terms of sets of correlated SNPs that have a similar impact on the
-trait. This approach is an extension of the GUESSFM software for fine-mapping of single traits and relies on several of the functions from that software.
-
+	     scale parameter is used to identify the best SNP models
+	     for each trait.  The sharing scale is used in the joint
+	     prior probabilities to give higher weight to joint models
+	     that have at least one shared variant between the
+	     traits. The best SNP models are summarised in terms of
+	     sets of correlated SNPs that have a similar impact on the
+	     trait. This approach is an extension of the GUESSFM
+	     software for fine-mapping of single traits and relies on
+	     several of the functions from that software.
 Version: 0.1 
-
 Date: 2017-07-17 
-
 Authors@R: c(person("Jenn", "Asimit", role=c("aut","cre"),
-email = "ja628@cam.ac.uk"),person("Chris", "Wallace", role=c("aut","cre"),
-email = "cew54@cam.ac.uk"))
-
+	   email = "ja628@cam.ac.uk"),person("Chris", "Wallace", role=c("aut"),
+	   email = "cew54@cam.ac.uk"))
 Maintainer: Jenn Asimit <ja628@cam.ac.uk> 
-
-Depends: 
-R (>= 3.3.0), gcc (>= 5.3.0) 
-
-Imports: 
-annotSnpStats
-snpStats
-GUESSFM
-mlogitBMA
-BMA
-Rcpp
-RcppArmadillo
-parallel
-data.table
-gtools
-fields
-dplyr
-
+Depends: R (>= 3.3.0)
+Imports:
+	annotSnpStats,
+	snpStats,
+	GUESSFM,
+	mlogitBMA,
+	BMA,
+	Rcpp,
+	RcppArmadillo,
+	parallel,
+	data.table,
+	gtools,
+	fields,
+	dplyr
 License: GPL
 Encoding: UTF-8
 LazyData: true
