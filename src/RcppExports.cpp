@@ -6,6 +6,18 @@
 
 using namespace Rcpp;
 
+// modoverlap
+int modoverlap(const arma::ivec& x, const arma::ivec& y);
+RcppExport SEXP MTFM_modoverlap(SEXP xSEXP, SEXP ySEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::ivec& >::type x(xSEXP);
+    Rcpp::traits::input_parameter< const arma::ivec& >::type y(ySEXP);
+    rcpp_result_gen = Rcpp::wrap(modoverlap(x, y));
+    return rcpp_result_gen;
+END_RCPP
+}
 // calcQ2
 List calcQ2(const arma::imat& M1, const arma::imat& M2, const NumericVector& pp1, const NumericVector& pp2);
 RcppExport SEXP MTFM_calcQ2(SEXP M1SEXP, SEXP M2SEXP, SEXP pp1SEXP, SEXP pp2SEXP) {
@@ -20,9 +32,27 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// calcQ3
+List calcQ3(const arma::imat& M1, const arma::imat& M2, const arma::imat& M3, const NumericVector& pp1, const NumericVector& pp2, const NumericVector& pp3);
+RcppExport SEXP MTFM_calcQ3(SEXP M1SEXP, SEXP M2SEXP, SEXP M3SEXP, SEXP pp1SEXP, SEXP pp2SEXP, SEXP pp3SEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::imat& >::type M1(M1SEXP);
+    Rcpp::traits::input_parameter< const arma::imat& >::type M2(M2SEXP);
+    Rcpp::traits::input_parameter< const arma::imat& >::type M3(M3SEXP);
+    Rcpp::traits::input_parameter< const NumericVector& >::type pp1(pp1SEXP);
+    Rcpp::traits::input_parameter< const NumericVector& >::type pp2(pp2SEXP);
+    Rcpp::traits::input_parameter< const NumericVector& >::type pp3(pp3SEXP);
+    rcpp_result_gen = Rcpp::wrap(calcQ3(M1, M2, M3, pp1, pp2, pp3));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
+    {"MTFM_modoverlap", (DL_FUNC) &MTFM_modoverlap, 2},
     {"MTFM_calcQ2", (DL_FUNC) &MTFM_calcQ2, 4},
+    {"MTFM_calcQ3", (DL_FUNC) &MTFM_calcQ3, 6},
     {NULL, NULL, 0}
 };
 
