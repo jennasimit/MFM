@@ -18,7 +18,7 @@ List calcQ2(const arma::imat& M1, // model matrix - columns are models, rows are
   for(int i =0; i<nmod1; i++) {
     for(int j=0; j<nmod2; j++) {
       int idx=sum( M1.col(i) % M2.col(j));
-      if(idx > 1) {
+      if(idx > 0) {
 	Q1(i) = Q1(i) + pp2(j);
 	Q2(j) = Q2(j) + pp1(i);
       }
