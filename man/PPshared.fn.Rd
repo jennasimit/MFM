@@ -21,7 +21,7 @@ PPshared.fn(shared, bf, tags, trait1, trait2, mydir)
 }
 \value{
 a list of PPmarg (PP for each trait) and mpp (marginal PP
-    for each trait) evalauted at each sharing scale value
+for each trait) evalauted at each sharing scale value
 }
 \author{
 Jenn Asimit

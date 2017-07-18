@@ -26,7 +26,7 @@ sharing scale parameter}
 }
 \value{
 list of single.pp1 (pp for each model in M1 for disease 1,
-    assuming ABF for all other models are approximately 1),
+assuming ABF for all other models are approximately 1),
 shared
 }
 \description{

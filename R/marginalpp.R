@@ -1,18 +1,28 @@
-##' Calculate marginal model posterior probabilities for each disease 
+##' Calculate marginal model posterior probabilities for each disease
+##'
+##' Given a list of model matrices and log ABFs, this function
+##' calculates the marginal model posterior probabilities for each
+##' disease without ever calculating the joint Bayes Factors for all
+##' cross-disease model configurations, which would require large
+##' amounts of memory.
 ##'
 ##' @title Marginal PP for models sharing information between diseases
-##' @param M1 model matrix for disease 1
-##' @param M2 model matrix for disease 2
-##' @param ABF1 log ABF for models in M1 for disease 1
-##' @param ABF2 log ABF for models in M2 for disease 2
-##' @param pr1 prior for models in M1
-##' @param pr2 prior for models in M2
-##' @param S single value or vector of values to consider for the
+##' @param M list of model matrices for diseases 1, 2, ..., n
+##' @param ABF list of log(ABF) vectors for diseases 1, 2, ...
+##' @param pr list of prior probabilities for the models in M
+##' @param kappa single value or vector of values to consider for the
 ##'     sharing scale parameter
 ##' @param p0 prior probability of the null model
-##' @return list of single.pp1 (pp for each model in M1 for disease 1,
-##'     assuming ABF for all other models are approximately 1),
-##' shared
+##' @return list of:
+##' * single.pp: list of pp for each model in M[[i]] for
+##'     disease i
+##' * shared.pp: list of pp for each model in M[[i]] for
+##'     disease i, M (not quite as input, reordered so null model is
+##'     first row
+##' * ABF: not quite as input, repordered so null model
+##'     is first row
+##' * kappa: as supplied
+##' @export
 ##' @author Chris Wallace
 marginalpp <- function(M, ABF, pr, kappa, p0) {
     #1, M2, M3, ABF1, ABF2, ABF3, pr1, pr2, pr3, S, p0) {
@@ -51,10 +61,16 @@ marginalpp <- function(M, ABF, pr, kappa, p0) {
     Q <- do.call(fun, c(M, lapply(pp,"[",-1)))
 
     ## alt prior
+    maxpower <- n * (n-1) / 2
     app <- vector("list",n)
     for(i in seq_along(Q)) {
         tmp <- lapply(kappa, function(k) {
-            a <- pr[[i]] * (1 + (k-1) * Q[[i]])
+            if(n==2) {
+                a <- pr[[i]] * (1 + (k-1) * Q[[i]])
+            } else {
+                s <- k^(1:maxpower)/maxpower
+                a <- pr[[i]] * (1 + colSums((s-1) * t(Q[[i]])))
+            }
             a/sum(a)
         })
         tmp <- (1-p0) * do.call("cbind",tmp)
@@ -62,40 +78,7 @@ marginalpp <- function(M, ABF, pr, kappa, p0) {
         app[[i]] <- calcpp(addnull(tmp,p0),addnull(ABF2,0))
     }
 
-    maxpower <- n * (n-1) / 2
-    app <- vector("list",n)
-    for(i in seq_along(Q)) {
-        tmp <- lapply(kappa, function(k) {
-            s <- k^(1:maxpower)/maxpower
-            a <- pr[[i]] * (1 + t((s-1) * t(Q[[i]])))
-            rowSums(a)/sum(a)
-        })
-        tmp <- (1-p0) * do.call("cbind",tmp)
-        M[[i]] <- addnull(M[[i]],0)
-        app[[i]] <- calcpp(addnull(tmp,p0),addnull(ABF2,0))
-    }
-
-    M1 <- addnull(M1,0)
-    app1 <- calcpp(addnull(altpr1,p0),addnull(ABF1,0)) 
-
-    altpr2 <- lapply(S, function(s) {
-        a <- pr2 * (1 + (s-1) * Q[[2]])
-        a/sum(a)
-    })
-    M2 <- addnull(M2,0)
-    altpr2 <- (1-p0) * do.call("cbind",altpr2) 
-    app2 <- calcpp(addnull(altpr2,p0),addnull(ABF2,0)) 
-
-    altpr3 <- lapply(S, function(s) {
-        a <- pr3 * (1 + (s-1) * Q[[2]])
-        a/sum(a)
-    })
-    M2 <- addnull(M2,0)
-    altpr2 <- (1-p0) * do.call("cbind",altpr2) 
-    app2 <- calcpp(addnull(altpr2,p0),addnull(ABF2,0)) 
-    list(single.pp1=pp1,shared.pp1=app1,M1=M1,
-         single.pp2=pp2,shared.pp2=app2,M2=M2,
-         S=S)
+    list(single.pp=pp,shared.pp=app,M=M,kappa=kappa)
 }
 
 which.null <- function(M) {
