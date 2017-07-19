@@ -59,8 +59,6 @@ margpp <- function(data) {
     PP <- marginalpp2(M1,M2,d1$logbf,d2$logbf,d1$pr,d2$pr,S,prior.bin.fn(0))
     d1$spp.new <- as.numeric(PP$shared.pp1)[-1]
     d1$mpp.new <- as.numeric(PP$single.pp1)[-1]
-    d2$spp.new <- as.numeric(PP$shared.pp2)[-1]
-    d2$mpp.new <- as.numeric(PP$single.pp2)[-1]
     return(list(d1=d1,d2=d2))
 }
 
@@ -87,11 +85,12 @@ margpp2 <- function(data) {
     M1 <- makeM(d1$str,usnps)
     M2 <- makeM(d2$str,usnps)
 
-    PP <- marginalpp(list(M1,M2),list(d1$logbf,d2$logbf),list(d1$pr,d2$pr),S,prior.bin.fn(0))
-    d1$spp.new <- as.numeric(PP$shared.pp[[1]])[-1]
-    d1$mpp.new <- as.numeric(PP$single.pp[[1]])[-1]
-    d2$spp.new <- as.numeric(PP$shared.pp[[2]])[-1]
-    d2$mpp.new <- as.numeric(PP$single.pp[[2]])[-1]
+    PPM <- marginalpp.models(list(M1,M2),list(d1$logbf,d2$logbf),list(d1$pr,d2$pr),S,prior.bin.fn(0))
+    PPS <- marginalpp(list(d1$str,d2$str),list(d1$logbf,d2$logbf),list(d1$pr,d2$pr),S,prior.bin.fn(0))
+    d1$spp.models <- as.numeric(PPM$shared.pp[[1]])[-1]
+    d1$mpp.models <- as.numeric(PPM$single.pp[[1]])[-1]
+    d1$spp.str <- as.numeric(PPS$shared.pp[[1]])[-1]
+    d1$mpp.str <- as.numeric(PPS$single.pp[[1]])[-1]
     return(list(d1=d1,d2=d2))
 }
 
@@ -152,23 +151,27 @@ margthree <- function(data) {
     M1 <- makeM(d1$str,usnps)
     M2 <- makeM(d2$str,usnps)
     M3 <- makeM(d3$str,usnps)
-    PP <- marginalpp(M=list(M1,M2,M3),
+    PPM <- marginalpp.models(M=list(M1,M2,M3),
                      ABF=list(d1$logbf,d2$logbf,d3$logbf),
                      pr=list(d1$pr,d2$pr,d3$pr),
                      kappa=S,
                      p0=prior.bin.fn(0))
-    d1$spp.new <- as.numeric(PP$shared.pp[[1]])[-1]
-    d1$mpp.new <- as.numeric(PP$single.pp[[1]])[-1]
-    d2$spp.new <- as.numeric(PP$shared.pp[[2]])[-1]
-    d2$mpp.new <- as.numeric(PP$single.pp[[2]])[-1]
-    d3$spp.new <- as.numeric(PP$shared.pp[[3]])[-1]
-    d3$mpp.new <- as.numeric(PP$single.pp[[3]])[-1]
+    PPS <- marginalpp(STR=list(d1$str,d2$str,d3$str),
+                     ABF=list(d1$logbf,d2$logbf,d3$logbf),
+                     pr=list(d1$pr,d2$pr,d3$pr),
+                     kappa=S,
+                     p0=prior.bin.fn(0))
+    d1$spp.models <- as.numeric(PPM$shared.pp[[1]])[-1]
+    d1$mpp.models <- as.numeric(PPM$single.pp[[1]])[-1]
+    d1$spp.str <- as.numeric(PPS$shared.pp[[1]])[-1]
+    d1$mpp.str <- as.numeric(PPS$single.pp[[1]])[-1]
     return(list(d1=d1,d2=d2,d3=d3))
 }
 
 
 ################################################################################
 
+context("testing marginalpp")
 ## load data
 test_that("marginalpp2 works", {
     testthat::skip_on_cran()
@@ -190,24 +193,16 @@ test_that("marginalpp2 works", {
     expect_equal(amarg$d1$mpp.orig,amarg$d1$mpp.direct)
     expect_equal(amarg$d1$mpp.orig,amarg$d1$mpp.new)
     expect_equal(amarg$d1$spp.orig,amarg$d1$spp.new)
-})
-
 
 ## now all matches :)
 
 ## check same with marginalpp
-test_that("marginalpp and marginalpp2 give same on 2 diseases", {
-    testthat::skip_on_cran()
-    testthat::skip_on_travis()
     amarg2 <- margpp2(adata)
-    expect_equal(amarg2$d1$spp.orig,amarg2$d1$spp.new)
-})
+    expect_equal(amarg2$d1$spp.orig,amarg2$d1$spp.models)
+    expect_equal(amarg2$d1$spp.orig,amarg2$d1$spp.str)
 
 
 ################################################################################
-test_that("marginalpp works for 3 diseases", {
-    testthat::skip_on_cran()
-    testthat::skip_on_travis()
     ## make 3 way combinations
     adata <- expand.grid(1:nrow(marg$d1),1:nrow(marg$d2),1:nrow(marg$d2))
     adata <- cbind(adata,marg$d1[adata$Var1,.(str,logbf,size)])
@@ -220,7 +215,8 @@ test_that("marginalpp works for 3 diseases", {
     ## now perform same analysis as above
     adata <- threepp(adata)
     amarg <- margthree(adata)
-    expect_equal(amarg$d1$spp.orig,amarg$d1$spp.new)
+    expect_equal(amarg$d1$spp.orig,amarg$d1$spp.models)
+    expect_equal(amarg$d1$spp.orig,amarg$d1$spp.str)
 })
 
 
