@@ -5,11 +5,27 @@ modoverlap <- function(x, y) {
     .Call('_MTFM_modoverlap', PACKAGE = 'MTFM', x, y)
 }
 
-calcQ2 <- function(M1, M2, pp1, pp2) {
-    .Call('_MTFM_calcQ2', PACKAGE = 'MTFM', M1, M2, pp1, pp2)
+stroverlap <- function(x, y) {
+    .Call('_MTFM_stroverlap', PACKAGE = 'MTFM', x, y)
 }
 
-calcQ3 <- function(M1, M2, M3, pp1, pp2, pp3) {
-    .Call('_MTFM_calcQ3', PACKAGE = 'MTFM', M1, M2, M3, pp1, pp2, pp3)
+calcQ2 <- function(S1, S2, pp1, pp2) {
+    .Call('_MTFM_calcQ2', PACKAGE = 'MTFM', S1, S2, pp1, pp2)
+}
+
+calcQ2_models <- function(M1, M2, pp1, pp2) {
+    .Call('_MTFM_calcQ2_models', PACKAGE = 'MTFM', M1, M2, pp1, pp2)
+}
+
+calcQ3 <- function(S1, S2, S3, pp1, pp2, pp3) {
+    .Call('_MTFM_calcQ3', PACKAGE = 'MTFM', S1, S2, S3, pp1, pp2, pp3)
+}
+
+calcQ4 <- function(S1, S2, S3, S4, pp1, pp2, pp3, pp4) {
+    .Call('_MTFM_calcQ4', PACKAGE = 'MTFM', S1, S2, S3, S4, pp1, pp2, pp3, pp4)
+}
+
+calcQ3_models <- function(M1, M2, M3, pp1, pp2, pp3) {
+    .Call('_MTFM_calcQ3_models', PACKAGE = 'MTFM', M1, M2, M3, pp1, pp2, pp3)
 }
 
