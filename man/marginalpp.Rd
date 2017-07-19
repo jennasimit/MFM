@@ -9,7 +9,7 @@ marginalpp(STR, ABF, pr, kappa, p0)
 \arguments{
 \item{STR}{list of models for diseases 1, 2, ..., n, each given in
 the form of a character vector, with entries
-"snp1%snp2%snp3". The null model is given by "0"}
+\code{"snp1\%snp2\%snp3"}. The null model is given by \code{"0"}}
 
 \item{ABF}{list of log(ABF) vectors for diseases 1, 2, ...}
 
@@ -21,11 +21,15 @@ sharing scale parameter}
 \item{p0}{prior probability of the null model}
 }
 \value{
-list of: * single.pp: list of pp for each model in M[[i]]
-for disease i * shared.pp: list of pp for each model in M[[i]]
-for disease i, M (not quite as input, reordered so null model
-is first row * ABF: not quite as input, repordered so null
-model is first row * kappa: as supplied
+list of:
+single.pp: list of pp for each model in STR[[i]] for disease i
+shared.pp: list of pp for each model in STR[[i]]
+for disease i,
+STR (not quite as input, reordered so null model
+is first row
+ABF: not quite as input, repordered so null
+model is first row
+kappa: as supplied
 
 [[i]: R:[i
 [[i]: R:[i
