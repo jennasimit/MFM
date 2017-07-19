@@ -4,31 +4,33 @@
 \alias{marginalpp2}
 \title{Marginal PP for models sharing information between diseases}
 \usage{
-marginalpp2(M1, M2, pp1, pp2, pr1, pr2, S)
+marginalpp2(M1, M2, ABF1, ABF2, pr1, pr2, S, p0)
 }
 \arguments{
 \item{M1}{model matrix for disease 1}
 
 \item{M2}{model matrix for disease 2}
 
+\item{ABF1}{log ABF for models in M1 for disease 1}
+
+\item{ABF2}{log ABF for models in M2 for disease 2}
+
 \item{pr1}{prior for models in M1}
 
 \item{pr2}{prior for models in M2}
 
-\item{S}{single value or vector of values to consider for the sharing scale parameter}
+\item{S}{single value or vector of values to consider for the
+sharing scale parameter}
 
-\item{ABF1}{log ABF for models in M1 for disease 1}
-
-\item{ABF2}{log ABF for models in M2 for disease 2}
+\item{p0}{prior probability of the null model}
 }
 \value{
-list of
+list of single.pp1 (pp for each model in M1 for disease 1,
+assuming ABF for all other models are approximately 1),
+shared
 }
 \description{
-.. content for \description{} (no empty lines) ..
-}
-\details{
-.. content for \details{} ..
+Calculate marginal model posterior probabilities for each disease
 }
 \author{
 Chris Wallace

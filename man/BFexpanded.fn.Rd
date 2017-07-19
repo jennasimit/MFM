@@ -27,6 +27,6 @@ BFexpanded.fn(ppbf, tags, t1snp.data, t1pheno, t2snp.data, t2pheno, mydir,
 \author{
 Jenn Asimit
 expand tags at all marginal models that are part of a "best" joint model
-at expanded tags, re-fit joint models 
+at expanded tags, re-fit joint models
 merge expanded re-fit joint with expanded non-re-fit joint
 }

@@ -30,8 +30,8 @@ PPBF.tags.fn(t1snp.data, t1pheno, t2snp.data, t2pheno, tags, mppthr, mT1, MT1,
 }
 \value{
 a list with components pp (data.frame of joint PP, prior,
-    logprior, logBF, and for each trait, model, logBF, model size)
-    and logBF0, the offset term needed to calculate joint BFs
+logprior, logBF, and for each trait, model, logBF, model size)
+and logBF0, the offset term needed to calculate joint BFs
 }
 \author{
 Jenn Asimit
