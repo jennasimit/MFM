@@ -60,7 +60,7 @@ List calcQ2_models(const arma::imat& M1, // model matrix - columns are models, r
 	    const arma::imat& M2, // model matrix - columns are models, rows are SNPs
 	    const NumericVector& pp1,
 	    const NumericVector& pp2) { // pp for each model for disease 2
-  Rcpp::Rcout << "size of M: " << size(M1) << std::endl;
+  // Rcpp::Rcout << "size of M: " << size(M1) << std::endl;
   const int nmod1 = pp1.size();
   const int nmod2 = pp2.size();
   // const int nsnp = M.nrow();
@@ -191,9 +191,9 @@ List calcQ3_models(const arma::imat& M1,
    	int idx=idx1 +
    	  modoverlap(M1.col(i1), M3.col(i3)) +
    	  modoverlap(M2.col(i2), M3.col(i3));
-	if(idx > 2) {
-   	Rcpp::Rcout << i1 << ' ' << i2 << ' ' << i3 << ' ' << idx << std::endl;
-	}
+	// if(idx > 2) {
+   	// Rcpp::Rcout << i1 << ' ' << i2 << ' ' << i3 << ' ' << idx << std::endl;
+	// }
 	if(idx > 0) {
 	  idx = idx - 1;
 	  Q1(i1,idx) = Q1(i1,idx) + pp2(i2) * pp3(i3);
