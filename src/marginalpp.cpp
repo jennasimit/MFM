@@ -47,34 +47,37 @@ List calcQ3(const arma::imat& M1,
 	    const NumericVector& pp1,
 	    const NumericVector& pp2,
 	    const NumericVector& pp3) { // pp for each model for disease 2
-  Rcpp::Rcout << "size of M: " << size(M1) << std::endl;
+  // Rcpp::Rcout << "size of M: " << size(M1) << std::endl;
   const int nmod1 = pp1.size();
   const int nmod2 = pp2.size();
   const int nmod3 = pp3.size();
   NumericMatrix Q1(nmod1,3);
   NumericMatrix Q2(nmod2,3);
   NumericMatrix Q3(nmod3,3);
-  for(int i=0; i<nmod1; i++) {
-    for(int j=0; j<nmod2; j++) {
-      int idx1=sum( M1.col(i) % M2.col(j));
-      for(int k=0; k<nmod3; k++) {
-	Rcpp::Rcout << i << ' ' << j << ' ' << k << std::endl;
-	int idx=idx1 +
-	  modoverlap(M1.col(i), M3.col(k)) +
-	  modoverlap(M2.col(j), M3.col(k));
-	if(idx > 0) {
-	  Q1(i,idx) = Q1(i,idx) + pp2(j) * pp3(k);
-	  Q2(j,idx) = Q2(j,idx) + pp1(i) * pp3(k);
-	  Q3(j,idx) = Q3(j,idx) + pp1(i) * pp2(k);
+  for(int i1=0; i1<nmod1; i1++) {
+     for(int i2=0; i2<nmod2; i2++) {
+       int idx1=modoverlap(M1.col(i1), M2.col(i2));
+            for(int i3=0; i3<nmod3; i3++) {
+   	int idx=idx1 +
+   	  modoverlap(M1.col(i1), M3.col(i3)) +
+   	  modoverlap(M2.col(i2), M3.col(i3));
+	if(idx > 2) {
+   	Rcpp::Rcout << i1 << ' ' << i2 << ' ' << i3 << ' ' << idx << std::endl;
 	}
-      }
-    }
+	if(idx > 0) {
+	  idx = idx - 1;
+	  Q1(i1,idx) = Q1(i1,idx) + pp2(i2) * pp3(i3);
+  	  Q2(i2,idx) = Q2(i2,idx) + pp1(i1) * pp3(i3);
+  	  Q3(i3,idx) = Q3(i3,idx) + pp1(i1) * pp2(i2);
+  	}
+       }
+     }
   }
-  List Q(3);
-  Q[0] = Q1;
-  Q[1] = Q2;
-  Q[2] = Q3;
-  return(wrap(Q));
+  List Q;
+  Q["1"] = Q1;
+  Q["2"] = Q2;
+  Q["3"] = Q3;
+  return(Q);
 }
 
   

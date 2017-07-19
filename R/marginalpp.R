@@ -38,15 +38,16 @@ marginalpp <- function(M, ABF, pr, kappa, p0) {
 
     ## remove null model if included
     for(i in seq_along(M)) {
-        wh <- which.null(M[[i]])
+        wh <- MTFM:::which.null(M[[i]])
         if(length(wh)) {
             M[[i]] <- M[[i]][-wh,]
             ABF[[i]] <- ABF[[i]][-wh]
+            pr[[i]] <- pr[[i]][-wh]
         }
     }
 
     ## unweighted pp
-    pp <- mapply(function(pr1,ABF1) { calcpp(addnull(pr1,p0),addnull(ABF1,0)) },
+    pp <- mapply(function(pr1,ABF1) { MTFM:::calcpp(MTFM:::addnull(pr1,p0),MTFM:::addnull(ABF1,0)) },
                  pr, ABF, SIMPLIFY=FALSE)
 
     ## Q
@@ -68,14 +69,14 @@ marginalpp <- function(M, ABF, pr, kappa, p0) {
             if(n==2) {
                 a <- pr[[i]] * (1 + (k-1) * Q[[i]])
             } else {
-                s <- k^(1:maxpower)/maxpower
+                s <- k^((1:maxpower)/maxpower)
                 a <- pr[[i]] * (1 + colSums((s-1) * t(Q[[i]])))
             }
             a/sum(a)
         })
         tmp <- (1-p0) * do.call("cbind",tmp)
         M[[i]] <- addnull(M[[i]],0)
-        app[[i]] <- calcpp(addnull(tmp,p0),addnull(ABF2,0))
+        app[[i]] <- calcpp(addnull(tmp,p0),addnull(ABF[[i]],0))
     }
 
     list(single.pp=pp,shared.pp=app,M=M,kappa=kappa)
