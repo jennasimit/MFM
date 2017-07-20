@@ -35,12 +35,12 @@ make.tags.fn <- function(r2,G0,mydir=NA){
 
 #' find tag SNPs with MPP > mppthr after running GUESSFM on tag SNPs and save to file
 #' print table of posterior distribution for number of causal variants in GFM models
-gfm.sel.snps.fn <- function(snpG,y,tags,mppthr=0.001) {
+gfm.sel.snps.fn <- function(snpG,y,tags,mppthr=0.001,mydir) {
 #' snpG is a "SnpMatrix" object; y is the phenotype vector; mppthr is the threshold for selecting
 #' the "best" SNPs with marginal PP > mppthr
  snpG
  tsnp <- snpG[,unique(tags@tags)]  
- run.bvs(X=tsnp,Y=y,nexp=3,tag.r2=NA,nsave=1000,gdir="tmp",wait=TRUE) 
+ run.bvs(X=tsnp,Y=y,nexp=3,tag.r2=NA,nsave=1000,gdir=mydir,wait=TRUE) 
  d <- read.snpmod(mydir)
  bestsnps <- best.snps(d,pp.thr=mppthr)
 
@@ -75,9 +75,9 @@ T1mods.fn <- function(mT1,MT1,msnps) {
    modT1[[i]] <- matrix(0,nrow=nci,ncol=s,dimnames=list(NULL,msnps))
    for(j in 1:nci)  modT1[[i]][j,match(mci[,j],msnps)] <- 1 
   }
- if(mT1 > 0) modsT1 <- NULL
- if(mT1 == 0) modsT1 <- matrix(rep(0,s),nrow=1)
- for(i in 1:length(mc)) T1mods <- rbind(modsT1,modT1[[i]])
+ if(mT1 > 0) T1mods <- NULL
+ if(mT1 == 0) T1mods <- matrix(rep(0,s),nrow=1)
+ for(i in 1:length(mc)) T1mods <- rbind(T1mods,modT1[[i]])
  
  j.mat <- matrix(1:dim(T1mods)[1],ncol=1) 
  t1mod <- apply(j.mat,1,format.mod.fn,T1mods)
