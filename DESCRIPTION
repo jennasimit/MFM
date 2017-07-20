@@ -12,9 +12,8 @@ Description: A Bayesian multinomial stochastic search with a sharing
 	     several of the functions from that software.
 Version: 0.1 
 Date: 2017-07-17 
-Authors@R: c(person("Jenn", "Asimit", role=c("aut","cre"),
-	   email = "ja628@cam.ac.uk"),person("Chris", "Wallace", role=c("aut"),
-	   email = "cew54@cam.ac.uk"))
+Authors@R: c(person("Jenn", "Asimit", role=c("aut","cre"), email = "ja628@cam.ac.uk"),
+	     person("Chris", "Wallace", role=c("aut"), email = "cew54@cam.ac.uk"))
 Maintainer: Jenn Asimit <ja628@cam.ac.uk> 
 Depends: R (>= 3.3.0)
 Imports:
@@ -31,6 +30,9 @@ Imports:
 	gtools,
 	fields,
 	dplyr
+Suggests:
+	testthat,
+	roxygen2
 License: GPL
 Encoding: UTF-8
 LazyData: true

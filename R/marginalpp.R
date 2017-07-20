@@ -51,7 +51,7 @@ marginalpp <- function(STR, ABF, pr, kappa, p0) {
     
     ## unweighted pp
     pp <- mapply(function(pr1,ABF1) {
-        MTFM:::calcpp(MTFM:::addnull(pr1,p0),MTFM:::addnull(ABF1,0)) },
+        calcpp(addnull(pr1,p0),addnull(ABF1,0)) },
         pr, ABF, SIMPLIFY=FALSE)
 
     ## Q
@@ -133,7 +133,7 @@ marginalpp.models <- function(M, ABF, pr, kappa, p0) {
 
     ## remove null model if included
     for(i in seq_along(M)) {
-        wh <- MTFM:::which.null(M[[i]])
+        wh <- which.null(M[[i]])
         if(length(wh)) {
             M[[i]] <- M[[i]][-wh,]
             ABF[[i]] <- ABF[[i]][-wh]
@@ -142,7 +142,7 @@ marginalpp.models <- function(M, ABF, pr, kappa, p0) {
     }
 
     ## unweighted pp
-    pp <- mapply(function(pr1,ABF1) { MTFM:::calcpp(MTFM:::addnull(pr1,p0),MTFM:::addnull(ABF1,0)) },
+    pp <- mapply(function(pr1,ABF1) { calcpp(addnull(pr1,p0),addnull(ABF1,0)) },
                  pr, ABF, SIMPLIFY=FALSE)
 
     ## Q
