@@ -1,3 +1,14 @@
+## these tests are long, only run if I am me
+f <- "~/.R/runalltests"
+if(!file.exists(f))
+    q(save="no")
+
+## work around for bug in testthat/data.table collaboration
+## https://stackoverflow.com/questions/13106018/data-table-error-when-used-through-knitr-gwidgetswww/13131555#13131555
+assignInNamespace("cedta.override",
+                  c(data.table:::cedta.override,"MTFM"),
+                  "data.table")
+
 library(testthat)
 library(MTFM)
 library(data.table)
@@ -36,10 +47,10 @@ if(FALSE) {
 
 margpp <- function(data) {
     dt <- as.data.table(data)
-    d1 <- (dt[,.(t1.logbf=unique(t1.logbf),t1.size=unique(t1.size),pp.orig=sum(pp),rpp.orig=sum(rpp)),
-              by=c("t1.str")])
-    d2 <- (dt[,.(t2.logbf=unique(t2.logbf),t2.size=unique(t2.size),pp.orig=sum(pp),rpp.orig=sum(rpp)),
-              by=c("t2.str")])
+    d1 <- dt[,.(t1.logbf=unique(t1.logbf),t1.size=unique(t1.size),pp.orig=sum(pp),rpp.orig=sum(rpp)),
+              by=c("t1.str")]
+    d2 <- dt[,.(t2.logbf=unique(t2.logbf),t2.size=unique(t2.size),pp.orig=sum(pp),rpp.orig=sum(rpp)),
+              by=c("t2.str")]
     setnames(d1,c("str","logbf","size","spp.orig","mpp.orig"))
     setnames(d2,c("str","logbf","size","spp.orig","mpp.orig"))
     d1 <- unique(d1,by="str")
@@ -173,34 +184,36 @@ margthree <- function(data) {
 
 context("testing marginalpp")
 ## load data
+testthat::skip_on_travis()
+data <- read.table("/scratch/wallace/IL2RA/AD-AC-rep_100-bf-final.txt",header=TRUE,as.is=TRUE)
+
+## analyse
+data <- bothpp(data)
+marg <- margpp(data)
+adata <- expand.grid(1:nrow(marg$d1),1:nrow(marg$d2))
+adata <- cbind(adata,marg$d1[adata$Var1,.(str,logbf,size)])
+adata <- cbind(adata,marg$d2[adata$Var2,.(str,logbf,size)])
+colnames(adata)[-c(1:2)] <- c("t1.str","t1.logbf","t1.size","t2.str","t2.logbf","t2.size")
+adata$t1t2.logbf <- adata$t1.logbf + adata$t2.logbf - 46.6
+
+## now perform same analysis as above
+adata <- bothpp(adata)
+amarg <- margpp(adata)
 test_that("marginalpp2 works", {
     testthat::skip_on_cran()
-    testthat::skip_on_travis()
-    data <- read.table("/scratch/wallace/IL2RA/AD-AC-rep_100-bf-final.txt",header=TRUE,as.is=TRUE)
-
-    ## analyse
-    data <- bothpp(data)
-    marg <- margpp(data)
-    adata <- expand.grid(1:nrow(marg$d1),1:nrow(marg$d2))
-    adata <- cbind(adata,marg$d1[adata$Var1,.(str,logbf,size)])
-    adata <- cbind(adata,marg$d2[adata$Var2,.(str,logbf,size)])
-    colnames(adata)[-c(1:2)] <- c("t1.str","t1.logbf","t1.size","t2.str","t2.logbf","t2.size")
-    adata$t1t2.logbf <- adata$t1.logbf + adata$t2.logbf - 46.6
-
-    ## now perform same analysis as above
-    adata <- bothpp(adata)
-    amarg <- margpp(adata)
     expect_equal(amarg$d1$mpp.orig,amarg$d1$mpp.direct)
     expect_equal(amarg$d1$mpp.orig,amarg$d1$mpp.new)
     expect_equal(amarg$d1$spp.orig,amarg$d1$spp.new)
-
+})
 ## now all matches :)
 
 ## check same with marginalpp
+test_that("marginalpp works for 2 diseases", {
+    testthat::skip_on_cran()
     amarg2 <- margpp2(adata)
     expect_equal(amarg2$d1$spp.orig,amarg2$d1$spp.models)
     expect_equal(amarg2$d1$spp.orig,amarg2$d1$spp.str)
-
+})
 
 ################################################################################
     ## make 3 way combinations
@@ -215,6 +228,9 @@ test_that("marginalpp2 works", {
     ## now perform same analysis as above
     adata <- threepp(adata)
     amarg <- margthree(adata)
+
+test_that("marginalpp works for 3 diseases", {
+    testthat::skip_on_cran()
     expect_equal(amarg$d1$spp.orig,amarg$d1$spp.models)
     expect_equal(amarg$d1$spp.orig,amarg$d1$spp.str)
 })

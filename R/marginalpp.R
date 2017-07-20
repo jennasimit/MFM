@@ -8,21 +8,21 @@
 ##'
 ##' @title Marginal PP for models sharing information between diseases
 ##' @param STR list of models for diseases 1, 2, ..., n, each given in
-##'     the form of a character vector, with entries
-##'     "snp1%snp2%snp3". The null model is given by "0"
+##'   the form of a character vector, with entries
+##'   \code{"snp1\%snp2\%snp3"}. The null model is given by \code{"0"}
 ##' @param ABF list of log(ABF) vectors for diseases 1, 2, ...
 ##' @param pr list of prior probabilities for the models in M
 ##' @param kappa single value or vector of values to consider for the
 ##'     sharing scale parameter
 ##' @param p0 prior probability of the null model
 ##' @return list of:
-##'   * single.pp: list of pp for each model in STR[[i]]for disease i
-##'   * shared.pp: list of pp for each model in STR[[i]]
-##'     for disease i,
-##'   * STR (not quite as input, reordered so null model
-##'     is first row
-##'   * ABF: not quite as input, repordered so null
-##'     model is first row * kappa: as supplied
+##' - single.pp: list of pp for each model in STR[[i]] for disease i
+##' - shared.pp: list of pp for each model in STR[[i]]
+##'   for disease i,
+##' - STR: not quite as input, reordered so null model
+##'   is first row
+##' - ABF: not quite as input, repordered so null model is first row
+##' - kappa: as supplied
 ##' @export
 ##' @author Chris Wallace
 marginalpp <- function(STR, ABF, pr, kappa, p0) {
@@ -51,7 +51,7 @@ marginalpp <- function(STR, ABF, pr, kappa, p0) {
     
     ## unweighted pp
     pp <- mapply(function(pr1,ABF1) {
-        MTFM:::calcpp(MTFM:::addnull(pr1,p0),MTFM:::addnull(ABF1,0)) },
+        calcpp(addnull(pr1,p0),addnull(ABF1,0)) },
         pr, ABF, SIMPLIFY=FALSE)
 
     ## Q
@@ -109,12 +109,13 @@ which.null <- function(M) {
 ##' @param p0 prior probability of the null model
 ##' @return list of:
 ##' * single.pp: list of pp for each model in M[[i]] for
-##'     disease i
+##'   disease i
 ##' * shared.pp: list of pp for each model in M[[i]] for
-##'     disease i, M (not quite as input, reordered so null model is
-##'     first row
+##'   disease i, M (not quite as input, reordered so null model is
+##'   first row
 ##' * ABF: not quite as input, repordered so null model
-##'     is first row
+##'   is first 
+##' * M: reordered so null model is first row
 ##' * kappa: as supplied
 ##' @export
 ##' @author Chris Wallace
@@ -132,7 +133,7 @@ marginalpp.models <- function(M, ABF, pr, kappa, p0) {
 
     ## remove null model if included
     for(i in seq_along(M)) {
-        wh <- MTFM:::which.null(M[[i]])
+        wh <- which.null(M[[i]])
         if(length(wh)) {
             M[[i]] <- M[[i]][-wh,]
             ABF[[i]] <- ABF[[i]][-wh]
@@ -141,7 +142,7 @@ marginalpp.models <- function(M, ABF, pr, kappa, p0) {
     }
 
     ## unweighted pp
-    pp <- mapply(function(pr1,ABF1) { MTFM:::calcpp(MTFM:::addnull(pr1,p0),MTFM:::addnull(ABF1,0)) },
+    pp <- mapply(function(pr1,ABF1) { calcpp(addnull(pr1,p0),addnull(ABF1,0)) },
                  pr, ABF, SIMPLIFY=FALSE)
 
     ## Q
