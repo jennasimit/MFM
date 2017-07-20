@@ -35,6 +35,7 @@ make.tags.fn <- function(r2,G0,mydir=NA){
 
 #' find tag SNPs with MPP > mppthr after running GUESSFM on tag SNPs and save to file
 #' print table of posterior distribution for number of causal variants in GFM models
+#' @export
 gfm.sel.snps.fn <- function(snpG,y,tags,mppthr=0.001,mydir) {
 #' snpG is a "SnpMatrix" object; y is the phenotype vector; mppthr is the threshold for selecting
 #' the "best" SNPs with marginal PP > mppthr
