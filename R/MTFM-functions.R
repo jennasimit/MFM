@@ -168,7 +168,7 @@ expand.tags.bf <- function(best, tags) {
         ]
     setnames(neighb, sub("str", "index.str", names(neighb)))
     neighb[, `:=`(str, unlist(pm))]
-    best <- as.data.frame(neighb)
+    best <- as.data.frame(neighb,stringsAsFactors=FALSE)
    return(best)
 }
 
