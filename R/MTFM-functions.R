@@ -83,7 +83,7 @@ T1mods.fn <- function(mT1,MT1,msnps) {
  j.mat <- matrix(1:dim(T1mods)[1],ncol=1) 
  t1mod <- apply(j.mat,1,format.mod.fn,T1mods)
  t1size <- apply(T1mods,1,sum)
- T1mod <- data.frame(mod=t1mod,size=t1size,,stringsAsFactors=FALSE)
+ T1mod <- data.frame(mod=t1mod,size=t1size,stringsAsFactors=FALSE)
  
  return(T1mod)
 }
