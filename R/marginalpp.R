@@ -25,70 +25,54 @@
 ##' - kappa: as supplied
 ##' @export
 ##' @author Chris Wallace
-marginalpp <- function(STR, ABF, pr, kappa, p0) {
+marginalpp <- function (STR, ABF, pr, kappa, p0) {
     n <- length(STR)
-    if(n<2)
+    if (n < 2) 
         stop("Need at least 2 diseases")
-    if( length(ABF)!=n || length(pr)!=n )
+    if (length(ABF) != n || length(pr) != n) 
         stop("STR, ABF and pr need to have the same lengths")
-    SS <- lapply(STR,strsplit,"%")
-    SS <- lapply(SS,setdiff,"0")
+    SS <- lapply(STR, strsplit, "%")
+    SS <- lapply(SS, setdiff, "0")
     usnps <- sort(unique(unlist(SS)))
-
-    ## remove null model if included
-    for(i in seq_along(STR)) {
-        wh <- which(STR[[i]]=="0")
-        if(length(wh)) {
-            STR[[i]] <- STR[[i]][-wh,]
+    for (i in seq_along(STR)) {
+        wh <- which(STR[[i]] %in% c("0", "1"))
+        if (length(wh)) {
+            STR[[i]] <- STR[[i]][-wh]
             ABF[[i]] <- ABF[[i]][-wh]
             pr[[i]] <- pr[[i]][-wh]
         }
     }
-
     STR.i <- lapply(SS, function(ss) {
-        lapply(ss,function(x) as.integer(factor(x,levels=usnps)))
+        lapply(ss, function(x) as.integer(factor(x, levels = usnps)))
     })
-    
-    ## unweighted pp
-    pp <- mapply(function(pr1,ABF1) {
-        calcpp(addnull(pr1,p0),addnull(ABF1,0)) },
-        pr, ABF, SIMPLIFY=FALSE)
-
-    ## Q
-    fun <- switch(n,
-                  NULL,
-                  "calcQ2",
-                  "calcQ3",
-                  "calcQ4")
-    if(is.null(fun))
-        stop("calcQ not written for ",n," diseases yet")
-
-    Q <- do.call(fun, c(STR.i, lapply(pp,"[",-1)))
-
-    ## alt prior
-    maxpower <- n * (n-1) / 2
-    app <- vector("list",n)
-    for(i in seq_along(Q)) {
+    names(STR.i) <- NULL
+    pp <- mapply(function(pr1, ABF1) {
+        calcpp(addnull(pr1, p0), addnull(ABF1, 0))
+    }, pr, ABF, SIMPLIFY = FALSE)
+    names(pp) <- NULL
+    fun <- switch(n, NULL, "calcQ2", "calcQ3", "calcQ4")
+    if (is.null(fun)) 
+        stop("calcQ not written for ", n, " diseases yet")
+    Q <- do.call(fun, c(STR.i, lapply(pp, "[", -1)))
+    maxpower <- n * (n - 1)/2
+    app <- vector("list", n)
+    for (i in seq_along(Q)) {
         tmp <- lapply(kappa, function(k) {
-            if(n==2) {
-                a <- pr[[i]] * (1 + (k-1) * Q[[i]])
-            } else {
+            if (n == 2) {
+                a <- pr[[i]] * (1 + (k - 1) * Q[[i]])
+            }
+            else {
                 s <- k^((1:maxpower)/maxpower)
-                a <- pr[[i]] * (1 + colSums((s-1) * t(Q[[i]])))
+                a <- pr[[i]] * (1 + colSums((s - 1) * t(Q[[i]])))
             }
             a/sum(a)
         })
-        tmp <- (1-p0) * do.call("cbind",tmp)
-        STR[[i]] <- addnull(STR[[i]],"0")
-        app[[i]] <- calcpp(addnull(tmp,p0),addnull(ABF[[i]],0))
+        tmp <- (1 - p0) * do.call("cbind", tmp)
+        STR[[i]] <- addnull(STR[[i]], "1")
+        app[[i]] <- calcpp(addnull(tmp, p0), addnull(ABF[[i]], 
+            0))
     }
-
-    list(single.pp=pp,shared.pp=app,STR=STR,kappa=kappa)
-}
-
-which.null <- function(M) {
-    rs <- rowSums(M)
-    which(rs==0)
+    list(single.pp = pp, shared.pp = app, STR = STR, kappa = kappa)
 }
 
 
