@@ -8,21 +8,20 @@
 ##'
 ##' @title Marginal PP for models sharing information between diseases
 ##' @param STR list of models for diseases 1, 2, ..., n, each given in
-##'   the form of a character vector, with entries
-##'   \code{"snp1\%snp2\%snp3"}. The null model is given by \code{"0"}
+##'     the form of a character vector, with entries
+##'     \code{"snp1\%snp2\%snp3"}. The null model is given by
+##'     \code{"1"} OR \code{"0"}
 ##' @param ABF list of log(ABF) vectors for diseases 1, 2, ...
 ##' @param pr list of prior probabilities for the models in M
 ##' @param kappa single value or vector of values to consider for the
 ##'     sharing scale parameter
 ##' @param p0 prior probability of the null model
-##' @return list of:
-##' - single.pp: list of pp for each model in STR[[i]] for disease i
-##' - shared.pp: list of pp for each model in STR[[i]]
-##'   for disease i,
-##' - STR: not quite as input, reordered so null model
-##'   is first row
-##' - ABF: not quite as input, repordered so null model is first row
-##' - kappa: as supplied
+##' @return list of: - single.pp: list of pp for each model in
+##'     STR[[i]] for disease i - shared.pp: list of pp for each model
+##'     in STR[[i]] for disease i, - STR: not quite as input,
+##'     reordered so null model is first row - ABF: not quite as
+##'     input, repordered so null model is first row - kappa: as
+##'     supplied
 ##' @export
 ##' @author Chris Wallace
 marginalpp <- function(STR, ABF, pr, kappa, p0) {
@@ -37,7 +36,7 @@ marginalpp <- function(STR, ABF, pr, kappa, p0) {
 
     ## remove null model if included
     for(i in seq_along(STR)) {
-        wh <- which(STR[[i]]=="0")
+        wh <- which(STR[[i]] %in% c("0","1"))
         if(length(wh)) {
             STR[[i]] <- STR[[i]][-wh,]
             ABF[[i]] <- ABF[[i]][-wh]
@@ -48,12 +47,14 @@ marginalpp <- function(STR, ABF, pr, kappa, p0) {
     STR.i <- lapply(SS, function(ss) {
         lapply(ss,function(x) as.integer(factor(x,levels=usnps)))
     })
+    names(STR.i) <- NULL
     
     ## unweighted pp
     pp <- mapply(function(pr1,ABF1) {
         calcpp(addnull(pr1,p0),addnull(ABF1,0)) },
         pr, ABF, SIMPLIFY=FALSE)
-
+    names(pp) <- NULL
+    
     ## Q
     fun <- switch(n,
                   NULL,
@@ -79,7 +80,7 @@ marginalpp <- function(STR, ABF, pr, kappa, p0) {
             a/sum(a)
         })
         tmp <- (1-p0) * do.call("cbind",tmp)
-        STR[[i]] <- addnull(STR[[i]],"0")
+        STR[[i]] <- addnull(STR[[i]],"1")
         app[[i]] <- calcpp(addnull(tmp,p0),addnull(ABF[[i]],0))
     }
 
