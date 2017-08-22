@@ -2,12 +2,17 @@
 % Please edit documentation in R/MTFM-functions.R
 \name{T1mods.fn}
 \alias{T1mods.fn}
-\title{mT1 and MT1 are the min and max number of causals in a model for trait t1
-msnps is the vector of snps to consider in the models}
+\title{Generate all possible models for model sizes in a pre-specified range}
 \usage{
 T1mods.fn(mT1, MT1, msnps)
 }
-\description{
-mT1 and MT1 are the min and max number of causals in a model for trait t1
-msnps is the vector of snps to consider in the models
+\arguments{
+\item{mT1}{is the minimum model size}
+
+\item{MT1}{is the maximum model size}
+
+\item{msnps}{is the vector of SNPs that will be selected for models}
+}
+\value{
+data.frame of models (e.g. snp1%snp2 for a 2-SNP model of snp1 and snp2) and their sizes
 }

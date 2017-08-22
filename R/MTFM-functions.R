@@ -15,11 +15,10 @@
 
 
 
-#' Generate set of tag SNPs from control genotype matrix G0 ("SnpMatrix" object for controls set)
 #' @title Generate set of tag SNPs with LD r2 
 #' @param r2 r-squared for tag SNP generation
-#' param G0 SnpMatrix object for control data
-#' param mydir file to save tags object to, if specified 
+#' @param G0 SnpMatrix object for control data
+#' @param mydir file to save tags object to, if specified 
 #' @export
 make.tags.fn <- function(r2,G0,mydir=NA){
  tags <- tag(G0, tag.threshold = r2)
@@ -33,24 +32,24 @@ make.tags.fn <- function(r2,G0,mydir=NA){
 
 ####
 
-#' find tag SNPs with MPP > mppthr after running GUESSFM on tag SNPs and save to file
-#' print table of posterior distribution for number of causal variants in GFM models
+
+#' @title Find "best" tag SNPs for a trait to carry forward in models
+#' @param snpG is a "SnpMatrix" object
+#' @param y is the phenotype vector
+#' @param tags is a tags object
+#' @param mppthr is the threshold for selecting the "best" SNPs with marginal PP > mppthr
+#' @param mydir is a directory name where to save stochastic search results on the tag SNPs
+#' @return data.frame of tag SNPs with MPP > mppthr after running GUESSFM on tag SNPs
 #' @export
 gfm.sel.snps.fn <- function(snpG,y,tags,mppthr=0.001,mydir) {
-#' snpG is a "SnpMatrix" object; y is the phenotype vector; mppthr is the threshold for selecting
-#' the "best" SNPs with marginal PP > mppthr
  snpG
  tsnp <- snpG[,unique(tags@tags)]  
  run.bvs(X=tsnp,Y=y,nexp=3,tag.r2=NA,nsave=1000,gdir=mydir,wait=TRUE) 
  d <- read.snpmod(mydir)
  bestsnps <- best.snps(d,pp.thr=mppthr)
-
- print(pp.nsnp(d,expected=3))
-
 return(bestsnps)
 }
 
-####
 
 format.mod.fn <- function(k,out) {
 #' called by T1mods.fn
@@ -61,14 +60,17 @@ format.mod.fn <- function(k,out) {
   return(mod)
 	}
 
-####
 
+#' @title Generate all possible models for model sizes in a pre-specified range
+#' @param mT1 is the minimum model size
+#' @param MT1 is the maximum model size
+#' @param msnps is the vector of SNPs that will be selected for models
+#' @return data.frame of models (e.g. snp1%snp2 for a 2-SNP model of snp1 and snp2) and their sizes 
+#' @export
 T1mods.fn <- function(mT1,MT1,msnps) {
- #' mT1 and MT1 are the min and max number of causals in a model for trait t1
- #' msnps is the vector of snps to consider in the models
  s <- length(msnps)
  if(mT1>0) mc <- mT1:MT1
- if(mT1==0) mc <- (mT1+1):MT1 # start at 1 instead of 0 and do 0 snp model later
+ if(mT1==0) mc <- (mT1+1):MT1 # start at 1 instead of 0 
  modT1 <- vector("list",length(mc))
   for(i in 1:length(mc)) {
    mci <- combn(msnps,mc[i],simplify=TRUE)  # all combinations of i msnps
@@ -76,8 +78,9 @@ T1mods.fn <- function(mT1,MT1,msnps) {
    modT1[[i]] <- matrix(0,nrow=nci,ncol=s,dimnames=list(NULL,msnps))
    for(j in 1:nci)  modT1[[i]][j,match(mci[,j],msnps)] <- 1 
   }
- if(mT1 > 0) T1mods <- NULL
- if(mT1 == 0) T1mods <- matrix(rep(0,s),nrow=1)
+ #' if(mT1 > 0) T1mods <- NULL
+ #' if(mT1 == 0) T1mods <- matrix(rep(0,s),nrow=1)
+ T1mods <- NULL
  for(i in 1:length(mc)) T1mods <- rbind(T1mods,modT1[[i]])
  
  j.mat <- matrix(1:dim(T1mods)[1],ncol=1) 
@@ -111,19 +114,19 @@ sep.fn <- function(k,mnames) {
 
 ####
 
+#' @title Find marginal PP of inclusion for SNPs (MPPi) in marginal models at each kappa value
+#' @param PP1 is a matrix of marginal model PP for a trait (i.e. one list component of output from sharedmPP.fn),
+#' @return a matrix of MPPi, where rows are SNPs and columns are kappa
+#' @export
 MPP.fn<-function(PP1) {
- mnames <- rownames(PP1)
- 
+ mnames <- rownames(PP1) 
   msep <- apply(matrix(1:length(mnames),ncol=1),1,sep.fn,mnames)
- 
-  gnames <- unique(unlist(msep)) # snps 
-    
+  gnames <- unique(unlist(msep)) # snps     
    mpp1 <- NULL
    for(k in 1:dim(PP1)[2]) {
     tmp1 <- apply(matrix(1:length(mnames),ncol=1),1,check.fn,msep,PP1[,k],gnames)  
     mpp1 <- rbind(mpp1,apply(tmp1,1,sum) )
-    }
-    
+    }    
    mpp1 <- data.frame(mpp1,row.names=colnames(PP1))  
    names(mpp1)<-gnames    
 return(t(mpp1))
@@ -131,7 +134,10 @@ return(t(mpp1))
 
 ####
 
-
+#' @title Expand tag SNP models
+#' @param best is the output from T1mods.fn, a data.frame of the models and their sizes
+#' @param tags is the set of tag SNPs; a tags object
+#' @return a list with three components mod (tag SNP model), size (model size), str (expanded tag SNP model)
 #' @export
 expand.tags.bf <- function(best, tags) {
    
@@ -174,217 +180,82 @@ expand.tags.bf <- function(best, tags) {
 
 ####
 
-#' @title Calculate joint PP at tag SNP models and then expanded models
-#' @param t1snp.data a SnpMatrix object for trait 1
-#' @param t1pheno a phenotype vector for trait 1
-#' @param t2snp.data a SnpMatrix object for trait 2
-#' @param t2pheno a phenotype vector for trait 2
-#' @param tags tag SNPs from common controls 
-#' @param mppthr threshold for "best" SNPs MPP
-#' @param mT1 minimum model size for trait 1
-#' @param MT1 maximum model size for trait 1
-#' @param mT2 minimum model size for trait 2
-#' @param MT2 maximum model size for trait 2
+#' @title Find best tag SNP models, then expand and calculate joint PP at these expanded models
+#' @param kappa is a vector of sharing scale values for the joint prior
+#' @param snp.data.list is a list of SnpMatrix objects for each trait
+#' @param pheno.list is a list of phenotype vectors for each trait
+#' @param tags tags object of SNPs from common controls 
+#' @param mppthr threshold for "best" SNPs marginal PP of inclusion
+#' @param traits is a vector of trait names
+#' @param mydir is a directory stub to save marginal stochastic search (GUESSFM) results on tag SNPs 
 #' @return a list with components pp1, pp2 (each is a data.frame of the marginal model PPs at each kappa value)
 #' @export
-sharedmPP.fn <- function(kappa,t1snp.data,t1pheno,t2snp.data,t2pheno,
-			mppthr,mT1,MT1,mT2,MT2,
-			trait1="T1",trait2="T2") {
+sharedmPP.fn <- function(kappa,snp.data.list,pheno.list,tags,mppthr,traits,mydir) {
+K <- length(traits) 
+mydirs <- paste(mydir,1:K,sep="_")
 
 #' find "best" tag snps
-  t1snps <- gfm.sel.snps.fn(snpG=t1snp.data,y=t1pheno,tags=tags,mppthr=mppthr,mydir)
-  t2snps <- gfm.sel.snps.fn(snpG=t2snp.data,y=t2pheno,tags=tags,mppthr=mppthr,mydir)
-  msnps <- union(t1snps[,"var"],t2snps[,"var"])
-     s <- length(msnps)
-#' NEED to automate MT1,MT2 selection
+msnps <- c()
+for(k in 1:K) {
+ tsnps <- gfm.sel.snps.fn(snpG=snp.data.list[[k]],y=pheno.list[[k]],tags=tags,mppthr=mppthr,mydir=mydirs[k])
+ msnps <- union(msnps,tsnps[,"var"])
+ }
+ 
+
+#' find min and max model sizes for each trait
+mT <- numeric(K)
+MT <- numeric(K)
+for(k in 1:K) {
+d <- read.snpmod(mydirs[k])
+dx <- expand.tags(d,tags)
+ best <- best.models(dx,pp.thr=0.0001)
+ abf <- abf.calc(y=pheno.list[[k]],x=snp.data.list[[k]] ,models=best$str,family="binomial") 
+sm <- abf2snpmod(abf,expected=3,nsnps=605)
+modsizes <- pp.nsnp(sm,expected=3)
+srange <- as.numeric(names(modsizes$trait)[which(modsizes$trait>0.001)])
+mT[k] <- min(srange)
+MT[k] <- max(srange) 
+}
+
    
 #' generate all models from "best" tag snps
- T1mod <- T1mods.fn(mT1,MT1,msnps)
- T2mod <- T1mods.fn(mT2,MT2,msnps)
+Tmods <- vector("list",K)
+for(k in 1:K) Tmods[[k]] <- T1mods.fn(mT[k],MT[k],msnps) 
  
- G1.mat <- as(t1snp.data,"numeric")
- data1 <- data.frame(Y=t1pheno,G1.mat)
+ 
+ G.mat <- vector("list",length(traits))
+ DATA <- vector("list",length(traits))
+ for(k in 1:K) {
+ G.mat[[k]] <- as(snp.data.list[[k]],"numeric")
+ DATA[[k]] <- data.frame(Y=pheno.list[[k]],G.mat[[k]])
+}
+ 
+    
+ e.list <- vector("list",K)
+ for(k in 1:K) e.list[[k]] <- expand.tags.bf(Tmods[[k]],tags)
 
- G2.mat <- as(t2snp.data,"numeric")
- data2 <- data.frame(Y=t2pheno,G2.mat)
+
+ ABF <- vector("list",K)
+ for(k in 1:K) ABF[[k]] <- abf.calc(y=DATA[[k]][,1],x=DATA[[k]][,-1],models=e.list[[k]]$str,family="binomial")[[1]]$lBF 
 
  
-    D1 <- data.frame(mod=T1mod$mod,size=T1mod$size)
-    D2 <- data.frame(mod=T2mod$mod,size=T2mod$size)
-
- e1 <- expand.tags.bf(D1,tags)
- e2 <- expand.tags.bf(D2,tags)
+ STR <- vector("list",K)
+ for(k in 1:K) STR[[k]] <- e.list[[k]]$str
+ pr <- vector("list",K)
+ for(k in 1:K) pr[[k]] <- prior.bin.fn(e.list[[k]]$size)
  
- bf1 <- abf.calc(y=data1[,1],x=data1[,-1],models=e1$str,family="binomial")[[1]] 
- bf2 <- abf.calc(y=data2[,1],x=data2[,-1],models=e2$str,family="binomial")[[1]] 
- 
- 
- STR <- list(e1$str,e2$str)
- ABF <- list(bf1$lBF,bf2$lBF)
- pr1 <- prior.bin.fn(e1$size)
- pr2 <- prior.bin.fn(e2$size)
- pr <- list(pr1,pr2)
  p0 <- prior.bin.fn(0)
+
 
  mpp <- marginalpp(STR, ABF, pr, kappa, p0)
 
- pp1 <- t(mpp$shared.pp[[1]])
- rownames(pp1) <- mpp$STR[[1]]
- colnames(pp1) <- paste("pp",kappa,sep=".")
-  
- pp2 <- t(mpp$shared.pp[[2]])
- rownames(pp2) <- mpp$STR[[2]]
- colnames(pp2) <- paste("pp",kappa,sep=".")
-  
- return(list(pp1=pp1,pp2=pp2))
-}
-  	 
-#### these should be deleted
-
-#' @title Expand tag models and calculate joint BFs at expanded models
-#' @param ppbf output from PPBF.tags.fn
-#' @param tags set of tag SNPs from common controla
-#' @param t1snp.data a SnpMatrix object for trait 1
-#' @param t1pheno a phenotype vector for trait 1
-#' @param t2snp.data a SnpMatrix object for trait 2
-#' @param t2pheno a phenotype vector for trait 2
-#' @param trait1 name of trait 1, for filename purposes
-#' @param trait2 name of trait 2, for filename purposes
-#' @export
-BFexpanded.fn <- function(ppbf,tags,t1snp.data,t1pheno,t2snp.data,t2pheno,
-			mydir,trait1,trait2) {
- pp <- ppbf$pp
- logBF0 <- ppbf$logBF0
- 
- indbest <- which(pp$PP>0.00001)
- BFkeep <- pp[-indbest,] # expand low pp models to see how many exist for each model and each of these will have the same bf as the tag model
-
- BFexp.notbest <- T1T2bfexp.low.fn(BFkeep,tags,logBF0)
-
-#' expand tags at all marginal models that are part of a "best" joint model
- tmp <- data.frame(logbf=pp$t1.logbf,mod=pp$t1.mod,size=pp$t1.size)
- best1 <- unique(tmp[indbest,])
-
- tmp <- data.frame(logbf=pp$t2.logbf,mod=pp$t2.mod,size=pp$t2.size)
- best2 <- unique(tmp[indbest,])
-
-e1 <- expand.tags.bf(best1,tags)
-e2 <- expand.tags.bf(best2,tags)
-
-G1.mat <- as(t1snp.data,"numeric")
-data1 <- data.frame(Y=t1pheno,G1.mat)
-
-G2.mat <- as(t2snp.data,"numeric")
-data2 <- data.frame(Y=t2pheno,G2.mat)
-
-bf1 <- abf.calc(y=data1[,1],x=data1[,-1],models=e1$str,family="binomial") 
-bf2 <- abf.calc(y=data2[,1],x=data2[,-1],models=e2$str,family="binomial") 
-
-T1bfexp <- e1
-T1bfexp$logbf <- bf1[[1]][,"lBF"]
-
-T2bfexp <- e2
-T2bfexp$logbf <- bf2[[1]][,"lBF"]
-
-#' at expanded tags, re-fit joint models 
-T1T2bfexp <- T1T2bfexp.best.fn(T1T2abf,T1bfexp,T2bfexp,indbest,logBF0)
-
-#' merge expanded re-fit joint with expanded non-re-fit joint 
-tmp<-BFexp.notbest[,c("t1.logbf","t1.str","t1.size","t2.logbf","t2.str","t2.size","t1t2.logbf","t1t2.Nexpmod")]
-BF <- rbind(T1T2bfexp,tmp)
-
-traits <- paste(trait1,"-",trait2,sep="")
-fname <- file.path(mydir,paste(traits,"-bf-final.txt",sep=""))
-write.table(BF,fname,quote=FALSE,row.names=FALSE,col.names=TRUE)
-
-return(BF) 
+ pp <- vector("list",length(traits))
+ for(k in 1:length(traits)) {
+  pp[[k]] <- t(mpp$shared.pp[[k]])
+ rownames(pp[[k]]) <- mpp$STR[[k]]
+ colnames(pp[[k]]) <- paste("pp",kappa,sep=".") 
+ }
+   
+ return(pp)
 }
 
-###
-
-#' @title Calculate joint PP at a set of sharing scales
-#' @param shared vector of sharing scales 
-#' @param bf output from BFexpanded.fn
-#' @param tags set of tag SNPs for control set
-#' @param trait1 name of trait 1, for filename purposes
-#' @param trait2 name of trait 2, for filename purposes
-#' @mydir directory to save output to
-#' @return a list of PPmarg (PP for each trait) and mpp (marginal PP for each trait) evalauted at each sharing scale value
-#' @export
-PPshared.fn <- function(shared,bf,tags,trait1,trait2,mydir) {
-
- ns <- length(shared)
- PP <- NULL
- for(k in 1:ns) PP <- rbind(PP,PP.fn(bf,shared=shared[k],s=length(snps(tags)),mT1=3,mT2=3,details=FALSE))
- row.names(PP) <- shared
- traits <- paste(trait1,"-",trait2,sep="")
- fname <- file.path(mydir,paste(traits,"-PP-shared.txt",sep=""))
- PP <- t(PP)
- write.table(PP,fname,row.names=TRUE,col.names=TRUE,quote=FALSE)
-
- PPall <- data.frame(PP,BF$t1t2.Nexpmod)
-
- alltraits <- c(trait1,trait2)
- K <- length(alltraits)
- 
- mpp <- vector("list",K)
- PPmarg <- PP.marg.fn(PPall,K)
- for(k in 1:K) {
- fname <- file.path(fdir,paste(alltraits[k],"-PP-shared-",traits,".txt",sep=""))
- write.table(PPmarg[[k]],fname,row.names=TRUE,col.names=TRUE,quote=FALSE)
- mpp[[k]] <- MPP.fn(PPmarg[[k]])
- fname <- file.path(fdir,paste(alltraits[k],"-MPP-shared-",traits,".txt",sep=""))
- write.table(mpp[[k]],fname,row.names=TRUE,col.names=TRUE,quote=FALSE)
-  }
-  return(list(PPmarg=PPmarg,mpp=mpp))
-}
-
-####
-
-#' @title Calculate joint BFs and joint PP at tag SNP models
-#' @param t1snp.data a SnpMatrix object for trait 1
-#' @param t1pheno a phenotype vector for trait 1
-#' @param t2snp.data a SnpMatrix object for trait 2
-#' @param t2pheno a phenotype vector for trait 2
-#' @param tags tag SNPs from common controls 
-#' @param mppthr threshold for "best" SNPs MPP
-#' @param mT1 minimum model size for trait 1
-#' @param MT1 maximum model size for trait 1
-#' @param mT2 minimum model size for trait 2
-#' @param MT2 maximum model size for trait 2
-#' @return a list with components pp (data.frame of joint PP, prior, logprior, logBF, and for each trait, model, logBF, model size) and logBF0, the offset term needed to calculate joint BFs
-#' @export
-PPBF.tags.fn <- function(t1snp.data,t1pheno,t2snp.data,t2pheno,
-			tags,mppthr,mT1,MT1,mT2,MT2,
-			trait1="T1",trait2="T2") {
-
-#' find "best" tag snps
- t1snps <- gfm.sel.snps.fn(snpG=t1snp.data,y=t1pheno,tags=tags,mppthr=mppthr)
- t2snps <- gfm.sel.snps.fn(snpG=t2snp.data,y=t2pheno,tags=tags,mppthr=mppthr)
- msnps <- union(t1snps[,"var"],t2snps[,"var"])
- s <- length(msnps)
-
-#' generate all models from tag snps
- T1mod <- T1mods.fn(mT1,MT1,msnps)
- T2mod <- T1mods.fn(mT2,MT2,msnps)
-
- G1.mat <- as(t1snp.data,"numeric")
- data1 <- data.frame(Y=t1pheno,G1.mat)
-
- G2.mat <- as(t2snp.data,"numeric")
- data2 <- data.frame(Y=t2pheno,G2.mat)
-
- bf1 <- abf.calc(y=data1[,1],x=data1[,-1],models=T1mod$mod,family="binomial")[[1]] 
- bf2 <- abf.calc(y=data2[,1],x=data2[,-1],models=T2mod$mod,family="binomial")[[1]] 
-
- bf1$size <- t1size
- bf2$size <- t2size
-
- logBF0 <- logBF0.fn(msnps,t1pheno,G1.mat,t2pheno,G2.mat,trait1,trait2)
-
- T1T2abf <- T1T2abfexp.fn(bf1,bf2,logBF0)
-
- pp<-PP.fn(T1T2abf,shared=1,s=length(unique(tags(tags))),mT1=3,mT2=3)
- 
- return(list(pp=pp,logBF0=logBF0))
-}

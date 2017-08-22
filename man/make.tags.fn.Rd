@@ -7,10 +7,9 @@
 make.tags.fn(r2, G0, mydir = NA)
 }
 \arguments{
-\item{r2}{r-squared for tag SNP generation
-param G0 SnpMatrix object for control data
-param mydir file to save tags object to, if specified}
-}
-\description{
-Generate set of tag SNPs from control genotype matrix G0 ("SnpMatrix" object for controls set)
+\item{r2}{r-squared for tag SNP generation}
+
+\item{G0}{SnpMatrix object for control data}
+
+\item{mydir}{file to save tags object to, if specified}
 }

@@ -2,16 +2,21 @@
 % Please edit documentation in R/MTFM-functions.R
 \name{gfm.sel.snps.fn}
 \alias{gfm.sel.snps.fn}
-\title{find tag SNPs with MPP > mppthr after running GUESSFM on tag SNPs and save to file
-print table of posterior distribution for number of causal variants in GFM models
-snpG is a "SnpMatrix" object; y is the phenotype vector; mppthr is the threshold for selecting
-the "best" SNPs with marginal PP > mppthr}
+\title{Find "best" tag SNPs for a trait to carry forward in models}
 \usage{
-gfm.sel.snps.fn(snpG, y, tags, mppthr = 0.001)
+gfm.sel.snps.fn(snpG, y, tags, mppthr = 0.001, mydir)
 }
-\description{
-find tag SNPs with MPP > mppthr after running GUESSFM on tag SNPs and save to file
-print table of posterior distribution for number of causal variants in GFM models
-snpG is a "SnpMatrix" object; y is the phenotype vector; mppthr is the threshold for selecting
-the "best" SNPs with marginal PP > mppthr
+\arguments{
+\item{snpG}{is a "SnpMatrix" object}
+
+\item{y}{is the phenotype vector}
+
+\item{tags}{is a tags object}
+
+\item{mppthr}{is the threshold for selecting the "best" SNPs with marginal PP > mppthr}
+
+\item{mydir}{is a directory name where to save stochastic search results on the tag SNPs}
+}
+\value{
+data.frame of tag SNPs with MPP > mppthr after running GUESSFM on tag SNPs
 }
