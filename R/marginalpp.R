@@ -10,11 +10,15 @@
 ##' @param STR list of models for diseases 1, 2, ..., n, each given in
 ##'     the form of a character vector, with entries
 ##'     \code{"snp1\%snp2\%snp3"}. The null model is given by
-##'     \code{"1"} OR \code{"0"}
+##'     \code{"1"} OR \code{"0"}.  It is assumed that all elements of
+##'     ABF, PP and pr below follow this same order.
 ##' @param ABF list of log(ABF) vectors for diseases 1, 2, ...
+##' @param PP list of posterior probability vectors for diseases 1, 2,
+##'     ...
 ##' @param pr list of prior probabilities for the models in M
 ##' @param kappa single value or vector of values to consider for the
-##'     sharing scale parameter
+##'     sharing scale parameter.  the value of kappa=1 must be
+##'     included, and if not will be prepended.
 ##' @param p0 prior probability of the null model
 ##' @return list of: - single.pp: list of pp for each model in
 ##'     STR[[i]] for disease i - shared.pp: list of pp for each model
@@ -24,36 +28,46 @@
 ##'     supplied
 ##' @export
 ##' @author Chris Wallace
-marginalpp <- function(STR, ABF, pr, kappa, p0) {
+marginalpp <- function(STR, ABF, PP, pr, kappa, p0, tol=0.0001) {
     n <- length(STR)
     if(n<2)
         stop("Need at least 2 diseases")
-    if( length(ABF)!=n || length(pr)!=n )
-        stop("STR, ABF and pr need to have the same lengths")
+    if( length(ABF)!=n || length(pr)!=n | length(PP)!=n )
+        stop("STR, ABF, PP and pr need to have the same lengths")
     SS <- lapply(STR,strsplit,"%")
-    SS <- lapply(SS,setdiff,"0")
+    SS <- lapply(SS,setdiff,c("0","1"))
     usnps <- sort(unique(unlist(SS)))
-
+    if(!(1 %in% kappa))
+        kappa <- c(1,kappa)
+    
     ## remove null model if included
+    PP.nonull <- PP
     for(i in seq_along(STR)) {
         wh <- which(STR[[i]] %in% c("0","1"))
         if(length(wh)) {
-            STR[[i]] <- STR[[i]][-wh,]
+            STR[[i]] <- STR[[i]][-wh]
             ABF[[i]] <- ABF[[i]][-wh]
             pr[[i]] <- pr[[i]][-wh]
+            PP.nonull[[i]] <- PP[[i]][-wh]
+            PP[[i]] <- c(PP[[i]][wh],PP[[i]][-wh])
+            ## ABF[[i]] <- addnull(ABF[[i]],0)
+            ## pr[[i]] <- addnull(pr[[i]],p0)
+            ## PP[[i]] <- addnull(PP[[i]], ABF[[i]][1] * pr[[i]][1] / sum(ABF[[i]] * pr[[i]]))
+        } else {
+            PP[[i]] <- addnull(PP[[i]], calcpp(addnull(pr[[i]],p0), addnull(ABF[[i]],0))[1])
         }
     }
-
+    
     STR.i <- lapply(SS, function(ss) {
         lapply(ss,function(x) as.integer(factor(x,levels=usnps)))
     })
     names(STR.i) <- NULL
     
-    ## unweighted pp
-    pp <- mapply(function(pr1,ABF1) {
-        calcpp(addnull(pr1,p0),addnull(ABF1,0)) },
-        pr, ABF, SIMPLIFY=FALSE)
-    names(pp) <- NULL
+    ## unweighted pp - as input
+    ## pp <- mapply(function(pr1,ABF1) {
+    ##     calcpp(addnull(pr1,p0),addnull(ABF1,0)) },
+    ##     pr, ABF, SIMPLIFY=FALSE)
+    names(PP.nonull) <- NULL
     
     ## Q
     fun <- switch(n,
@@ -63,12 +77,12 @@ marginalpp <- function(STR, ABF, pr, kappa, p0) {
                   "calcQ4")
     if(is.null(fun))
         stop("calcQ not written for ",n," diseases yet")
-
-    Q <- do.call(fun, c(STR.i, lapply(pp,"[",-1)))
-
+    
+    Q <- do.call(fun, c(STR.i, PP.nonull)) #lapply(pp,"[",-1)))
+    
     ## alt prior
     maxpower <- n * (n-1) / 2
-    app <- vector("list",n)
+    alt.pp <- alt.prior <- vector("list",n)
     for(i in seq_along(Q)) {
         tmp <- lapply(kappa, function(k) {
             if(n==2) {
@@ -77,22 +91,38 @@ marginalpp <- function(STR, ABF, pr, kappa, p0) {
                 s <- k^((1:maxpower)/maxpower)
                 a <- pr[[i]] * (1 + colSums((s-1) * t(Q[[i]])))
             }
-            a/sum(a)
+            a#/sum(a)
         })
-        tmp <- (1-p0) * do.call("cbind",tmp)
-        STR[[i]] <- addnull(STR[[i]],"1")
-        app[[i]] <- calcpp(addnull(tmp,p0),addnull(ABF[[i]],0))
+        ## tmp <- (1-p0) * do.call("cbind",tmp)
+        tmp <- do.call("cbind",tmp)
+        alt.prior[[i]] <- addnull(tmp,p0)
+        alt.pp[[i]] <- calcpp(alt.prior[[i]],addnull(ABF[[i]],0))
     }
-
-    list(single.pp=pp,shared.pp=app,STR=STR,kappa=kappa)
+    pr <- lapply(pr, addnull, p0)
+    STR <- lapply(STR, addnull, "1")
+    alt.pp <- lapply(alt.pp,t)
+    
+    ## checks
+    wh <- which(kappa==1)
+    sumsq <- mapply(function(x,y) sum((x-y[,wh])^2), PP, alt.pp)
+    if(any(sumsq>tol)) {
+        for(i in which(sumsq>tol)) {
+            warning("trait ",i," kappa=1 PP does not match input PP, sumsq=",sumsq[i],
+                    "which is > tol.\nsuggests you need to include more models in the calculation")
+        }
+    }
+        
+    list(single.prior=pr, single.pp=PP,
+         shared.prior=alt.prior,shared.pp=alt.pp,
+         STR=STR,kappa=kappa)  
 }
-
+    
 which.null <- function(M) {
     rs <- rowSums(M)
     which(rs==0)
 }
-
-
+    
+    
 ##' Calculate marginal model posterior probabilities for each disease
 ##'
 ##' Given a list of model matrices and log ABFs, this function
