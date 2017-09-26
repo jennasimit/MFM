@@ -28,10 +28,13 @@
 ##'     supplied
 ##' @export
 ##' @author Chris Wallace
+
 marginalpp <- function(STR, ABF, PP, pr, kappa, p0, tol=0.0001) {
+
     n <- length(STR)
-    if(n<2)
+    if (n < 2) 
         stop("Need at least 2 diseases")
+
     if( length(ABF)!=n || length(pr)!=n | length(PP)!=n )
         stop("STR, ABF, PP and pr need to have the same lengths")
     SS <- lapply(STR,strsplit,"%")
@@ -45,6 +48,7 @@ marginalpp <- function(STR, ABF, PP, pr, kappa, p0, tol=0.0001) {
     for(i in seq_along(STR)) {
         wh <- which(STR[[i]] %in% c("0","1"))
         if(length(wh)) {
+
             STR[[i]] <- STR[[i]][-wh]
             ABF[[i]] <- ABF[[i]][-wh]
             pr[[i]] <- pr[[i]][-wh]
@@ -57,11 +61,12 @@ marginalpp <- function(STR, ABF, PP, pr, kappa, p0, tol=0.0001) {
             PP[[i]] <- addnull(PP[[i]], calcpp(addnull(pr[[i]],p0), addnull(ABF[[i]],0))[1])
         }
     }
-    
+
     STR.i <- lapply(SS, function(ss) {
-        lapply(ss,function(x) as.integer(factor(x,levels=usnps)))
+        lapply(ss, function(x) as.integer(factor(x, levels = usnps)))
     })
     names(STR.i) <- NULL
+
     
     ## unweighted pp - as input
     ## pp <- mapply(function(pr1,ABF1) {
@@ -84,15 +89,18 @@ marginalpp <- function(STR, ABF, PP, pr, kappa, p0, tol=0.0001) {
     maxpower <- n * (n-1) / 2
     alt.pp <- alt.prior <- vector("list",n)
     for(i in seq_along(Q)) {
+
         tmp <- lapply(kappa, function(k) {
-            if(n==2) {
-                a <- pr[[i]] * (1 + (k-1) * Q[[i]])
-            } else {
+            if (n == 2) {
+                a <- pr[[i]] * (1 + (k - 1) * Q[[i]])
+            }
+            else {
                 s <- k^((1:maxpower)/maxpower)
-                a <- pr[[i]] * (1 + colSums((s-1) * t(Q[[i]])))
+                a <- pr[[i]] * (1 + colSums((s - 1) * t(Q[[i]])))
             }
             a#/sum(a)
         })
+
         ## tmp <- (1-p0) * do.call("cbind",tmp)
         tmp <- do.call("cbind",tmp)
         alt.prior[[i]] <- addnull(tmp,p0)
@@ -120,6 +128,7 @@ marginalpp <- function(STR, ABF, PP, pr, kappa, p0, tol=0.0001) {
 which.null <- function(M) {
     rs <- rowSums(M)
     which(rs==0)
+
 }
     
     
