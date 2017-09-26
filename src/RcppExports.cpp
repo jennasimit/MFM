@@ -30,6 +30,18 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// strint
+int strint(const IntegerVector& x, const IntegerVector& y);
+RcppExport SEXP _MTFM_strint(SEXP xSEXP, SEXP ySEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const IntegerVector& >::type x(xSEXP);
+    Rcpp::traits::input_parameter< const IntegerVector& >::type y(ySEXP);
+    rcpp_result_gen = Rcpp::wrap(strint(x, y));
+    return rcpp_result_gen;
+END_RCPP
+}
 // calcQ2
 List calcQ2(const List S1, const List S2, const NumericVector& pp1, const NumericVector& pp2);
 RcppExport SEXP _MTFM_calcQ2(SEXP S1SEXP, SEXP S2SEXP, SEXP pp1SEXP, SEXP pp2SEXP) {
@@ -74,6 +86,22 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// calcQ3log
+List calcQ3log(const List S1, const List S2, const List S3, const NumericVector& pp1, const NumericVector& pp2, const NumericVector& pp3);
+RcppExport SEXP _MTFM_calcQ3log(SEXP S1SEXP, SEXP S2SEXP, SEXP S3SEXP, SEXP pp1SEXP, SEXP pp2SEXP, SEXP pp3SEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const List >::type S1(S1SEXP);
+    Rcpp::traits::input_parameter< const List >::type S2(S2SEXP);
+    Rcpp::traits::input_parameter< const List >::type S3(S3SEXP);
+    Rcpp::traits::input_parameter< const NumericVector& >::type pp1(pp1SEXP);
+    Rcpp::traits::input_parameter< const NumericVector& >::type pp2(pp2SEXP);
+    Rcpp::traits::input_parameter< const NumericVector& >::type pp3(pp3SEXP);
+    rcpp_result_gen = Rcpp::wrap(calcQ3log(S1, S2, S3, pp1, pp2, pp3));
+    return rcpp_result_gen;
+END_RCPP
+}
 // calcQ4
 List calcQ4(const List S1, const List S2, const List S3, const List S4, const NumericVector& pp1, const NumericVector& pp2, const NumericVector& pp3, const NumericVector& pp4);
 RcppExport SEXP _MTFM_calcQ4(SEXP S1SEXP, SEXP S2SEXP, SEXP S3SEXP, SEXP S4SEXP, SEXP pp1SEXP, SEXP pp2SEXP, SEXP pp3SEXP, SEXP pp4SEXP) {
@@ -112,9 +140,11 @@ END_RCPP
 static const R_CallMethodDef CallEntries[] = {
     {"_MTFM_modoverlap", (DL_FUNC) &_MTFM_modoverlap, 2},
     {"_MTFM_stroverlap", (DL_FUNC) &_MTFM_stroverlap, 2},
+    {"_MTFM_strint", (DL_FUNC) &_MTFM_strint, 2},
     {"_MTFM_calcQ2", (DL_FUNC) &_MTFM_calcQ2, 4},
     {"_MTFM_calcQ2_models", (DL_FUNC) &_MTFM_calcQ2_models, 4},
     {"_MTFM_calcQ3", (DL_FUNC) &_MTFM_calcQ3, 6},
+    {"_MTFM_calcQ3log", (DL_FUNC) &_MTFM_calcQ3log, 6},
     {"_MTFM_calcQ4", (DL_FUNC) &_MTFM_calcQ4, 8},
     {"_MTFM_calcQ3_models", (DL_FUNC) &_MTFM_calcQ3_models, 6},
     {NULL, NULL, 0}

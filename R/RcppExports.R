@@ -9,6 +9,10 @@ stroverlap <- function(x, y) {
     .Call('_MTFM_stroverlap', PACKAGE = 'MTFM', x, y)
 }
 
+strint <- function(x, y) {
+    .Call('_MTFM_strint', PACKAGE = 'MTFM', x, y)
+}
+
 calcQ2 <- function(S1, S2, pp1, pp2) {
     .Call('_MTFM_calcQ2', PACKAGE = 'MTFM', S1, S2, pp1, pp2)
 }
@@ -19,6 +23,10 @@ calcQ2_models <- function(M1, M2, pp1, pp2) {
 
 calcQ3 <- function(S1, S2, S3, pp1, pp2, pp3) {
     .Call('_MTFM_calcQ3', PACKAGE = 'MTFM', S1, S2, S3, pp1, pp2, pp3)
+}
+
+calcQ3log <- function(S1, S2, S3, pp1, pp2, pp3) {
+    .Call('_MTFM_calcQ3log', PACKAGE = 'MTFM', S1, S2, S3, pp1, pp2, pp3)
 }
 
 calcQ4 <- function(S1, S2, S3, S4, pp1, pp2, pp3, pp4) {
