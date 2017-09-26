@@ -83,9 +83,9 @@ marginalone <- function(STR, ABF, PP, pr, kappa, p0, tol=0.0001, eps=1e-6) {
 
     ## trim subsequent diseases
     message("trimming PP < ",eps," for diseases 2..",n)
-    message("initial lengths: ",paste(lapply(PP,length,collapse=", ")))
+    message("initial lengths: ",paste(sapply(PP,length),collapse=", "))
     PP[-1] <- lapply(PP[-1], function(x) x[ which(x) >= eps ])
-    message("trimmed lengths: ",paste(lapply(PP,length,collapse=", ")))
+    message("trimmed lengths: ",paste(sapply(PP,length),collapse=", "))
     
     ## Q
     fun <- switch(n,
