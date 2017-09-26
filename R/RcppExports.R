@@ -37,3 +37,15 @@ calcQ3_models <- function(M1, M2, M3, pp1, pp2, pp3) {
     .Call('_MTFM_calcQ3_models', PACKAGE = 'MTFM', M1, M2, M3, pp1, pp2, pp3)
 }
 
+calcQone2 <- function(S1, S2, pp1, pp2) {
+    .Call('_MTFM_calcQone2', PACKAGE = 'MTFM', S1, S2, pp1, pp2)
+}
+
+calcQone3 <- function(S1, S2, S3, pp1, pp2, pp3) {
+    .Call('_MTFM_calcQone3', PACKAGE = 'MTFM', S1, S2, S3, pp1, pp2, pp3)
+}
+
+calcQone4 <- function(S1, S2, S3, S4, pp1, pp2, pp3, pp4) {
+    .Call('_MTFM_calcQone4', PACKAGE = 'MTFM', S1, S2, S3, S4, pp1, pp2, pp3, pp4)
+}
+

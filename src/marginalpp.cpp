@@ -265,29 +265,94 @@ List calcQ3_models(const arma::imat& M1,
   return(Q);
 }
 
-  
-// List calcQ(List M, // list of model matrices, each will be a const arma::imat& - columns are models, rows are SNPs
-// 		    List pp) { // List of pp for each model for each disease
-//   const int nM = M.size();
-//   const int npp = pp.size();
-//   Rcpp::Rcout << "number of things: " << nM << " or " << npp << std::endl;
-//   List Q(nM);
-//   // // const int nsnp = M.nrow();
-//   // NumericVector S(2);
-//   // NumericVector Q(nmod);
-//   for(int im = 0; im<nM; im++) {
-//     Q[im] = arma::zeros(M[im].size()); 
-//   // //   S(i) = 0.0;
-  
-//   // for(int i =0; i<nmod; i++) {
-//   //   for(int j=0; j<nmod; j++) {
-//   //     int idx=sum( M.col(i) % M.col(j));
-//   //     if(idx > 1)
-//   // 	Q(i) = Q(j) + pp2(j);
-//   //   }
-//   // }
-//   }
-//   return(Q);
-// }
+
+// [[Rcpp::export]]
+NumericVector calcQone2(const List S1, // model matrix - columns are models, rows are SNPs
+	       const List S2, // model matrix - columns are models, rows are SNPs
+	       const NumericVector& pp1,
+	       const NumericVector& pp2) { // pp for each model for disease 2
+  const int nmod1 = pp1.size();
+  const int nmod2 = pp2.size();
+  // const int nsnp = M.nrow();
+  NumericVector Q(nmod1);
+  for(int i=0; i<nmod1; i++) {
+    for(int j=0; j<nmod2; j++) {
+      int idx=stroverlap( S1[i], S2[j]);
+      if(idx > 0) {
+	Q(i) = Q(i) + pp2(j);
+      }
+    }
+  }
+  return(Q);
+}
+
+// [[Rcpp::export]]
+NumericMatrix calcQone3(const List S1,
+	       const List S2,
+	       const List S3, // model matrix - columns are models, rows are SNPs
+	       const NumericVector& pp1,
+	       const NumericVector& pp2,
+	       const NumericVector& pp3) { // pp for each model for disease 2
+  // Rcpp::Rcout << "size of M: " << size(M1) << std::endl;
+  const int nmod1 = pp1.size();
+  const int nmod2 = pp2.size();
+  const int nmod3 = pp3.size();
+  NumericMatrix Q(nmod1,3);
+  for(int i1=0; i1<nmod1; i1++) {
+    for(int i2=0; i2<nmod2; i2++) {
+      int idx1=stroverlap(S1[i1], S2[i2]) - 1;
+      double pp12 = pp1(i1) * pp2(i2);
+      for(int i3=0; i3<nmod3; i3++) {
+   	int idx=idx1 +
+   	  stroverlap(S1[i1], S3[i3]) +
+   	  stroverlap(S2[i2], S3[i3]);
+	if(idx > 0) 
+	  Q(i1,idx) = Q(i1,idx) + pp2(i2) * pp3(i3);
+      }
+    }
+  }
+  return(Q);
+}
+
+// [[Rcpp::export]]
+NumericMatrix calcQone4(const List S1,
+	    const List S2,
+	    const List S3, // model matrix - columns are models, rows are SNPs
+	    const List S4, // model matrix - columns are models, rows are SNPs
+	    const NumericVector& pp1,
+	    const NumericVector& pp2,
+	    const NumericVector& pp3,
+	    const NumericVector& pp4) { // pp for each model for disease 2
+  // Rcpp::Rcout << "size of M: " << size(M1) << std::endl;
+  const int nmod1 = pp1.size();
+  const int nmod2 = pp2.size();
+  const int nmod3 = pp3.size();
+  const int nmod4 = pp4.size();
+  NumericMatrix Q(nmod1,6);
+  for(int i1=0; i1<nmod1; i1++) {
+     for(int i2=0; i2<nmod2; i2++) {
+       int idx1=stroverlap(S1[i1], S2[i2]) - 1;
+       double pp12 = pp1(i1) * pp2(i2);
+       for(int i3=0; i3<nmod3; i3++) {
+	 int idx2=idx1 +
+	   stroverlap(S1[i1], S3[i3]) +
+	   stroverlap(S2[i2], S3[i3]);
+	 double pp23 = pp2(i2) * pp3(i3);
+	 double pp13 = pp1(i1) * pp3(i3);
+	 double pp123 = pp1(i1) * pp2(i2) * pp3(i3);
+	 for(int i4=0; i4<nmod4; i4++) {
+	   int idx=idx2 +
+	     stroverlap(S1[i1], S4[i4]) +
+	     stroverlap(S2[i2], S4[i4]) +
+	     stroverlap(S3[i3], S4[i4]);
+	   if(idx > 0) 
+	     Q(i1,idx) = Q(i1,idx) + pp23 * pp4(i4);
+	 }
+       }
+     }
+  }
+  return(Q);
+}
+
 
 
