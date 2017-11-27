@@ -81,14 +81,14 @@ marginalpp <- function(STR, ABF, PP, pr, kappa, p0, tol=0.0001) {
     Q <- do.call(fun, c(STR.i, PP.nonull)) #lapply(pp,"[",-1)))
     
     ## alt prior
-    maxpower <- n * (n-1) / 2
+    ## maxpower <- n * (n-1) / 2
     alt.pp <- alt.prior <- vector("list",n)
     for(i in seq_along(Q)) {
         tmp <- lapply(kappa, function(k) {
             if(n==2) {
                 a <- pr[[i]] * (1 + (k-1) * Q[[i]])
             } else {
-                s <- k^((1:maxpower)/maxpower)
+                s <- k^((1:maxpower)) #/maxpower)
                 a <- pr[[i]] * (1 + colSums((s-1) * t(Q[[i]])))
             }
             a#/sum(a)
