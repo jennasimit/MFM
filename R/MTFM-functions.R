@@ -67,6 +67,7 @@ format.mod.fn <- function(k,out) {
 #' @param msnps is the vector of SNPs that will be selected for models
 #' @return data.frame of models (e.g. snp1%snp2 for a 2-SNP model of snp1 and snp2) and their sizes 
 #' @export
+#' @author Jenn Asimit
 T1mods.fn <- function(mT1,MT1,msnps) {
  s <- length(msnps)
  if(mT1>0) mc <- mT1:MT1
@@ -118,6 +119,7 @@ sep.fn <- function(k,mnames) {
 #' @param PP1 is a matrix of marginal model PP for a trait (i.e. one list component of output from sharedmPP.fn),
 #' @return a matrix of MPPi, where rows are SNPs and columns are kappa
 #' @export
+#' @author Jenn Asimit
 MPP.fn<-function(PP1) {
  mnames <- rownames(PP1) 
   msep <- apply(matrix(1:length(mnames),ncol=1),1,sep.fn,mnames)
@@ -190,6 +192,7 @@ expand.tags.bf <- function(best, tags) {
 #' @param mydir is a directory stub to save marginal stochastic search (GUESSFM) results on tag SNPs 
 #' @return a list with components pp1, pp2 (each is a data.frame of the marginal model PPs at each kappa value)
 #' @export
+#' @author Jenn Asimit
 sharedmPP.fn <- function(kappa,snp.data.list,pheno.list,tags,mppthr,traits,mydir) {
 K <- length(traits) 
 mydirs <- paste(mydir,1:K,sep="_")

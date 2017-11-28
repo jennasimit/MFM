@@ -16,3 +16,8 @@ T1mods.fn(mT1, MT1, msnps)
 \value{
 data.frame of models (e.g. snp1%snp2 for a 2-SNP model of snp1 and snp2) and their sizes
 }
+\author{
+Jenn Asimit
+if(mT1 > 0) T1mods <- NULL
+if(mT1 == 0) T1mods <- matrix(rep(0,s),nrow=1)
+}
