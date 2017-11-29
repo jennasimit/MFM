@@ -39,7 +39,7 @@ marginalpp <- function(STR, ABF, PP, pr, kappa, p0, tol=0.0001) {
     usnps <- sort(unique(unlist(SS)))
     if(!(1 %in% kappa))
         kappa <- c(1,kappa)
-    
+
     ## remove null model if included
     PP.nonull <- PP
     for(i in seq_along(STR)) {
@@ -57,64 +57,55 @@ marginalpp <- function(STR, ABF, PP, pr, kappa, p0, tol=0.0001) {
         } 
         PP[[i]] <- addnull(PP[[i]], calcpp(addnull(pr[[i]],p0), addnull(ABF[[i]],0))[1])
     }
-    
-    STR.i <- lapply(SS, function(ss) {
-        lapply(ss,function(x) as.integer(factor(x,levels=usnps)))
+
+      STR.i <- lapply(SS, function(ss) {
+        lapply(ss, function(x) as.integer(factor(x, levels = usnps)))
     })
     names(STR.i) <- NULL
     
-    ## unweighted pp - as input
+     ## unweighted pp - as input
     ## pp <- mapply(function(pr1,ABF1) {
     ##     calcpp(addnull(pr1,p0),addnull(ABF1,0)) },
     ##     pr, ABF, SIMPLIFY=FALSE)
     names(PP.nonull) <- NULL
+  
     
-    ## Q
-    fun <- switch(n,
-                  NULL,
-                  "calcQ2",
-                  "calcQ3",
-                  "calcQ4")
-    if(is.null(fun))
-        stop("calcQ not written for ",n," diseases yet")
+    fun <- switch(n, NULL, "calcQone2", "calcQone3", "calcQone4")
+    if (is.null(fun)) 
+        stop("calcQone not written for ", n, " diseases yet")
     
-    Q <- do.call(fun, c(STR.i, PP.nonull)) #lapply(pp,"[",-1)))
+      
+    Q <- do.call(fun, c(STR.i, PP.nonull))
     
     ## alt prior
-    ## maxpower <- n * (n-1) / 2
-    alt.pp <- alt.prior <- vector("list",n)
-    for(i in seq_along(Q)) {
-        tmp <- lapply(kappa, function(k) {
-            if(n==2) {
-                a <- pr[[i]] * (1 + (k-1) * Q[[i]])
-            } else {
-                s <- k^((1:maxpower)) #/maxpower)
-                a <- pr[[i]] * (1 + colSums((s-1) * t(Q[[i]])))
-            }
-            a#/sum(a)
-        })
-        ## tmp <- (1-p0) * do.call("cbind",tmp)
-        tmp <- do.call("cbind",tmp)
-        alt.prior[[i]] <- addnull(tmp,p0)
-        alt.pp[[i]] <- calcpp(alt.prior[[i]],addnull(ABF[[i]],0))
-    }
-    pr <- lapply(pr, addnull, p0)
-    STR <- lapply(STR, addnull, "1")
-    alt.pp <- lapply(alt.pp,t)
-    
-    ## checks
-    wh <- which(kappa==1)
-    sumsq <- mapply(function(x,y) sum((x-y[,wh])^2), PP, alt.pp)
-    if(any(sumsq>tol)) {
-        for(i in which(sumsq>tol)) {
-            warning("trait ",i," kappa=1 PP does not match input PP, sumsq=",sumsq[i],
-                    "which is > tol.\nsuggests you need to include more models in the calculation")
+    maxpower <- n * (n - 1)/2
+    tmp <- lapply(kappa, function(k) {
+        if (n == 2) {
+            a <- pr[[1]] * (1 + (k - 1) * Q)
         }
+        else {
+            s <- k^((1:maxpower)) #/maxpower)
+            a <- pr[[1]] * (1 + colSums((s - 1) * t(Q)))
+        }
+        a
+    })
+    tmp <- do.call("cbind", tmp)
+    alt.prior <- addnull(tmp, p0)
+    alt.pp <- calcpp(alt.prior, addnull(ABF[[1]], 0))
+    
+    pr <- lapply(pr, addnull, p0)
+    STR[[1]] <- addnull(STR[[1]], "1")
+    alt.pp <- t(alt.pp)
+   
+   # checks
+    wh <- which(kappa == 1)
+    sumsq <- sum((PP[[1]] - alt.pp[,wh])^2) 
+    if ((sumsq > tol)) {
+        warning("trait ", 1, " kappa=1 PP does not match input PP, sumsq=", 
+            sumsq, "which is > tol.\nsuggests you need to include more models in the calculation")
     }
-        
-    list(single.prior=pr, single.pp=PP,
-         shared.prior=alt.prior,shared.pp=alt.pp,
-         STR=STR,kappa=kappa)  
+    list(single.prior = pr[[1]], single.pp = PP[[1]], shared.prior = alt.prior, 
+        shared.pp = alt.pp, STR = STR[[1]], kappa = kappa)
 }
 
 marginallogpp <- function(STR, ABF, PP, pr, kappa, p0, tol=0.0001) {
