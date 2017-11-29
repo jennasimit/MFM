@@ -12,7 +12,7 @@ p.fn <- function(x,n,v) dbinom(x,size=n,prob=v/n,log=TRUE)
 #' @param n Number of SNPs in region
 #' @return Optimal kappa value
 #' @export
-kappa.opt.fn <-function(Nd,Ps2,nsnps) {
+kappaOpt <-function(Nd,Ps2,nsnps) {
  Ps <- 1-Ps2^(Nd-1) # Pr(given disease shares a variant with at least one other disease)
  pr <- p.fn(0:nsnps,nsnps,2)
  if(Nd==2) kappa.opt <- kappa2(Ps,nsnps,100,pr)
