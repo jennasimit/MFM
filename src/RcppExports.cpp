@@ -6,6 +6,73 @@
 
 using namespace Rcpp;
 
+// finnerK
+double finnerK(NumericVector lvec, double n);
+RcppExport SEXP _MTFM_finnerK(SEXP lvecSEXP, SEXP nSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type lvec(lvecSEXP);
+    Rcpp::traits::input_parameter< double >::type n(nSEXP);
+    rcpp_result_gen = Rcpp::wrap(finnerK(lvec, n));
+    return rcpp_result_gen;
+END_RCPP
+}
+// pp
+double pp(double l, double n, double v);
+RcppExport SEXP _MTFM_pp(SEXP lSEXP, SEXP nSEXP, SEXP vSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< double >::type l(lSEXP);
+    Rcpp::traits::input_parameter< double >::type n(nSEXP);
+    Rcpp::traits::input_parameter< double >::type v(vSEXP);
+    rcpp_result_gen = Rcpp::wrap(pp(l, n, v));
+    return rcpp_result_gen;
+END_RCPP
+}
+// kappa2
+double kappa2(double pk, double n, double maxn, NumericVector LP);
+RcppExport SEXP _MTFM_kappa2(SEXP pkSEXP, SEXP nSEXP, SEXP maxnSEXP, SEXP LPSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< double >::type pk(pkSEXP);
+    Rcpp::traits::input_parameter< double >::type n(nSEXP);
+    Rcpp::traits::input_parameter< double >::type maxn(maxnSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type LP(LPSEXP);
+    rcpp_result_gen = Rcpp::wrap(kappa2(pk, n, maxn, LP));
+    return rcpp_result_gen;
+END_RCPP
+}
+// kappa3
+double kappa3(double pk, double n, double maxn, NumericVector LP);
+RcppExport SEXP _MTFM_kappa3(SEXP pkSEXP, SEXP nSEXP, SEXP maxnSEXP, SEXP LPSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< double >::type pk(pkSEXP);
+    Rcpp::traits::input_parameter< double >::type n(nSEXP);
+    Rcpp::traits::input_parameter< double >::type maxn(maxnSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type LP(LPSEXP);
+    rcpp_result_gen = Rcpp::wrap(kappa3(pk, n, maxn, LP));
+    return rcpp_result_gen;
+END_RCPP
+}
+// kappa4
+double kappa4(double pk, double n, double maxn, NumericVector LP);
+RcppExport SEXP _MTFM_kappa4(SEXP pkSEXP, SEXP nSEXP, SEXP maxnSEXP, SEXP LPSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< double >::type pk(pkSEXP);
+    Rcpp::traits::input_parameter< double >::type n(nSEXP);
+    Rcpp::traits::input_parameter< double >::type maxn(maxnSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type LP(LPSEXP);
+    rcpp_result_gen = Rcpp::wrap(kappa4(pk, n, maxn, LP));
+    return rcpp_result_gen;
+END_RCPP
+}
 // modoverlap
 int modoverlap(const arma::ivec& x, const arma::ivec& y);
 RcppExport SEXP _MTFM_modoverlap(SEXP xSEXP, SEXP ySEXP) {
@@ -186,6 +253,11 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
+    {"_MTFM_finnerK", (DL_FUNC) &_MTFM_finnerK, 2},
+    {"_MTFM_pp", (DL_FUNC) &_MTFM_pp, 3},
+    {"_MTFM_kappa2", (DL_FUNC) &_MTFM_kappa2, 4},
+    {"_MTFM_kappa3", (DL_FUNC) &_MTFM_kappa3, 4},
+    {"_MTFM_kappa4", (DL_FUNC) &_MTFM_kappa4, 4},
     {"_MTFM_modoverlap", (DL_FUNC) &_MTFM_modoverlap, 2},
     {"_MTFM_stroverlap", (DL_FUNC) &_MTFM_stroverlap, 2},
     {"_MTFM_strint", (DL_FUNC) &_MTFM_strint, 2},
