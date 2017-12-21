@@ -3,6 +3,7 @@
 export(MPP.PP.groups.fn)
 export(MPP.fn)
 export(PP.plot.fn)
+export(PPmarginal.multiple.fast.fn)
 export(PPmarginal.multiple.fn)
 export(T1mods.fn)
 export(expand.tags.bf)

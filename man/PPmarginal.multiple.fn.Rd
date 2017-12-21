@@ -4,7 +4,7 @@
 \alias{PPmarginal.multiple.fn}
 \title{Marginal PP for models of a set of diseases, sharing information between the diseases}
 \usage{
-PPmarginal.multiple.fn(SM2, dis, thr, kappa)
+PPmarginal.multiple.fn(SM2, dis, thr, kappa, tol = 1e-04, N0, ND)
 }
 \arguments{
 \item{SM2}{List of snpmod objects for a set of diseases}
@@ -14,6 +14,10 @@ PPmarginal.multiple.fn(SM2, dis, thr, kappa)
 \item{thr}{Threshold such that the smallest set of models has cumulative PP >= thr}
 
 \item{kappa}{Vector of sharing values}
+
+\item{N0}{number of shared controls}
+
+\item{ND}{list of number of cases for a set of diseases}
 }
 \value{
 List consisting of PP: marginal PP for models and MPP: marginal PP of SNP inclusion

@@ -4,7 +4,7 @@
 \alias{marginalone}
 \title{Marginal PP for models sharing information between diseases}
 \usage{
-marginalone(STR, ABF, PP, pr, kappa, p0, tol = 1e-04, eps = 1e-06)
+marginalone(STR, ABF, PP, pr, kappa, p0, tol = 1e-04, fthr = 0.99, N0, ND)
 }
 \arguments{
 \item{STR}{list of models for diseases 1, 2, ..., n, each given in
@@ -18,7 +18,7 @@ ABF, PP and pr below follow this same order.}
 \item{PP}{list of posterior probability vectors for diseases 1, 2,
 ...}
 
-\item{pr}{list of prior probabilities for the models in M}
+\item{pr}{list of prior probabilities for the models in STR}
 
 \item{kappa}{single value or vector of values to consider for the
 sharing scale parameter.  the value of kappa=1 must be
@@ -26,10 +26,14 @@ included, and if not will be prepended.}
 
 \item{p0}{prior probability of the null model}
 
-\item{eps}{models for all but the first disease are dropped if
-their PP < eps.  Ie set PP=0 if PP<eps.  This is an
-APPROXIMATION, eps should be as small as your computing
+\item{fthr}{models for all but the first disease are retained if
+their cumsum(PP) < fthr.  Ie set PP\link{j}=0 if SNP j is not in the smallest set of SNPs that satisfy cumsum(PP) < fthr.  This is an
+APPROXIMATION, eps should be as close to 1 as your computing
 facilities allow.}
+
+\item{N0}{number of shared controls}
+
+\item{ND}{list of number of cases for a set of diseases}
 }
 \value{
 list of: - single.pp: list of pp for each model in

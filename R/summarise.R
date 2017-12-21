@@ -3,9 +3,11 @@
 #' @param dis Vector of diseases for fine-mapping (subset from those in SM2)
 #' @param thr Threshold such that the smallest set of models has cumulative PP >= thr
 #' @param kappa Vector of sharing values
+#' @param N0 number of shared controls
+#' @param ND list of number of cases for a set of diseases
 #' @return List consisting of PP: marginal PP for models and MPP: marginal PP of SNP inclusion
 #' @export
-PPmarginal.multiple.fn <- function(SM2,dis,thr,kappa) {
+PPmarginal.multiple.fn <- function(SM2,dis,thr,kappa,tol=0.0001,N0,ND) {
 
 traits <- paste(dis,collapse="-")
   
@@ -15,8 +17,52 @@ traits <- paste(dis,collapse="-")
   abf <- lapply(bestmod.thr, "[[", "logABF") 
   PP <- lapply(bestmod.thr, "[[", "PP") 
   p0 <- snpprior(n=nsnps,expected=2)["0"] 
+   
+  STR=M[dis] 
+  ABF=abf[dis] 
+  PP <- PP[dis] 
+  pr=pr[dis]
+  ND=ND[dis]
+  message("\n\nCPP threshold = ",thr, "\n\tn.each (",paste(dis,collapse="/"),") = ",paste(sapply(M[dis],length),collapse="/")) 
+  ret <- marginalpp(STR,ABF,PP,pr,kappa,p0,tol,N0,ND) 
+  pp <- ret$shared.pp
+  mpp <- lapply(pp,MPP.fn)
+  names(pp) <- dis
+  
+  
+ MPP <- lapply(mpp,t)
+ K <- length(dis)
+for(k in 2:K) MPP <- smartbind(MPP, t(mpp[[k]]),fill=0)
+
+return(list(PP=pp,MPP=MPP))
+}
+
+#' @title Approximate (fast) marginal PP for models of a set of diseases, sharing information between the diseases
+#' @param SM2 List of snpmod objects for a set of diseases
+#' @param dis Vector of diseases for fine-mapping (subset from those in SM2)
+#' @param thr Threshold such that the smallest set of models has cumulative PP >= thr
+#' @param kappa Vector of sharing values
+#' @param fthr Second level filtering on all but first disease to give a faster approximation; retain SNPs within the smallest set of models such that cumulative PP >= thr
+#' @param N0 number of shared controls
+#' @param ND list of number of cases for a set of diseases
+#' @return List consisting of PP: marginal PP for models and MPP: marginal PP of SNP inclusion
+#' @export
+PPmarginal.multiple.fast.fn <- function(SM2,dis,thr,kappa,tol=0.0001,fthr,N0,ND) {
+
+traits <- paste(dis,collapse="-")
+  
+  bestmod.thr <- best.models(SM2[dis],cpp.thr=thr) 
+  M <- lapply(bestmod.thr, "[[", "str") 
+  pr <- lapply(bestmod.thr, "[[", "prior") 
+  abf <- lapply(bestmod.thr, "[[", "logABF") 
+  PP <- lapply(bestmod.thr, "[[", "PP") 
+  p0 <- snpprior(n=nsnps,expected=2)["0"] 
+  ND <- ND[dis]
+  
   
  K <- length(dis) 
+
+  
  pp <- vector("list",K)
  mpp <- vector("list",K)
  names(pp) <- dis
@@ -26,8 +72,9 @@ traits <- paste(dis,collapse="-")
   ABF=abf[dis] 
   PP <- PP[dis] 
   pr=pr[dis]
+  ND=ND[dis]
   message("\n\nCPP threshold = ",thr, "\n\tn.each (",paste(dis,collapse="/"),") = ",paste(sapply(M[dis],length),collapse="/")) 
-  ret <- marginalpp(STR,ABF,PP,pr,kappa,p0) # need to have each trait as 1st
+  ret <- marginalone(STR,ABF,PP,pr,kappa,p0,tol, fthr=fthr,N0,ND) # need to have each trait as 1st
   pp[[j]] <- ret$shared.pp
   rownames(pp[[j]]) <- ret$STR
   colnames(pp[[j]]) <- paste("pp",kappa,sep=".")
@@ -40,6 +87,7 @@ for(k in 2:K) MPP <- smartbind(MPP, t(mpp[[k]]),fill=0)
 
 return(list(PP=pp,MPP=MPP))
 }
+
 
 #' @title Filter probability matrix output by threshold 
 #' @param pp Matrix of probabilities: rows are kappa values; columns are SNPs (MPP matrix) or models (PP matrix) 

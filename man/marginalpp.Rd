@@ -4,7 +4,7 @@
 \alias{marginalpp}
 \title{Marginal PP for models sharing information between diseases}
 \usage{
-marginalpp(STR, ABF, PP, pr, kappa, p0, tol = 1e-04)
+marginalpp(STR, ABF, PP, pr, kappa, p0, tol = 1e-04, N0, ND)
 }
 \arguments{
 \item{STR}{list of models for diseases 1, 2, ..., n, each given in
@@ -25,6 +25,10 @@ sharing scale parameter.  the value of kappa=1 must be
 included, and if not will be prepended.}
 
 \item{p0}{prior probability of the null model}
+
+\item{N0}{number of shared controls}
+
+\item{ND}{list of number of cases for a set of diseases}
 }
 \value{
 list of: - single.pp: list of pp for each model in

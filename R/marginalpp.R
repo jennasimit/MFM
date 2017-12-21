@@ -20,6 +20,8 @@
 ##'     sharing scale parameter.  the value of kappa=1 must be
 ##'     included, and if not will be prepended.
 ##' @param p0 prior probability of the null model
+#' @param N0 number of shared controls
+#' @param ND list of number of cases for a set of diseases
 ##' @return list of: - single.pp: list of pp for each model in
 ##'     STR[[i]] for disease i - shared.pp: list of pp for each model
 ##'     in STR[[i]] for disease i, - STR: not quite as input,
@@ -28,7 +30,7 @@
 ##'     supplied
 ##' @export
 ##' @author Chris Wallace
-marginalpp <- function(STR, ABF, PP, pr, kappa, p0, tol=0.0001) {
+marginalpp <- function(STR, ABF, PP, pr, kappa, p0, tol=0.0001,N0,ND) {
     n <- length(STR)
     if(n<2)
         stop("Need at least 2 diseases")
@@ -39,6 +41,32 @@ marginalpp <- function(STR, ABF, PP, pr, kappa, p0, tol=0.0001) {
     usnps <- sort(unique(unlist(SS)))
     if(!(1 %in% kappa))
         kappa <- c(1,kappa)
+
+dis <- names(STR)
+
+# keep initial PP and pr for both diseases as PP0 and pr, respectively. This allows us to compare our new PP approx at
+# kappa=1 with the original PP. If the offset term eta=1, then PP0 = PP when kappa=1. Otherwise, they are approximately equal.
+# In the original calculation of Q, the PPs, we have Q[j]=b[j]*pr[j]/sum(b*pr), which we get from the GUESSFM output of each disease.
+# To get the offset-adjusted Q, we have:
+# Q[j]=b[j]*pr[j]*eta[j]/sum(b*pr*eta) \prop b[j]*pr[j]*eta[j] \prop b[j]*pr[j]*eta[j]/sum(b*pr) = PP[j]*eta[j] \prop PP[j]*eta[j]/sum(PP*eta)
+# so, we set PP=PP*eta/sum(PP*eta) for ease of computing Q.
+# In the adjusted prior we need pr[j]*eta[j], so set pr=pr*eta for ease of computation 
+
+
+PP0 <- PP 
+pr0 <- pr     
+   
+N <- sum(unlist(ND))+N0
+Mk <- vector("list",n)
+ for(j in 1:n) {
+  Mk[[j]] <- unlist(lapply(strsplit(STR[[j]],"%"),length)) # model sizes
+  eta <- exp(Mk[[j]]*.5*log((ND[[j]]+N0)/N)) # when eta <- 1 the results match for dis=c(t1,t2) and dis=c(t2,t1)
+  PP[[j]] <- PP[[j]]*eta/sum(PP[[j]]*eta) # offset-adjusted PP and pr and re-adjusted to probabilities
+  pr[[j]] <- pr[[j]]*eta/sum(pr[[j]]*eta)
+   }
+  names(PP) <- dis
+  names(pr) <- dis
+  
 
     ## remove null model if included
     PP.nonull <- PP
@@ -51,11 +79,15 @@ marginalpp <- function(STR, ABF, PP, pr, kappa, p0, tol=0.0001) {
             PP.nonull[[i]] <- PP[[i]][-wh]
             ## PP[[i]] <- c(PP[[i]][wh],PP[[i]][-wh])
             PP[[i]] <- PP[[i]][-wh]
+            PP0[[i]] <- PP0[[i]][-wh]
             ## ABF[[i]] <- addnull(ABF[[i]],0)
             ## pr[[i]] <- addnull(pr[[i]],p0)
             ## PP[[i]] <- addnull(PP[[i]], ABF[[i]][1] * pr[[i]][1] / sum(ABF[[i]] * pr[[i]]))
         } 
-        PP[[i]] <- addnull(PP[[i]], calcpp(addnull(pr[[i]],p0), addnull(ABF[[i]],0))[1])
+        PP[[i]] <- addnull(PP[[i]], calcpp(addnull(pr[[i]], p0), 
+            addnull(ABF[[i]], 0))[1]) 
+        PP0[[i]] <- addnull(PP0[[i]], calcpp(addnull(pr0[[i]], p0), 
+            addnull(ABF[[i]], 0))[1])    
     }
 
       STR.i <- lapply(SS, function(ss) {
@@ -70,42 +102,58 @@ marginalpp <- function(STR, ABF, PP, pr, kappa, p0, tol=0.0001) {
     names(PP.nonull) <- NULL
   
     
-    fun <- switch(n, NULL, "calcQone2", "calcQone3", "calcQone4")
+    fun <- switch(n, NULL, "calcQ2", "calcQ3", "calcQ4")
     if (is.null(fun)) 
-        stop("calcQone not written for ", n, " diseases yet")
+        stop("calcQ not written for ", n, " diseases yet")
     
       
     Q <- do.call(fun, c(STR.i, PP.nonull))
     
     ## alt prior
-    maxpower <- n * (n - 1)/2
+    ##maxpower <- n * (n - 1)/2
+     alt.pp <- alt.prior <- vector("list",n)
+	for(i in seq_along(Q)) {
     tmp <- lapply(kappa, function(k) {
         if (n == 2) {
-            a <- pr[[1]] * (1 + (k - 1) * Q)
+            a <- pr[[i]] * (1 + (k - 1) * Q[[i]])
         }
         else {
             s <- k^((1:maxpower)) #/maxpower)
-            a <- pr[[1]] * (1 + colSums((s - 1) * t(Q)))
+            a <- pr[[i]] * (1 + colSums((s - 1) * t(Q[[i]])))
         }
         a
     })
     tmp <- do.call("cbind", tmp)
-    alt.prior <- addnull(tmp, p0)
-    alt.pp <- calcpp(alt.prior, addnull(ABF[[1]], 0))
+    alt.prior[[i]] <- addnull(tmp, p0)
+    alt.pp[[i]] <- calcpp(alt.prior[[i]], addnull(ABF[[i]], 0))
+    
+    }
     
     pr <- lapply(pr, addnull, p0)
-    STR[[1]] <- addnull(STR[[1]], "1")
-    alt.pp <- t(alt.pp)
+    STR <- lapply(STR,addnull, "1")
+    alt.pp <- lapply(alt.pp,t)
    
+   for(i in seq_along(alt.pp)){
+ 	rownames(alt.pp[[i]]) <- STR[[i]]
+ 	colnames(alt.pp[[i]]) <- paste("pp",kappa,sep=".")
+ 	rownames(alt.prior[[i]]) <- STR[[i]]
+ 	colnames(alt.prior[[i]]) <- paste("pp",kappa,sep=".")
+ 	}
+  
    # checks
     wh <- which(kappa == 1)
-    sumsq <- sum((PP[[1]] - alt.pp[,wh])^2) 
-    if ((sumsq > tol)) {
-        warning("trait ", 1, " kappa=1 PP does not match input PP, sumsq=", 
-            sumsq, "which is > tol.\nsuggests you need to include more models in the calculation")
+    sumsq <- mapply(function(x,y) sum((x-y[,wh])^2), PP0, alt.pp)
+    if(any(sumsq>tol)) {
+        for(i in which(sumsq>tol)) {
+            warning("trait ",i," kappa=1 PP does not match input PP, sumsq=",sumsq[i],
+                    "which is > tol.\nsuggests you need to include more models in the calculation")
+        }
     }
-    list(single.prior = pr[[1]], single.pp = PP[[1]], shared.prior = alt.prior, 
-        shared.pp = alt.pp, STR = STR[[1]], kappa = kappa)
+
+  
+
+    list(single.prior = pr, single.pp = PP, shared.prior = alt.prior, 
+        shared.pp = alt.pp, STR = STR, kappa = kappa)
 }
 
 marginallogpp <- function(STR, ABF, PP, pr, kappa, p0, tol=0.0001) {
