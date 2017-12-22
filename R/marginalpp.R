@@ -110,7 +110,7 @@ Mk <- vector("list",n)
     Q <- do.call(fun, c(STR.i, PP.nonull))
     
     ## alt prior
-    ##maxpower <- n * (n - 1)/2
+    maxpower <- n * (n - 1)/2
      alt.pp <- alt.prior <- vector("list",n)
 	for(i in seq_along(Q)) {
     tmp <- lapply(kappa, function(k) {

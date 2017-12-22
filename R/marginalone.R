@@ -125,7 +125,7 @@ Mk <- vector("list",n)
     
       
     Q <- do.call(fun, c(STR.i, PP.nonull))
-    #maxpower <- n * (n - 1)/2
+    maxpower <- n * (n - 1)/2
     tmp <- lapply(kappa, function(k) {
         if (n == 2) {
             a <- pr[[1]] * (1 + (k - 1) * Q)
