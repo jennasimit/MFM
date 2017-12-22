@@ -142,12 +142,12 @@ Mk <- vector("list",n)
     pr <- lapply(pr, addnull, p0)
     STR[[1]] <- addnull(STR[[1]], "1")
     alt.pp <- t(alt.pp)
-    wh <- which(kappa == 1)
-    sumsq <- sum((PP0[[1]] - alt.pp[,wh])^2) 
-    if ((sumsq > tol)) {
-        warning("trait ", 1, " kappa=1 PP does not match input PP, sumsq=", 
-            sumsq, "which is > tol.\nsuggests you need to include more models in the calculation")
-    }
+   # wh <- which(kappa == 1)
+   # sumsq <- sum((PP0[[1]] - alt.pp[,wh])^2) 
+   # if ((sumsq > tol)) {
+   #     warning("trait ", 1, " kappa=1 PP does not match input PP, sumsq=", 
+    #        sumsq, "which is > tol.\nsuggests you need to include more models in the calculation")
+    #}
     list(single.prior = pr[[1]], single.pp = PP[[1]], shared.prior = alt.prior, 
         shared.pp = alt.pp, STR = STR[[1]], kappa = kappa)
 }

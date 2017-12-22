@@ -61,7 +61,7 @@ Mk <- vector("list",n)
  for(j in 1:n) {
   Mk[[j]] <- unlist(lapply(strsplit(STR[[j]],"%"),length)) # model sizes
   eta <- exp(Mk[[j]]*.5*log((ND[[j]]+N0)/N)) # when eta <- 1 the results match for dis=c(t1,t2) and dis=c(t2,t1)
-  PP[[j]] <- PP[[j]]*eta/sum(PP[[j]]*eta) # offset-adjusted PP and pr and re-adjusted to probabilities
+  PP[[j]] <- PP[[j]]*eta/sum(PP[[j]]*eta) # multinomial-adjusted PP and pr and re-scaled to probabilities
   pr[[j]] <- pr[[j]]*eta/sum(pr[[j]]*eta)
    }
   names(PP) <- dis
@@ -141,14 +141,14 @@ Mk <- vector("list",n)
  	}
   
    # checks
-    wh <- which(kappa == 1)
-    sumsq <- mapply(function(x,y) sum((x-y[,wh])^2), PP0, alt.pp)
-    if(any(sumsq>tol)) {
-        for(i in which(sumsq>tol)) {
-            warning("trait ",i," kappa=1 PP does not match input PP, sumsq=",sumsq[i],
-                    "which is > tol.\nsuggests you need to include more models in the calculation")
-        }
-    }
+   # wh <- which(kappa == 1)
+   # sumsq <- mapply(function(x,y) sum((x-y[,wh])^2), PP0, alt.pp)
+   # if(any(sumsq>tol)) {
+   #     for(i in which(sumsq>tol)) {
+    #        warning("trait ",i," kappa=1 PP does not match input PP, sumsq=",sumsq[i],
+    #                "which is > tol.\nsuggests you need to include more models in the calculation")
+    #    }
+    #}
 
   
 
