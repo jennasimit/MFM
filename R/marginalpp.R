@@ -64,8 +64,7 @@ Mk <- vector("list",n)
   PP[[j]] <- PP[[j]]*eta/sum(PP[[j]]*eta) # multinomial-adjusted PP and pr and re-scaled to probabilities
   pr[[j]] <- pr[[j]]*eta/sum(pr[[j]]*eta)
    }
-  names(PP) <- dis
-  names(pr) <- dis
+  
   
 
     ## remove null model if included
@@ -76,6 +75,7 @@ Mk <- vector("list",n)
             STR[[i]] <- STR[[i]][-wh]
             ABF[[i]] <- ABF[[i]][-wh]
             pr[[i]] <- pr[[i]][-wh]
+            pr0[[i]] <- pr0[[i]][-wh]
             PP.nonull[[i]] <- PP[[i]][-wh]
             ## PP[[i]] <- c(PP[[i]][wh],PP[[i]][-wh])
             PP[[i]] <- PP[[i]][-wh]
@@ -84,8 +84,7 @@ Mk <- vector("list",n)
             ## pr[[i]] <- addnull(pr[[i]],p0)
             ## PP[[i]] <- addnull(PP[[i]], ABF[[i]][1] * pr[[i]][1] / sum(ABF[[i]] * pr[[i]]))
         } 
-        PP[[i]] <- addnull(PP[[i]], calcpp(addnull(pr[[i]], p0), 
-            addnull(ABF[[i]], 0))[1]) 
+        PP[[i]] <- addnull(PP[[i]], calcpp(addnull(pr[[i]], p0),addnull(ABF[[i]], 0))[1]) 
         PP0[[i]] <- addnull(PP0[[i]], calcpp(addnull(pr0[[i]], p0), 
             addnull(ABF[[i]], 0))[1])    
     }

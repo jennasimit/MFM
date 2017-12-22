@@ -103,6 +103,7 @@ Mk <- vector("list",n)
             STR[[i]] <- STR[[i]][-wh]
             ABF[[i]] <- ABF[[i]][-wh]
             pr[[i]] <- pr[[i]][-wh]
+            pr0[[i]] <- pr0[[i]][-wh]
             PP.nonull[[i]] <- PP[[i]][-wh]
             PP[[i]] <- PP[[i]][-wh]
             PP0[[i]] <- PP0[[i]][-wh]
