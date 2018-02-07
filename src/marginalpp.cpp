@@ -130,6 +130,122 @@ List calcQ3(const List S1,
   return(Q);
 }
 
+// [[Rcpp::export]]
+List calcQpair(const List S1, // model matrix - columns are models, rows are SNPs
+	       const List S2, // model matrix - columns are models, rows are SNPs
+	       const NumericVector& pp1,
+	       const NumericVector& pp2) { // pp for each model for disease 2
+  const int nmod1 = pp1.size();
+  const int nmod2 = pp2.size();
+  // const int nsnp = M.nrow();
+  NumericVector Q1(nmod1);
+  NumericVector Q2(nmod2);
+  for(int i=0; i<nmod1; i++) {
+    for(int j=0; j<nmod2; j++) {
+      int idx=stroverlap( S1[i], S2[j]);
+      if(idx > 0) {
+	Q1(i) = Q1(i) + pp2(j);
+	Q2(j) = Q2(j) + pp1(i);
+      }
+    }
+  }
+  List Q(2);
+  Q[0] = Q1;
+  Q[1] = Q2;
+  return(Q);
+}
+
+
+// [[Rcpp::export]]
+List newcalcQ3(const List S1,
+	    const List S2,
+	    const List S3, // model matrix - columns are models, rows are SNPs
+	    const NumericVector& pp1,
+	    const NumericVector& pp2,
+	    const NumericVector& pp3) { // pp for each model for disease 2
+  List Q12 = calcQpair(S1,S2,pp1,pp2);
+  List Q23 = calcQpair(S2,S3,pp2,pp3);
+  List Q13 = calcQpair(S1,S3,pp1,pp3);
+    
+  const int nmod1 = pp1.size();
+  const int nmod2 = pp2.size();
+  const int nmod3 = pp3.size();
+  // const int nsnp = M.nrow();
+  NumericVector Q1 = Q12[0];
+  NumericVector Q2 = Q12[1];
+  NumericVector Q3 = Q13[1];
+
+  NumericVector tmp = Q13[0];
+  for(int i=0; i<nmod1; i++)
+    Q1(i)+= tmp(i);
+  tmp = Q23[0];
+  for(int i=0; i<nmod2; i++)
+    Q2(i)+= tmp(i);
+  tmp = Q23[1];
+  for(int i=0; i<nmod3; i++)
+    Q3(i)+= tmp(i);
+
+  List Q(3);
+  Q["1"] = Q1;
+  Q["2"] = Q2;
+  Q["3"] = Q3;
+  return(wrap(Q));
+}
+
+
+// [[Rcpp::export]]
+List newcalcQ4(const List S1,
+	    const List S2,
+	    const List S3, // model matrix - columns are models, rows are SNPs
+	    const List S4, // model matrix - columns are models, rows are SNPs
+	    const NumericVector& pp1,
+	    const NumericVector& pp2,
+	    const NumericVector& pp3,
+	    const NumericVector& pp4) { // pp for each model for disease 2
+  List Q12 = calcQpair(S1,S2,pp1,pp2);
+  List Q13 = calcQpair(S1,S3,pp1,pp3);
+  List Q14 = calcQpair(S1,S4,pp1,pp4);
+  List Q23 = calcQpair(S2,S3,pp2,pp3);
+  List Q24 = calcQpair(S2,S4,pp2,pp4);
+  List Q34 = calcQpair(S3,S4,pp3,pp4);
+    
+  const int nmod1 = pp1.size();
+  const int nmod2 = pp2.size();
+  const int nmod3 = pp3.size();
+  const int nmod4 = pp4.size();
+  // const int nsnp = M.nrow();
+  NumericVector Q1 = Q12[0];
+  NumericVector Q2 = Q12[1];
+  NumericVector Q3 = Q13[1];
+  NumericVector Q4 = Q14[1];
+
+  NumericVector a,b;
+  a = Q13[0];
+  b = Q14[0];
+  for(int i=0; i<nmod1; i++)
+    Q1(i)+= a(i) + b(i);
+  a = Q23[0];
+  b = Q24[0];
+  for(int i=0; i<nmod2; i++)
+    Q2(i)+= a(i) + b(i);
+  a = Q23[1];
+  b = Q34[0];
+  for(int i=0; i<nmod3; i++)
+    Q3(i)+= a(i) + b(i);
+  a = Q24[1];
+  b = Q34[1];
+  for(int i=0; i<nmod4; i++)
+    Q4(i)+= a(i) + b(i);
+
+  List Q(4);
+  Q["1"] = Q1;
+  Q["2"] = Q2;
+  Q["3"] = Q3;
+  Q["4"] = Q4;
+  return(wrap(Q));
+}
+
+
 
 // [[Rcpp::export]]
 List calcQ3log(const List S1,

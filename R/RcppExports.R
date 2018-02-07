@@ -45,6 +45,18 @@ calcQ3 <- function(S1, S2, S3, pp1, pp2, pp3) {
     .Call('_MTFM_calcQ3', PACKAGE = 'MTFM', S1, S2, S3, pp1, pp2, pp3)
 }
 
+calcQpair <- function(S1, S2, pp1, pp2) {
+    .Call('_MTFM_calcQpair', PACKAGE = 'MTFM', S1, S2, pp1, pp2)
+}
+
+newcalcQ3 <- function(S1, S2, S3, pp1, pp2, pp3) {
+    .Call('_MTFM_newcalcQ3', PACKAGE = 'MTFM', S1, S2, S3, pp1, pp2, pp3)
+}
+
+newcalcQ4 <- function(S1, S2, S3, S4, pp1, pp2, pp3, pp4) {
+    .Call('_MTFM_newcalcQ4', PACKAGE = 'MTFM', S1, S2, S3, S4, pp1, pp2, pp3, pp4)
+}
+
 calcQ3log <- function(S1, S2, S3, pp1, pp2, pp3) {
     .Call('_MTFM_calcQ3log', PACKAGE = 'MTFM', S1, S2, S3, pp1, pp2, pp3)
 }

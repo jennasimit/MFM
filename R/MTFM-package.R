@@ -4,7 +4,7 @@
 #' @importFrom stats dbinom model.matrix sd terms
 #' @importFrom utils combn write.table
 #' @importFrom GUESSFM abf.calc best.snps pp.nsnp run.bvs tag tags best.models snps read.snpmod expand.tags abf2snpmod snpprior
-#' @importFrom mlogitBMA mlogit2logit
+# #' @importFrom mlogitBMA mlogit2logit
 #' @importFrom parallel mclapply
 #' @importFrom data.table as.data.table setnames
 #' @importFrom gtools smartbind

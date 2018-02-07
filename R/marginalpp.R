@@ -31,6 +31,154 @@
 ##' @export
 ##' @author Chris Wallace
 marginalpp <- function(STR, ABF, PP, pr, kappa, p0, tol=0.0001,N0,ND) {
+    n <- length(STR) # number of diseases
+    if(n<2)
+        stop("Need at least 2 diseases")
+    if( length(ABF)!=n || length(pr)!=n | length(PP)!=n )
+        stop("STR, ABF, PP and pr need to have the same lengths")
+    SS <- lapply(STR,strsplit,"%")
+    SS <- lapply(SS,setdiff,c("0","1"))
+    usnps <- sort(unique(unlist(SS)))
+    if(!(1 %in% kappa))
+        kappa <- c(1,kappa)
+
+    dis <- names(STR)
+
+# keep initial PP and pr for both diseases as PP0 and pr, respectively. This allows us to compare our new PP approx at
+# kappa=1 with the original PP. If the offset term eta=1, then PP0 = PP when kappa=1. Otherwise, they are approximately equal.
+# In the original calculation of Q, the PPs, we have Q[j]=b[j]*pr[j]/sum(b*pr), which we get from the GUESSFM output of each disease.
+# To get the offset-adjusted Q, we have:
+# Q[j]=b[j]*pr[j]*eta[j]/sum(b*pr*eta) \prop b[j]*pr[j]*eta[j] \prop b[j]*pr[j]*eta[j]/sum(b*pr) = PP[j]*eta[j] \prop PP[j]*eta[j]/sum(PP*eta)
+# so, we set PP=PP*eta/sum(PP*eta) for ease of computing Q.
+# In the adjusted prior we need pr[j]*eta[j], so set pr=pr*eta for ease of computation 
+
+    ## initial PP and pr
+    PP0 <- PP 
+    pr0 <- pr     
+
+    ## calculate model sizes and adjust each input log ABF (b' instead of b)
+    N <- sum(unlist(ND))+N0
+    Mk <- vector("list",n)
+    for(j in seq_along(STR)) {
+        Mk[[j]] <- unlist(lapply(strsplit(STR[[j]],"%"),length)) # model sizes
+        eta <- Mk[[j]]*.5*log((ND[[j]]+N0)/N) # when eta = 0 the results match for dis=c(t1,t2) and dis=c(t2,t1)
+        ABF[[j]] <- ABF[[j]] + eta
+    }
+  
+    ## remove null model if included
+    PP.nonull <- PP
+    for(i in seq_along(STR)) {
+        wh <- which(STR[[i]] %in% c("0","1"))
+        if(length(wh)) {
+            STR[[i]] <- STR[[i]][-wh]
+            ABF[[i]] <- ABF[[i]][-wh]
+            pr[[i]] <- pr[[i]][-wh]
+            pr0[[i]] <- pr0[[i]][-wh]
+            PP.nonull[[i]] <- PP[[i]][-wh]
+            PP[[i]] <- PP[[i]][-wh]
+            PP0[[i]] <- PP0[[i]][-wh]
+        } 
+        PP[[i]] <- addnull(PP[[i]], calcpp(addnull(pr[[i]], p0),addnull(ABF[[i]], 0))[1]) 
+        PP0[[i]] <- addnull(PP0[[i]], calcpp(addnull(pr0[[i]], p0), 
+            addnull(ABF[[i]], 0))[1])    
+    }
+
+    ## numeric version of STR, for speed
+    STR.i <- lapply(SS, function(ss) {
+        lapply(ss, function(x) as.integer(factor(x, levels = usnps)))
+    })
+    names(STR.i) <- NULL
+    
+    ## unweighted pp - as input
+    ## pp <- mapply(function(pr1,ABF1) {
+    ##     calcpp(addnull(pr1,p0),addnull(ABF1,0)) },
+    ##     pr, ABF, SIMPLIFY=FALSE)
+    names(PP.nonull) <- NULL
+    
+    fun <- switch(n, NULL, "calcQ2", "newcalcQ3", "newcalcQ4")
+    if (is.null(fun)) 
+        stop("newcalcQ not written for ", n, " diseases yet")
+    
+    Q <- do.call(fun, c(STR.i, PP.nonull))
+    
+    ## alt prior
+    ## maxpower <- n * (n - 1)/2
+    alt.pp <- alt.prior <- vector("list",n)
+    for(i in seq_along(Q)) {
+        tmp <- lapply(kappa, function(k) {
+            pr[[i]] * (1 + (k - 1) * Q[[i]])
+        })
+        tmp <- do.call("cbind", tmp)
+        alt.prior[[i]] <- addnull(tmp, p0)
+        alt.pp[[i]] <- calcpp(alt.prior[[i]], addnull(ABF[[i]], 0))
+    }
+    
+    pr <- lapply(pr, addnull, p0)
+    STR <- lapply(STR,addnull, "1")
+    alt.pp <- lapply(alt.pp,t)
+   
+    for(i in seq_along(alt.pp)){
+ 	rownames(alt.pp[[i]]) <- STR[[i]]
+ 	colnames(alt.pp[[i]]) <- paste("pp",kappa,sep=".")
+ 	rownames(alt.prior[[i]]) <- STR[[i]]
+ 	colnames(alt.prior[[i]]) <- paste("pp",kappa,sep=".")
+ 	}
+  
+   # checks
+   # wh <- which(kappa == 1)
+   # sumsq <- mapply(function(x,y) sum((x-y[,wh])^2), PP0, alt.pp)
+   # if(any(sumsq>tol)) {
+   #     for(i in which(sumsq>tol)) {
+    #        warning("trait ",i," kappa=1 PP does not match input PP, sumsq=",sumsq[i],
+    #                "which is > tol.\nsuggests you need to include more models in the calculation")
+    #    }
+    #}
+
+  
+
+    list(single.prior = pr, single.pp = PP, shared.prior = alt.prior, 
+        shared.pp = alt.pp, STR = STR, kappa = kappa)
+}
+
+#' p*eta/sum(p*eta), but with logs
+calc.eta <- function(p,logeta) {
+    tmp <- log(p) + logeta
+    exp(tmp - logsum(tmp))
+}
+
+##' Calculate marginal model posterior probabilities for each disease
+##'
+##' Given a list of model matrices and log ABFs, this function
+##' calculates the marginal model posterior probabilities for each
+##' disease without ever calculating the joint Bayes Factors for all
+##' cross-disease model configurations, which would require large
+##' amounts of memory.
+##'
+##' @title Marginal PP for models sharing information between diseases
+##' @param STR list of models for diseases 1, 2, ..., n, each given in
+##'     the form of a character vector, with entries
+##'     \code{"snp1\%snp2\%snp3"}. The null model is given by
+##'     \code{"1"} OR \code{"0"}.  It is assumed that all elements of
+##'     ABF, PP and pr below follow this same order.
+##' @param ABF list of log(ABF) vectors for diseases 1, 2, ...
+##' @param PP list of posterior probability vectors for diseases 1, 2,
+##'     ...
+##' @param pr list of prior probabilities for the models in M
+##' @param kappa single value or vector of values to consider for the
+##'     sharing scale parameter.  the value of kappa=1 must be
+##'     included, and if not will be prepended.
+##' @param p0 prior probability of the null model
+#' @param N0 number of shared controls
+#' @param ND list of number of cases for a set of diseases
+##' @return list of: - single.pp: list of pp for each model in
+##'     STR[[i]] for disease i - shared.pp: list of pp for each model
+##'     in STR[[i]] for disease i, - STR: not quite as input,
+##'     reordered so null model is first row - ABF: not quite as
+##'     input, repordered so null model is first row - kappa: as
+##'     supplied
+##' @export
+##' @author Chris Wallace
+marginalpp.old <- function(STR, ABF, PP, pr, kappa, p0, tol=0.0001,N0,ND) {
     n <- length(STR)
     if(n<2)
         stop("Need at least 2 diseases")

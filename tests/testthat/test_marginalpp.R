@@ -18,6 +18,7 @@ prior.bin.fn <- function(nT1,s=100,mT1=3) {
     dbinom(nT1,size=s,prob=mT1/s)/choose(s,nT1)
 }
 
+
 bothpp <- function(data) {
     ss1 <- strsplit(data$t1.str,"%")
     ss2 <- strsplit(data$t2.str,"%")
