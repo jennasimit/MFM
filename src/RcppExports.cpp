@@ -147,6 +147,48 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// newcalcQ5
+List newcalcQ5(const List S1, const List S2, const List S3, const List S4, const List S5, const NumericVector& pp1, const NumericVector& pp2, const NumericVector& pp3, const NumericVector& pp4, const NumericVector& pp5);
+RcppExport SEXP _MTFM_newcalcQ5(SEXP S1SEXP, SEXP S2SEXP, SEXP S3SEXP, SEXP S4SEXP, SEXP S5SEXP, SEXP pp1SEXP, SEXP pp2SEXP, SEXP pp3SEXP, SEXP pp4SEXP, SEXP pp5SEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const List >::type S1(S1SEXP);
+    Rcpp::traits::input_parameter< const List >::type S2(S2SEXP);
+    Rcpp::traits::input_parameter< const List >::type S3(S3SEXP);
+    Rcpp::traits::input_parameter< const List >::type S4(S4SEXP);
+    Rcpp::traits::input_parameter< const List >::type S5(S5SEXP);
+    Rcpp::traits::input_parameter< const NumericVector& >::type pp1(pp1SEXP);
+    Rcpp::traits::input_parameter< const NumericVector& >::type pp2(pp2SEXP);
+    Rcpp::traits::input_parameter< const NumericVector& >::type pp3(pp3SEXP);
+    Rcpp::traits::input_parameter< const NumericVector& >::type pp4(pp4SEXP);
+    Rcpp::traits::input_parameter< const NumericVector& >::type pp5(pp5SEXP);
+    rcpp_result_gen = Rcpp::wrap(newcalcQ5(S1, S2, S3, S4, S5, pp1, pp2, pp3, pp4, pp5));
+    return rcpp_result_gen;
+END_RCPP
+}
+// newcalcQ6
+List newcalcQ6(const List S1, const List S2, const List S3, const List S4, const List S5, const List S6, const NumericVector& pp1, const NumericVector& pp2, const NumericVector& pp3, const NumericVector& pp4, const NumericVector& pp5, const NumericVector& pp6);
+RcppExport SEXP _MTFM_newcalcQ6(SEXP S1SEXP, SEXP S2SEXP, SEXP S3SEXP, SEXP S4SEXP, SEXP S5SEXP, SEXP S6SEXP, SEXP pp1SEXP, SEXP pp2SEXP, SEXP pp3SEXP, SEXP pp4SEXP, SEXP pp5SEXP, SEXP pp6SEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const List >::type S1(S1SEXP);
+    Rcpp::traits::input_parameter< const List >::type S2(S2SEXP);
+    Rcpp::traits::input_parameter< const List >::type S3(S3SEXP);
+    Rcpp::traits::input_parameter< const List >::type S4(S4SEXP);
+    Rcpp::traits::input_parameter< const List >::type S5(S5SEXP);
+    Rcpp::traits::input_parameter< const List >::type S6(S6SEXP);
+    Rcpp::traits::input_parameter< const NumericVector& >::type pp1(pp1SEXP);
+    Rcpp::traits::input_parameter< const NumericVector& >::type pp2(pp2SEXP);
+    Rcpp::traits::input_parameter< const NumericVector& >::type pp3(pp3SEXP);
+    Rcpp::traits::input_parameter< const NumericVector& >::type pp4(pp4SEXP);
+    Rcpp::traits::input_parameter< const NumericVector& >::type pp5(pp5SEXP);
+    Rcpp::traits::input_parameter< const NumericVector& >::type pp6(pp6SEXP);
+    rcpp_result_gen = Rcpp::wrap(newcalcQ6(S1, S2, S3, S4, S5, S6, pp1, pp2, pp3, pp4, pp5, pp6));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_MTFM_finnerK", (DL_FUNC) &_MTFM_finnerK, 2},
@@ -159,6 +201,8 @@ static const R_CallMethodDef CallEntries[] = {
     {"_MTFM_newcalcQ2", (DL_FUNC) &_MTFM_newcalcQ2, 4},
     {"_MTFM_newcalcQ3", (DL_FUNC) &_MTFM_newcalcQ3, 6},
     {"_MTFM_newcalcQ4", (DL_FUNC) &_MTFM_newcalcQ4, 8},
+    {"_MTFM_newcalcQ5", (DL_FUNC) &_MTFM_newcalcQ5, 10},
+    {"_MTFM_newcalcQ6", (DL_FUNC) &_MTFM_newcalcQ6, 12},
     {NULL, NULL, 0}
 };
 

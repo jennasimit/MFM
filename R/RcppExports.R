@@ -41,3 +41,11 @@ newcalcQ4 <- function(S1, S2, S3, S4, pp1, pp2, pp3, pp4) {
     .Call('_MTFM_newcalcQ4', PACKAGE = 'MTFM', S1, S2, S3, S4, pp1, pp2, pp3, pp4)
 }
 
+newcalcQ5 <- function(S1, S2, S3, S4, S5, pp1, pp2, pp3, pp4, pp5) {
+    .Call('_MTFM_newcalcQ5', PACKAGE = 'MTFM', S1, S2, S3, S4, S5, pp1, pp2, pp3, pp4, pp5)
+}
+
+newcalcQ6 <- function(S1, S2, S3, S4, S5, S6, pp1, pp2, pp3, pp4, pp5, pp6) {
+    .Call('_MTFM_newcalcQ6', PACKAGE = 'MTFM', S1, S2, S3, S4, S5, S6, pp1, pp2, pp3, pp4, pp5, pp6)
+}
+

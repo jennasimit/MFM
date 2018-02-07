@@ -74,7 +74,7 @@ marginalpp <- function(STR, ABF, PP, pr, kappa, p0, tol=0.0001,N0,ND) {
     
     names(PP.nonull) <- NULL
     
-    fun <- switch(n, NULL, "newcalcQ2", "newcalcQ3", "newcalcQ4")
+    fun <- switch(n, NULL, "newcalcQ2", "newcalcQ3", "newcalcQ4","newcalcQ5","newcalcQ6")
     if (is.null(fun)) 
         stop("newcalcQ not written for ", n, " diseases yet")
     

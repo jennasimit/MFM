@@ -76,7 +76,14 @@ NumericMatrix bind4(const NumericVector A,
 		    const NumericVector D) {
   return(Rcpp::cbind(A,B,C,D));
 }
-  
+NumericMatrix bind5(const NumericVector A,
+		    const NumericVector B,
+		    const NumericVector C,
+		    const NumericVector D,
+		    const NumericVector E) {
+  return(Rcpp::cbind(A,B,C,D,E));
+}
+   
 // [[Rcpp::export]]
 List newcalcQ2(const List S1,
 	    const List S2,
@@ -140,6 +147,101 @@ List newcalcQ4(const List S1,
 			_["2"] = Q2,
 			_["3"] = Q3,
 			_["4"] = Q4);
+
+  return(wrap(Q));
+}
+
+
+// [[Rcpp::export]]
+List newcalcQ5(const List S1,
+	    const List S2,
+	    const List S3, // model matrix - columns are models, rows are SNPs
+	    const List S4, // model matrix - columns are models, rows are SNPs
+	    const List S5, // model matrix - columns are models, rows are SNPs
+	    const NumericVector& pp1,
+	    const NumericVector& pp2,
+	    const NumericVector& pp3,
+	    const NumericVector& pp4,
+	    const NumericVector& pp5) { // pp for each model for disease 2
+  List Q12 = calcQpair(S1,S2,pp1,pp2);
+  List Q13 = calcQpair(S1,S3,pp1,pp3);
+  List Q14 = calcQpair(S1,S4,pp1,pp4);
+  List Q15 = calcQpair(S1,S5,pp1,pp5);
+  List Q23 = calcQpair(S2,S3,pp2,pp3);
+  List Q24 = calcQpair(S2,S4,pp2,pp4);
+  List Q25 = calcQpair(S2,S5,pp2,pp5);
+  List Q34 = calcQpair(S3,S4,pp3,pp4);
+  List Q35 = calcQpair(S3,S5,pp3,pp5);
+  List Q45 = calcQpair(S4,S5,pp4,pp5);
+    
+  // const int nmod1 = pp1.size();
+  // const int nmod2 = pp2.size();
+  // const int nmod3 = pp3.size();
+  // const int nmod4 = pp3.size();
+  NumericMatrix Q1 = bind4(Q12[0],Q13[0],Q14[0],Q15[0]); // Q for trait 1 | 2
+  NumericMatrix Q2 = bind4(Q12(1),Q23(0),Q24(0),Q25[0]);
+  NumericMatrix Q3 = bind4(Q13(1),Q23(1),Q34(0),Q35[0]);
+  NumericMatrix Q4 = bind4(Q14[1],Q24[1],Q34[1],Q45[0]);
+  NumericMatrix Q5 = bind4(Q15[1],Q25[1],Q35[1],Q45[1]);
+
+  List Q = List::create(_["1"] = Q1,
+			_["2"] = Q2,
+			_["3"] = Q3,
+			_["4"] = Q4,
+			_["5"] = Q5);
+
+  return(wrap(Q));
+}
+
+
+
+
+// [[Rcpp::export]]
+List newcalcQ6(const List S1,
+	    const List S2,
+	    const List S3, // model matrix - columns are models, rows are SNPs
+	    const List S4, // model matrix - columns are models, rows are SNPs
+	    const List S5, // model matrix - columns are models, rows are SNPs
+	    const List S6, // model matrix - columns are models, rows are SNPs
+	    const NumericVector& pp1,
+	    const NumericVector& pp2,
+	    const NumericVector& pp3,
+	    const NumericVector& pp4,
+	    const NumericVector& pp5,
+	    const NumericVector& pp6) { // pp for each model for disease 2
+  List Q12 = calcQpair(S1,S2,pp1,pp2);
+  List Q13 = calcQpair(S1,S3,pp1,pp3);
+  List Q14 = calcQpair(S1,S4,pp1,pp4);
+  List Q15 = calcQpair(S1,S5,pp1,pp5);
+  List Q16 = calcQpair(S1,S6,pp1,pp6);
+  List Q23 = calcQpair(S2,S3,pp2,pp3);
+  List Q24 = calcQpair(S2,S4,pp2,pp4);
+  List Q25 = calcQpair(S2,S5,pp2,pp5);
+  List Q26 = calcQpair(S2,S6,pp2,pp6);
+  List Q34 = calcQpair(S3,S4,pp3,pp4);
+  List Q35 = calcQpair(S3,S5,pp3,pp5);
+  List Q36 = calcQpair(S3,S6,pp3,pp6);
+  List Q45 = calcQpair(S4,S5,pp4,pp5);
+  List Q46 = calcQpair(S4,S6,pp4,pp6);
+  List Q56 = calcQpair(S5,S6,pp5,pp6);
+    
+  // const int nmod1 = pp1.size();
+  // const int nmod2 = pp2.size();
+  // const int nmod3 = pp3.size();
+  // const int nmod4 = pp3.size();
+  NumericMatrix Q1 = bind5(Q12[0],Q13[0],Q14[0],Q15[0],Q16[0]); // Q for trait 1 | 2
+  NumericMatrix Q2 = bind5(Q12(1),Q23(0),Q24(0),Q25[0],Q26[0]);
+  NumericMatrix Q3 = bind5(Q13(1),Q23(1),Q34(0),Q35[0],Q36[0]);
+  NumericMatrix Q4 = bind5(Q14[1],Q24[1],Q34[1],Q45[0],Q46[0]);
+  NumericMatrix Q5 = bind5(Q15[1],Q25[1],Q35[1],Q45[1],Q56[0]);
+  NumericMatrix Q6 = bind5(Q16[1],Q26[1],Q36[1],Q46[1],Q56[1]);
+
+  List Q = List::create(_["1"] = Q1,
+			_["2"] = Q2,
+			_["3"] = Q3,
+			_["4"] = Q4,
+			_["5"] = Q5,
+			_["6"] = Q6);
 
   return(wrap(Q));
 }
