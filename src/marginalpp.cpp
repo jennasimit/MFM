@@ -5,15 +5,6 @@
 using namespace Rcpp;
 
 // [[Rcpp::export]]
-int modoverlap(const arma::ivec& x,
-	       const arma::ivec& y) {
-  int idx = sum(x % y);
-  if(idx > 1)
-    idx = 1;
-  return idx;
-}
-
-// [[Rcpp::export]]
 int stroverlap(const IntegerVector& x,
 	       const IntegerVector& y) {
   int nx=x.size();
@@ -29,293 +20,106 @@ int stroverlap(const IntegerVector& x,
   return 0;
 }
 
-// slower
-// [[Rcpp::export]]
-int strint(const IntegerVector& x,
-	   const IntegerVector& y) {
-  IntegerVector insect = intersect(x,y);
-  if(insect.size()>0)
-    return 1;
-  return 0;
-}
-
-// [[Rcpp::export]]
-List calcQ2(const List S1, // model matrix - columns are models, rows are SNPs
-	    const List S2, // model matrix - columns are models, rows are SNPs
-	    const NumericVector& pp1,
-	    const NumericVector& pp2) { // pp for each model for disease 2
-  const int nmod1 = pp1.size();
-  const int nmod2 = pp2.size();
-  // const int nsnp = M.nrow();
-  NumericVector Q1(nmod1);
-  NumericVector Q2(nmod2);
-  for(int i=0; i<nmod1; i++) {
-    for(int j=0; j<nmod2; j++) {
-      int idx=stroverlap( S1[i], S2[j]);
-      if(idx > 0) {
-	Q1(i) = Q1(i) + pp2(j);
-	Q2(j) = Q2(j) + pp1(i);
-      }
-    }
-  }
-  List Q(2);
-  Q[0] = Q1;
-  Q[1] = Q2;
-  return(wrap(Q));
+// returns x/sum(x)
+// Rccp::export
+NumericVector sum1(const NumericVector& x) {
+  const int n=x.size();
+  double sum=0.0;
+  NumericVector y(n);
+  for(int i=0; i<n; i++)
+    sum+=x(i);
+  for(int i=0; i<n; i++)
+    y(i)=x(i)/sum;
+  return(y);
 }
 
 
 // [[Rcpp::export]]
-List calcQ2_models(const arma::imat& M1, // model matrix - columns are models, rows are SNPs
-	    const arma::imat& M2, // model matrix - columns are models, rows are SNPs
-	    const NumericVector& pp1,
-	    const NumericVector& pp2) { // pp for each model for disease 2
-  // Rcpp::Rcout << "size of M: " << size(M1) << std::endl;
-  const int nmod1 = pp1.size();
-  const int nmod2 = pp2.size();
-  // const int nsnp = M.nrow();
-  NumericVector Q1(nmod1);
-  NumericVector Q2(nmod2);
-  for(int i=0; i<nmod1; i++) {
-    for(int j=0; j<nmod2; j++) {
-      int idx=modoverlap( M1.col(i), M2.col(j));
-      if(idx > 0) {
-	Q1(i) = Q1(i) + pp2(j);
-	Q2(j) = Q2(j) + pp1(i);
-      }
-    }
-  }
-  List Q(2);
-  Q[0] = Q1;
-  Q[1] = Q2;
-  return(wrap(Q));
-}
-
-
-// [[Rcpp::export]]
-List calcQ3(const List S1,
-	    const List S2,
-	    const List S3, // model matrix - columns are models, rows are SNPs
-	    const NumericVector& pp1,
-	    const NumericVector& pp2,
-	    const NumericVector& pp3) { // pp for each model for disease 2
-  // Rcpp::Rcout << "size of M: " << size(M1) << std::endl;
-  const int nmod1 = pp1.size();
-  const int nmod2 = pp2.size();
-  const int nmod3 = pp3.size();
-  NumericMatrix Q1(nmod1,3);
-  NumericMatrix Q2(nmod2,3);
-  NumericMatrix Q3(nmod3,3);
-  for(int i1=0; i1<nmod1; i1++) {
-     for(int i2=0; i2<nmod2; i2++) {
-       int idx1=stroverlap(S1[i1], S2[i2]) - 1;
-       double pp12 = pp1(i1) * pp2(i2);
-       for(int i3=0; i3<nmod3; i3++) {
-   	int idx=idx1 +
-   	  stroverlap(S1[i1], S3[i3]) +
-   	  stroverlap(S2[i2], S3[i3]);
-	if(idx > 0) {
-	  // idx = idx - 1;
-	  Q1(i1,idx) = Q1(i1,idx) + pp2(i2) * pp3(i3);
-  	  Q2(i2,idx) = Q2(i2,idx) + pp1(i1) * pp3(i3);
-  	  Q3(i3,idx) = Q3(i3,idx) + pp12;
-  	}
-       }
-     }
-  }
-  List Q;
-  Q["1"] = Q1;
-  Q["2"] = Q2;
-  Q["3"] = Q3;
-  return(Q);
-}
-
-
-// [[Rcpp::export]]
-List calcQ3log(const List S1,
-	    const List S2,
-	    const List S3, // model matrix - columns are models, rows are SNPs
-	    const NumericVector& pp1,
-	    const NumericVector& pp2,
-	    const NumericVector& pp3) { // pp for each model for disease 2
-  // Rcpp::Rcout << "size of M: " << size(M1) << std::endl;
-  const int nmod1 = pp1.size();
-  const int nmod2 = pp2.size();
-  const int nmod3 = pp3.size();
-  NumericMatrix Q1(nmod1,3);
-  NumericMatrix Q2(nmod2,3);
-  NumericMatrix Q3(nmod3,3);
-  for(int i1=0; i1<nmod1; i1++) {
-     for(int i2=0; i2<nmod2; i2++) {
-       int idx1=stroverlap(S1[i1], S2[i2]) - 1;
-       double ep12 = exp(pp1(i1) + pp2(i2));
-       for(int i3=0; i3<nmod3; i3++) {
-   	int idx=idx1 +
-   	  stroverlap(S1[i1], S3[i3]) +
-   	  stroverlap(S2[i2], S3[i3]);
-	if(idx > 0) {
-	  // idx = idx - 1;
-	  Q1(i1,idx) = Q1(i1,idx) + exp(pp2(i2) + pp3(i3));
-  	  Q2(i2,idx) = Q2(i2,idx) + exp(pp1(i1) + pp3(i3));
-  	  Q3(i3,idx) = Q3(i3,idx) + ep12;
-  	}
-       }
-     }
-  }
-  List Q;
-  Q["1"] = Q1;
-  Q["2"] = Q2;
-  Q["3"] = Q3;
-  return(Q);
-}
-
-
-
-// [[Rcpp::export]]
-List calcQ4(const List S1,
-	    const List S2,
-	    const List S3, // model matrix - columns are models, rows are SNPs
-	    const List S4, // model matrix - columns are models, rows are SNPs
-	    const NumericVector& pp1,
-	    const NumericVector& pp2,
-	    const NumericVector& pp3,
-	    const NumericVector& pp4) { // pp for each model for disease 2
-  // Rcpp::Rcout << "size of M: " << size(M1) << std::endl;
-  const int nmod1 = pp1.size();
-  const int nmod2 = pp2.size();
-  const int nmod3 = pp3.size();
-  const int nmod4 = pp4.size();
-  NumericMatrix Q1(nmod1,6);
-  NumericMatrix Q2(nmod2,6);
-  NumericMatrix Q3(nmod3,6);
-  NumericMatrix Q4(nmod4,6);
-  for(int i1=0; i1<nmod1; i1++) {
-     for(int i2=0; i2<nmod2; i2++) {
-       int idx1=stroverlap(S1[i1], S2[i2]) - 1;
-       double pp12 = pp1(i1) * pp2(i2);
-       for(int i3=0; i3<nmod3; i3++) {
-	 int idx2=idx1 +
-	   stroverlap(S1[i1], S3[i3]) +
-	   stroverlap(S2[i2], S3[i3]);
-	 double pp23 = pp2(i2) * pp3(i3);
-	 double pp13 = pp1(i1) * pp3(i3);
-	 double pp123 = pp1(i1) * pp2(i2) * pp3(i3);
-	 for(int i4=0; i4<nmod4; i4++) {
-	   int idx=idx2 +
-	     stroverlap(S1[i1], S4[i4]) +
-	     stroverlap(S2[i2], S4[i4]) +
-	     stroverlap(S3[i3], S4[i4]);
-	   if(idx > 0) {
-	     // idx = idx - 1;
-	     Q1(i1,idx) = Q1(i1,idx) + pp23 * pp4(i4);
-	     Q2(i2,idx) = Q2(i2,idx) + pp13 * pp4(i4);
-	     Q3(i3,idx) = Q3(i3,idx) + pp12 * pp4(i4);
-	     Q4(i4,idx) = Q4(i4,idx) + pp123;
-	   }
-	 }
-       }
-     }
-  }
-  List Q;
-  Q["1"] = Q1;
-  Q["2"] = Q2;
-  Q["3"] = Q3;
-  Q["4"] = Q4;
-  return(Q);
-}
-
-
-// [[Rcpp::export]]
-List calcQ3_models(const arma::imat& M1,
-	    const arma::imat& M2,
-	    const arma::imat& M3, // model matrix - columns are models, rows are SNPs
-	    const NumericVector& pp1,
-	    const NumericVector& pp2,
-		   const NumericVector& pp3) { // pp for each model for disease 2
-  // Rcpp::Rcout << "size of M: " << size(M1) << std::endl;
-  const int nmod1 = pp1.size();
-  const int nmod2 = pp2.size();
-  const int nmod3 = pp3.size();
-  NumericMatrix Q1(nmod1,3);
-  NumericMatrix Q2(nmod2,3);
-  NumericMatrix Q3(nmod3,3);
-  for(int i1=0; i1<nmod1; i1++) {
-     for(int i2=0; i2<nmod2; i2++) {
-       int idx1=modoverlap(M1.col(i1), M2.col(i2));
-            for(int i3=0; i3<nmod3; i3++) {
-   	int idx=idx1 +
-   	  modoverlap(M1.col(i1), M3.col(i3)) +
-   	  modoverlap(M2.col(i2), M3.col(i3));
-	// if(idx > 2) {
-   	// Rcpp::Rcout << i1 << ' ' << i2 << ' ' << i3 << ' ' << idx << std::endl;
-	// }
-	if(idx > 0) {
-	  idx = idx - 1;
-	  Q1(i1,idx) = Q1(i1,idx) + pp2(i2) * pp3(i3);
-  	  Q2(i2,idx) = Q2(i2,idx) + pp1(i1) * pp3(i3);
-  	  Q3(i3,idx) = Q3(i3,idx) + pp1(i1) * pp2(i2);
-  	}
-       }
-     }
-  }
-  List Q;
-  Q["1"] = Q1;
-  Q["2"] = Q2;
-  Q["3"] = Q3;
-  return(Q);
-}
-
-
-// [[Rcpp::export]]
-NumericVector calcQone2(const List S1, // model matrix - columns are models, rows are SNPs
+List calcQpair(const List S1, // model matrix - columns are models, rows are SNPs
 	       const List S2, // model matrix - columns are models, rows are SNPs
 	       const NumericVector& pp1,
 	       const NumericVector& pp2) { // pp for each model for disease 2
   const int nmod1 = pp1.size();
   const int nmod2 = pp2.size();
   // const int nsnp = M.nrow();
-  NumericVector Q(nmod1);
+  NumericVector Q1(nmod1);
+  NumericVector Q2(nmod2);
   for(int i=0; i<nmod1; i++) {
     for(int j=0; j<nmod2; j++) {
       int idx=stroverlap( S1[i], S2[j]);
       if(idx > 0) {
-	Q(i) = Q(i) + pp2(j);
+	Q1(i) = Q1(i) + pp2(j);
+	Q2(j) = Q2(j) + pp1(i);
       }
     }
   }
+
+  // NB make each Q sum to 1
+  List Q = List::create(sum1(Q1), sum1(Q2));
   return(Q);
 }
 
+NumericMatrix bind2(const NumericVector A,
+		    const NumericVector B) {
+  return(Rcpp::cbind(A,B));
+}
+  
+NumericMatrix bind3(const NumericVector A,
+		    const NumericVector B,
+		    const NumericVector C) {
+  return(Rcpp::cbind(A,B,C));
+}
+  
+NumericMatrix bind4(const NumericVector A,
+		    const NumericVector B,
+		    const NumericVector C,
+		    const NumericVector D) {
+  return(Rcpp::cbind(A,B,C,D));
+}
+NumericMatrix bind5(const NumericVector A,
+		    const NumericVector B,
+		    const NumericVector C,
+		    const NumericVector D,
+		    const NumericVector E) {
+  return(Rcpp::cbind(A,B,C,D,E));
+}
+   
 // [[Rcpp::export]]
-NumericMatrix calcQone3(const List S1,
-	       const List S2,
-	       const List S3, // model matrix - columns are models, rows are SNPs
-	       const NumericVector& pp1,
-	       const NumericVector& pp2,
-	       const NumericVector& pp3) { // pp for each model for disease 2
-  // Rcpp::Rcout << "size of M: " << size(M1) << std::endl;
-  const int nmod1 = pp1.size();
-  const int nmod2 = pp2.size();
-  const int nmod3 = pp3.size();
-  NumericMatrix Q(nmod1,3);
-  for(int i1=0; i1<nmod1; i1++) {
-    for(int i2=0; i2<nmod2; i2++) {
-      int idx1=stroverlap(S1[i1], S2[i2]) - 1;
-      double pp12 = pp1(i1) * pp2(i2);
-      for(int i3=0; i3<nmod3; i3++) {
-   	int idx=idx1 +
-   	  stroverlap(S1[i1], S3[i3]) +
-   	  stroverlap(S2[i2], S3[i3]);
-	if(idx > 0) 
-	  Q(i1,idx) = Q(i1,idx) + pp2(i2) * pp3(i3);
-      }
-    }
-  }
-  return(Q);
+List newcalcQ2(const List S1,
+	    const List S2,
+	    const NumericVector& pp1,
+	    const NumericVector& pp2) { // pp for each model for disease 2
+  List Q12 = calcQpair(S1,S2,pp1,pp2);
+  Q12.names() = CharacterVector::create("1", "2");
+  return(wrap(Q12));
 }
 
 // [[Rcpp::export]]
-NumericMatrix calcQone4(const List S1,
+List newcalcQ3(const List S1,
+	    const List S2,
+	    const List S3, // model matrix - columns are models, rows are SNPs
+	    const NumericVector& pp1,
+	    const NumericVector& pp2,
+	    const NumericVector& pp3) { // pp for each model for disease 2
+  List Q12 = calcQpair(S1,S2,pp1,pp2);
+  List Q23 = calcQpair(S2,S3,pp2,pp3);
+  List Q13 = calcQpair(S1,S3,pp1,pp3);
+    
+  // const int nmod1 = pp1.size();
+  // const int nmod2 = pp2.size();
+  // const int nmod3 = pp3.size();
+  NumericMatrix Q1 = bind2(Q12(0),Q13(0)); // Q for trait 1 | 2
+  NumericMatrix Q2 = bind2(Q12(1),Q23(0));
+  NumericMatrix Q3 = bind2(Q13(1),Q23(1));
+
+  List Q = List::create(_["1"] = Q1,
+			_["2"] = Q2,
+			_["3"] = Q3);
+  return(wrap(Q));
+}
+
+// [[Rcpp::export]]
+List newcalcQ4(const List S1,
 	    const List S2,
 	    const List S3, // model matrix - columns are models, rows are SNPs
 	    const List S4, // model matrix - columns are models, rows are SNPs
@@ -323,36 +127,123 @@ NumericMatrix calcQone4(const List S1,
 	    const NumericVector& pp2,
 	    const NumericVector& pp3,
 	    const NumericVector& pp4) { // pp for each model for disease 2
-  // Rcpp::Rcout << "size of M: " << size(M1) << std::endl;
-  const int nmod1 = pp1.size();
-  const int nmod2 = pp2.size();
-  const int nmod3 = pp3.size();
-  const int nmod4 = pp4.size();
-  NumericMatrix Q(nmod1,6);
-  for(int i1=0; i1<nmod1; i1++) {
-     for(int i2=0; i2<nmod2; i2++) {
-       int idx1=stroverlap(S1[i1], S2[i2]) - 1;
-       double pp12 = pp1(i1) * pp2(i2);
-       for(int i3=0; i3<nmod3; i3++) {
-	 int idx2=idx1 +
-	   stroverlap(S1[i1], S3[i3]) +
-	   stroverlap(S2[i2], S3[i3]);
-	 double pp23 = pp2(i2) * pp3(i3);
-	 double pp13 = pp1(i1) * pp3(i3);
-	 double pp123 = pp1(i1) * pp2(i2) * pp3(i3);
-	 for(int i4=0; i4<nmod4; i4++) {
-	   int idx=idx2 +
-	     stroverlap(S1[i1], S4[i4]) +
-	     stroverlap(S2[i2], S4[i4]) +
-	     stroverlap(S3[i3], S4[i4]);
-	   if(idx > 0) 
-	     Q(i1,idx) = Q(i1,idx) + pp23 * pp4(i4);
-	 }
-       }
-     }
-  }
-  return(Q);
+  List Q12 = calcQpair(S1,S2,pp1,pp2);
+  List Q13 = calcQpair(S1,S3,pp1,pp3);
+  List Q14 = calcQpair(S1,S4,pp1,pp4);
+  List Q23 = calcQpair(S2,S3,pp2,pp3);
+  List Q24 = calcQpair(S2,S4,pp2,pp4);
+  List Q34 = calcQpair(S3,S4,pp3,pp4);
+    
+  // const int nmod1 = pp1.size();
+  // const int nmod2 = pp2.size();
+  // const int nmod3 = pp3.size();
+  // const int nmod4 = pp3.size();
+  NumericMatrix Q1 = bind3(Q12[0],Q13[0],Q14[0]); // Q for trait 1 | 2
+  NumericMatrix Q2 = bind3(Q12(1),Q23(0),Q24(0));
+  NumericMatrix Q3 = bind3(Q13(1),Q23(1),Q34(0));
+  NumericMatrix Q4 = bind3(Q14[1],Q24[1],Q34[1]);
+
+  List Q = List::create(_["1"] = Q1,
+			_["2"] = Q2,
+			_["3"] = Q3,
+			_["4"] = Q4);
+
+  return(wrap(Q));
 }
 
+
+// [[Rcpp::export]]
+List newcalcQ5(const List S1,
+	    const List S2,
+	    const List S3, // model matrix - columns are models, rows are SNPs
+	    const List S4, // model matrix - columns are models, rows are SNPs
+	    const List S5, // model matrix - columns are models, rows are SNPs
+	    const NumericVector& pp1,
+	    const NumericVector& pp2,
+	    const NumericVector& pp3,
+	    const NumericVector& pp4,
+	    const NumericVector& pp5) { // pp for each model for disease 2
+  List Q12 = calcQpair(S1,S2,pp1,pp2);
+  List Q13 = calcQpair(S1,S3,pp1,pp3);
+  List Q14 = calcQpair(S1,S4,pp1,pp4);
+  List Q15 = calcQpair(S1,S5,pp1,pp5);
+  List Q23 = calcQpair(S2,S3,pp2,pp3);
+  List Q24 = calcQpair(S2,S4,pp2,pp4);
+  List Q25 = calcQpair(S2,S5,pp2,pp5);
+  List Q34 = calcQpair(S3,S4,pp3,pp4);
+  List Q35 = calcQpair(S3,S5,pp3,pp5);
+  List Q45 = calcQpair(S4,S5,pp4,pp5);
+    
+  // const int nmod1 = pp1.size();
+  // const int nmod2 = pp2.size();
+  // const int nmod3 = pp3.size();
+  // const int nmod4 = pp3.size();
+  NumericMatrix Q1 = bind4(Q12[0],Q13[0],Q14[0],Q15[0]); // Q for trait 1 | 2
+  NumericMatrix Q2 = bind4(Q12(1),Q23(0),Q24(0),Q25[0]);
+  NumericMatrix Q3 = bind4(Q13(1),Q23(1),Q34(0),Q35[0]);
+  NumericMatrix Q4 = bind4(Q14[1],Q24[1],Q34[1],Q45[0]);
+  NumericMatrix Q5 = bind4(Q15[1],Q25[1],Q35[1],Q45[1]);
+
+  List Q = List::create(_["1"] = Q1,
+			_["2"] = Q2,
+			_["3"] = Q3,
+			_["4"] = Q4,
+			_["5"] = Q5);
+
+  return(wrap(Q));
+}
+
+
+
+
+// [[Rcpp::export]]
+List newcalcQ6(const List S1,
+	    const List S2,
+	    const List S3, // model matrix - columns are models, rows are SNPs
+	    const List S4, // model matrix - columns are models, rows are SNPs
+	    const List S5, // model matrix - columns are models, rows are SNPs
+	    const List S6, // model matrix - columns are models, rows are SNPs
+	    const NumericVector& pp1,
+	    const NumericVector& pp2,
+	    const NumericVector& pp3,
+	    const NumericVector& pp4,
+	    const NumericVector& pp5,
+	    const NumericVector& pp6) { // pp for each model for disease 2
+  List Q12 = calcQpair(S1,S2,pp1,pp2);
+  List Q13 = calcQpair(S1,S3,pp1,pp3);
+  List Q14 = calcQpair(S1,S4,pp1,pp4);
+  List Q15 = calcQpair(S1,S5,pp1,pp5);
+  List Q16 = calcQpair(S1,S6,pp1,pp6);
+  List Q23 = calcQpair(S2,S3,pp2,pp3);
+  List Q24 = calcQpair(S2,S4,pp2,pp4);
+  List Q25 = calcQpair(S2,S5,pp2,pp5);
+  List Q26 = calcQpair(S2,S6,pp2,pp6);
+  List Q34 = calcQpair(S3,S4,pp3,pp4);
+  List Q35 = calcQpair(S3,S5,pp3,pp5);
+  List Q36 = calcQpair(S3,S6,pp3,pp6);
+  List Q45 = calcQpair(S4,S5,pp4,pp5);
+  List Q46 = calcQpair(S4,S6,pp4,pp6);
+  List Q56 = calcQpair(S5,S6,pp5,pp6);
+    
+  // const int nmod1 = pp1.size();
+  // const int nmod2 = pp2.size();
+  // const int nmod3 = pp3.size();
+  // const int nmod4 = pp3.size();
+  NumericMatrix Q1 = bind5(Q12[0],Q13[0],Q14[0],Q15[0],Q16[0]); // Q for trait 1 | 2
+  NumericMatrix Q2 = bind5(Q12(1),Q23(0),Q24(0),Q25[0],Q26[0]);
+  NumericMatrix Q3 = bind5(Q13(1),Q23(1),Q34(0),Q35[0],Q36[0]);
+  NumericMatrix Q4 = bind5(Q14[1],Q24[1],Q34[1],Q45[0],Q46[0]);
+  NumericMatrix Q5 = bind5(Q15[1],Q25[1],Q35[1],Q45[1],Q56[0]);
+  NumericMatrix Q6 = bind5(Q16[1],Q26[1],Q36[1],Q46[1],Q56[1]);
+
+  List Q = List::create(_["1"] = Q1,
+			_["2"] = Q2,
+			_["3"] = Q3,
+			_["4"] = Q4,
+			_["5"] = Q5,
+			_["6"] = Q6);
+
+  return(wrap(Q));
+}
 
 

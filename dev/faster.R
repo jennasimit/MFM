@@ -97,8 +97,35 @@ microbenchmark( marginalpp(STR=list(d1$str,d2$str,d2$str),
  ##      min       lq     mean   median       uq    max neval // do idx1 -1 at beginning
  ## 82.46985 85.51192 88.31313 86.53107 89.59482 121.42   100
 
+microbenchmark( marginalpp(STR=list(d1$str,d2$str,d2$str),
+                     ABF=list(d1$logbf,d2$logbf,d2$logbf),
+                     pr=list(d1$pr,d2$pr,d2$pr),
+                     PP=list(d1$pp,d2$pp,d2$pp),
+                     kappa=S,
+                     p0=prior.bin.fn(0)),
+               marginallogpp(STR=list(d1$str,d2$str,d2$str),
+                     ABF=list(d1$logbf,d2$logbf,d2$logbf),
+                     pr=list(d1$pr,d2$pr,d2$pr),
+                     PP=list(log(d1$pp),log(d2$pp),log(d2$pp)),
+                     kappa=S,
+                     p0=prior.bin.fn(0)))
 
-## time 4 way combinations
+## time 4 way combinationsmarginalpp(STR=list(d1$str,d2$str,d2$str),
+                     r1 <- marginalpp(STR=list(d1$str,d2$str,d2$str),
+ ABF=list(d1$logbf,d2$logbf,d2$logbf),
+                     pr=list(d1$pr,d2$pr,d2$pr),
+                     PP=list(d1$pp,d2$pp,d2$pp),
+                     kappa=S,
+                     p0=prior.bin.fn(0))
+               r2 <- marginallogpp(STR=list(d1$str,d2$str,d2$str),
+                     ABF=list(d1$logbf,d2$logbf,d2$logbf),
+                     pr=list(d1$pr,d2$pr,d2$pr),
+                     PP=list(log(d1$pp),log(d2$pp),log(d2$pp)),
+                     kappa=S,
+                     p0=prior.bin.fn(0))
+lapply(r1$shared.pp,summary)
+lapply(r2$shared.pp,summary)
+
 microbenchmark( marginalpp(STR=list(d1$str,d2$str,d2$str,d1$str),
                      ABF=list(d1$logbf,d2$logbf,d2$logbf,d1$logbf),
                      pr=list(d1$pr,d2$pr,d2$pr,d1$pr),
@@ -120,7 +147,7 @@ load_all()
 microbenchmark(MTFM:::stroverlap(c(1,3,8,10),c(2,6,10)),
                MTFM:::strint(c(1,3,8,10),c(2,6,10)),
                MTFM:::stroverlap(c(1,3,8,10),c(1,6,10)),
-              MTFM:::strint(c(1,3,8,10),c(1,6,10)) ) 
+               MTFM:::strint(c(1,3,8,10),c(1,6,10)) ) 
 
 ## make 4 way combinations
     data <- expand.grid(1:nrow(marg$d1),1:nrow(marg$d1),1:nrow(marg$d2),1:nrow(marg$d2))
