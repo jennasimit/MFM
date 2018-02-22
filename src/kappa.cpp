@@ -3,6 +3,28 @@
 using namespace Rcpp;
 
 // [[Rcpp::export]]
+double odds_sharing(double kappa, NumericVector p) {
+  int nsnps=p.size()-1;
+  int maxsnps=50;
+  if(maxsnps > nsnps)
+    maxsnps = nsnps;
+  // Rcout << "nsnps: " << nsnps << "\n";
+  double pn=0.0;
+  for(int i=0; i<=maxsnps; i++) {
+    double tmp = 0.0;
+    for(int j=0; j<=maxsnps; j++) {
+      double denom = 1 + kappa * ( Rf_choose(nsnps,j) / Rf_choose(nsnps-i,j) - 1);
+      tmp = tmp + p(j) / denom;
+      // Rcout << i << ' ' << j << ' ' << p(i) * p(j) / denom << "\n";
+      // pn = pn + p(i) * p(j) / denom;
+    }
+    pn = pn + tmp * p(i);
+  }
+  return( log(1-pn) - log(pn) );
+  // return(pn);
+}
+
+// [[Rcpp::export]]
 double finnerK(NumericVector lvec, double n) {
  int K=lvec.size();
  double t1=0;

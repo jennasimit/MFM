@@ -30,40 +30,66 @@
 ##'     supplied
 ##' @export
 ##' @author Chris Wallace
-marginalpp <- function(STR, ABF, PP, pr, kappa, p0, tol=0.0001,N0,ND) {
+marginalpp <- function(STR, ABF, PP, pr, kappa, p0, tol=0.0001,N0,ND,nsnps) {
     n <- length(STR) # number of diseases
     if(n<2)
         stop("Need at least 2 diseases")
     if( length(ABF)!=n || length(pr)!=n | length(PP)!=n )
         stop("STR, ABF, PP and pr need to have the same lengths")
-    SS <- lapply(STR,strsplit,"%")
-    SS <- lapply(SS,setdiff,c("0","1"))
-    usnps <- sort(unique(unlist(SS)))
-    if(!(1 %in% kappa))
-        kappa <- c(1,kappa)
+    ## if(!(1 %in% kappa))
+    ##     kappa <- c(1,kappa)
 
     dis <- names(STR)
 
-    ## remove null model if included
-    PP.nonull <- PP
+    ## add null model if not included
+    ## otherwise set null model first
+    ## PP.nonull <- PP
     for(i in seq_along(STR)) {
         wh <- which(STR[[i]] %in% c("0","1"))
-        if(length(wh)) {
-            STR[[i]] <- STR[[i]][-wh]
-            ABF[[i]] <- ABF[[i]][-wh]
-            pr[[i]] <- pr[[i]][-wh]
-            PP.nonull[[i]] <- PP[[i]] <- PP[[i]][-wh]
+        if(!length(wh)) {
+            pr[[i]] <- addnull(pr[[i]],p0)
+            STR[[i]] <- addnull(STR[[i]],"1")
+            ABF[[i]] <- addnull(ABF[[i]],0)
+        } else {
+            pr[[i]][wh] <- p0
+            pr[[i]] <- nullfirst(pr[[i]],wh)
+            STR[[i]] <- nullfirst(STR[[i]],wh)
+            ABF[[i]] <- nullfirst(ABF[[i]],wh)
         }
-        ## add back null now for input PP, can't calculate afterwards because ABF will be adjusted
-        PP[[i]] <- addnull(PP[[i]], calcpp(addnull(pr[[i]], p0),addnull(ABF[[i]], 0))[1]) 
     }
 
+    ## ## remove null model if included
+    ## PP.nonull <- PP
+    ## for(i in seq_along(STR)) {
+    ##     wh <- which(STR[[i]] %in% c("0","1"))
+    ##     if(length(wh)) {
+    ##         STR[[i]] <- STR[[i]][-wh]
+    ##         ABF[[i]] <- ABF[[i]][-wh]
+    ##         pr[[i]] <- pr[[i]][-wh]
+    ##         ## nsnps[[i]] <- nsnps[[i]][-wh]
+    ##         PP.nonull[[i]] <- PP[[i]] <- PP[[i]][-wh]
+    ##     }
+    ##     ## add back null now for input PP, can't calculate afterwards because ABF will be adjusted
+    ##     PP[[i]] <- addnull(PP[[i]], calcpp(addnull(pr[[i]], p0),addnull(ABF[[i]], 0))[1]) 
+    ## }
+
     ## calculate model sizes and adjust each input log ABF (b' instead of b)
+    SS <- lapply(STR,strsplit,"%")
+    ## SS <- lapply(SS,setdiff,c("0","1"))
+    usnps <- sort(unique(unlist(SS)))
+    nsnpspermodel <- lapply(SS,function(x) sapply(x,length))
+    for(i in seq_along(STR)) {
+        wh <- which(STR[[i]] %in% c("0","1"))
+        nsnpspermodel[[i]][wh] <- 0
+    }
+    maxsnps <- max(unlist(nsnpspermodel))
+    tau <- outer(0:maxsnps,0:maxsnps,calctau,nsnps=nsnps,kappa=kappa)
     N <- sum(unlist(ND))+N0
-    for(j in seq_along(STR)) {
-        Mk <- unlist(lapply(strsplit(STR[[j]],"%"),length)) # model sizes
-        eta <- Mk*.5*log((ND[[j]]+N0)/N) # when eta = 0 the results match for dis=c(t1,t2) and dis=c(t2,t1)
-        ABF[[j]] <- ABF[[j]] + eta
+    for(i in seq_along(STR)) {
+        ## Mk <- unlist(lapply(strsplit(STR[[j]],"%"),length)) # model sizes
+        eta <- 0.5 * nsnpspermodel[[i]] * log((ND[[i]]+N0)/N) # when eta = 0 the results match for dis=c(t1,t2) and dis=c(t2,t1)
+        ABF[[i]] <- ABF[[i]] + eta
+        PP[[i]] <- calcpp(pr[[i]],ABF[[i]])
     }
   
     ## numeric version of STR, for speed
@@ -72,47 +98,74 @@ marginalpp <- function(STR, ABF, PP, pr, kappa, p0, tol=0.0001,N0,ND) {
     })
     names(STR.i) <- NULL
     
-    names(PP.nonull) <- NULL
+    ## names(PP.nonull) <- NULL
     
     fun <- switch(n, NULL, "newcalcQ2", "newcalcQ3", "newcalcQ4","newcalcQ5","newcalcQ6")
     if (is.null(fun)) 
         stop("newcalcQ not written for ", n, " diseases yet")
-    
-    Q <- do.call(fun, c(STR.i, PP.nonull))
+
+    names(PP) <- paste0("pp",seq_along(PP))
+    names(STR.i) <- paste0("S",seq_along(STR.i))
+    Q <- do.call(fun, c(STR.i, PP, list(tau,kappa)))
     
     ## alt prior
     alt.pp <- alt.prior <- vector("list",n)
     for(i in seq_along(Q)) {
         if(n==2) {
-            tmp <- lapply(kappa, function(k) {
-                pr[[i]] * (1 + (k - 1) * Q[[i]])
-            })
+            tmp <- pr[[i]] * Q[[i]]
+            ## tmp <- lapply(kappa, function(k) {
+            ##     pr[[i]] * (1 + (k - 1) * Q[[i]])
+            ## })
         } else {
-            tmp <- lapply(kappa, function(k) {
-                pr[[i]] * apply(1 + (k-1) * Q[[i]],1,prod) 
-            })
+            tmp <- pr[[i]] * apply(Q[[i]],1,prod)
+            ## tmp <- lapply(kappa, function(k) {
+            ##     pr[[i]] * apply(1 + (k-1) * Q[[i]],1,prod)  # improper, but can also try sum
+            ## })
         }
-        tmp <- do.call("cbind", tmp) # matrix with columns indexed by k
-        alt.prior[[i]] <- addnull(tmp, p0)
-        alt.pp[[i]] <- calcpp(alt.prior[[i]], addnull(ABF[[i]], 0))
+        ## tmp <- do.call("cbind", tmp) # matrix with columns indexed by k
+        alt.prior[[i]] <- tmp #addnull(tmp, p0)
+        alt.pp[[i]] <- calcpp(alt.prior[[i]], ABF[[i]])
     }
     
     ## and add back null model with specified p0
-    pr <- lapply(pr, addnull, p0)
-    STR <- lapply(STR,addnull, "1")
-    alt.pp <- lapply(alt.pp,t)
+    ## pr <- lapply(pr, addnull, p0)
+    ## STR <- lapply(STR,addnull, "1")
+    ## alt.pp <- lapply(alt.pp,t)
    
     for(i in seq_along(alt.pp)){
- 	rownames(alt.pp[[i]]) <- STR[[i]]
- 	colnames(alt.pp[[i]]) <- paste("pp",kappa,sep=".")
- 	rownames(alt.prior[[i]]) <- STR[[i]]
- 	colnames(alt.prior[[i]]) <- paste("pp",kappa,sep=".")
+ 	names(alt.pp[[i]]) <- STR[[i]]
+ 	## colnames(alt.pp[[i]]) <- paste("pp",kappa,sep=".")
+ 	names(alt.prior[[i]]) <- STR[[i]]
+ 	## colnames(alt.prior[[i]]) <- paste("pp",kappa,sep=".")
  	}
   
     list(single.prior = pr, single.pp = PP, shared.prior = alt.prior, 
          shared.pp = alt.pp, STR = STR, kappa = kappa)
 }
-
+logminus <- function(x,y) {
+  my.max <- max(x,y)                              ##take out the maximum value in log form
+  my.res <- my.max + log(exp(x - my.max ) - exp(y-my.max))
+  return(my.res)
+}
+logplus <- function(x,y) {
+  my.max <- max(x,y)                              ##take out the maximum value in log form
+  my.res <- my.max + log(exp(x - my.max ) + exp(y-my.max))
+  return(my.res)
+}
+logsum <- function(x) {
+  my.max <- max(x)                              ##take out the maximum value in log form
+  my.res <- my.max + log(sum(exp(x - my.max ))) 
+  return(my.res)
+}
+calctau <- function(n1,n2,nsnps,kappa) {
+    num <- lchoose(nsnps,n1)
+    denom <- logminus(logplus(lchoose(nsnps-n2,n1),lchoose(nsnps,n1) + log(kappa)),
+                      lchoose(nsnps-n2,n1) + log(kappa))
+    exp(num - denom)
+}
+    nullfirst <- function(x,wh) {
+        c(x[wh],x[-wh])
+    }
 #' p*eta/sum(p*eta), but with logs
 calc.eta <- function(p,logeta) {
     tmp <- log(p) + logeta

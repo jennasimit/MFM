@@ -5,19 +5,22 @@
 using namespace Rcpp;
 
 // [[Rcpp::export]]
-int stroverlap(const IntegerVector& x,
+IntegerVector stroverlap(const IntegerVector& x,
 	       const IntegerVector& y) {
   int nx=x.size();
   int ny=y.size();
+  IntegerVector ret = IntegerVector::create(0,nx,ny);
   if(nx==0)
-    return 0;
+    return ret;
   if(ny==0)
-    return 0;
+    return ret;
   for(int ix=0; ix<nx; ix++)
     for(int iy=0; iy<ny; iy++)
-      if(x[ix]==y[iy])
-	return 1;
-  return 0;
+      if(x[ix]==y[iy]) {
+	ret[0]=1;
+	return(ret);
+      }
+  return ret;
 }
 
 // returns x/sum(x)
@@ -38,19 +41,32 @@ NumericVector sum1(const NumericVector& x) {
 List calcQpair(const List S1, // model matrix - columns are models, rows are SNPs
 	       const List S2, // model matrix - columns are models, rows are SNPs
 	       const NumericVector& pp1,
-	       const NumericVector& pp2) { // pp for each model for disease 2
+	       const NumericVector& pp2, // pp for each model for disease 2
+	       const NumericMatrix& tau,
+	       const double kappa) { 
   const int nmod1 = pp1.size();
   const int nmod2 = pp2.size();
+  const int ntau = tau.cols();
   // const int nsnp = M.nrow();
   NumericVector Q1(nmod1);
   NumericVector Q2(nmod2);
+  double k=0.0;
   for(int i=0; i<nmod1; i++) {
     for(int j=0; j<nmod2; j++) {
-      int idx=stroverlap( S1[i], S2[j]);
-      if(idx > 0) {
-	Q1(i) = Q1(i) + pp2(j);
-	Q2(j) = Q2(j) + pp1(i);
+      if(i==1 | j==1) { // at least one is null model -> tau=1 & int is empty
+	k=1.0;
+      } else {
+	IntegerVector idx=stroverlap( S1[i], S2[j]);
+	int n1=idx(1);
+	int n2=idx(2);
+	if(idx(0) > 0) {
+	  k = tau(n1,n2);
+	} else {
+	  k = kappa * tau(n1,n2);
+	}
       }
+      Q1(i) = Q1(i) + pp2(j) * k;
+      Q2(j) = Q2(j) + pp1(i) * k;
     }
   }
 
@@ -88,11 +104,14 @@ NumericMatrix bind5(const NumericVector A,
 List newcalcQ2(const List S1,
 	    const List S2,
 	    const NumericVector& pp1,
-	    const NumericVector& pp2) { // pp for each model for disease 2
-  List Q12 = calcQpair(S1,S2,pp1,pp2);
+	       const NumericVector& pp2,
+	       const NumericMatrix& tau,
+	       const double kappa) { // pp for each model for disease 2
+  List Q12 = calcQpair(S1,S2,pp1,pp2,tau,kappa);
   Q12.names() = CharacterVector::create("1", "2");
   return(wrap(Q12));
 }
+
 
 // [[Rcpp::export]]
 List newcalcQ3(const List S1,
@@ -100,10 +119,12 @@ List newcalcQ3(const List S1,
 	    const List S3, // model matrix - columns are models, rows are SNPs
 	    const NumericVector& pp1,
 	    const NumericVector& pp2,
-	    const NumericVector& pp3) { // pp for each model for disease 2
-  List Q12 = calcQpair(S1,S2,pp1,pp2);
-  List Q23 = calcQpair(S2,S3,pp2,pp3);
-  List Q13 = calcQpair(S1,S3,pp1,pp3);
+	    const NumericVector& pp3,
+	       const NumericMatrix& tau,
+	       const double kappa) { // pp for each model for disease 2
+  List Q12 = calcQpair(S1,S2,pp1,pp2,tau,kappa);
+  List Q23 = calcQpair(S2,S3,pp2,pp3,tau,kappa);
+  List Q13 = calcQpair(S1,S3,pp1,pp3,tau,kappa);
     
   // const int nmod1 = pp1.size();
   // const int nmod2 = pp2.size();
@@ -126,13 +147,15 @@ List newcalcQ4(const List S1,
 	    const NumericVector& pp1,
 	    const NumericVector& pp2,
 	    const NumericVector& pp3,
-	    const NumericVector& pp4) { // pp for each model for disease 2
-  List Q12 = calcQpair(S1,S2,pp1,pp2);
-  List Q13 = calcQpair(S1,S3,pp1,pp3);
-  List Q14 = calcQpair(S1,S4,pp1,pp4);
-  List Q23 = calcQpair(S2,S3,pp2,pp3);
-  List Q24 = calcQpair(S2,S4,pp2,pp4);
-  List Q34 = calcQpair(S3,S4,pp3,pp4);
+	    const NumericVector& pp4,
+	       const NumericMatrix& tau,
+	       const double kappa) { // pp for each model for disease 2
+  List Q12 = calcQpair(S1,S2,pp1,pp2,tau,kappa);
+  List Q13 = calcQpair(S1,S3,pp1,pp3,tau,kappa);
+  List Q14 = calcQpair(S1,S4,pp1,pp4,tau,kappa);
+  List Q23 = calcQpair(S2,S3,pp2,pp3,tau,kappa);
+  List Q24 = calcQpair(S2,S4,pp2,pp4,tau,kappa);
+  List Q34 = calcQpair(S3,S4,pp3,pp4,tau,kappa);
     
   // const int nmod1 = pp1.size();
   // const int nmod2 = pp2.size();
@@ -162,17 +185,19 @@ List newcalcQ5(const List S1,
 	    const NumericVector& pp2,
 	    const NumericVector& pp3,
 	    const NumericVector& pp4,
-	    const NumericVector& pp5) { // pp for each model for disease 2
-  List Q12 = calcQpair(S1,S2,pp1,pp2);
-  List Q13 = calcQpair(S1,S3,pp1,pp3);
-  List Q14 = calcQpair(S1,S4,pp1,pp4);
-  List Q15 = calcQpair(S1,S5,pp1,pp5);
-  List Q23 = calcQpair(S2,S3,pp2,pp3);
-  List Q24 = calcQpair(S2,S4,pp2,pp4);
-  List Q25 = calcQpair(S2,S5,pp2,pp5);
-  List Q34 = calcQpair(S3,S4,pp3,pp4);
-  List Q35 = calcQpair(S3,S5,pp3,pp5);
-  List Q45 = calcQpair(S4,S5,pp4,pp5);
+	    const NumericVector& pp5,
+	       const NumericMatrix& tau,
+	       const double kappa) { // pp for each model for disease 2
+  List Q12 = calcQpair(S1,S2,pp1,pp2,tau,kappa);
+  List Q13 = calcQpair(S1,S3,pp1,pp3,tau,kappa);
+  List Q14 = calcQpair(S1,S4,pp1,pp4,tau,kappa);
+  List Q15 = calcQpair(S1,S5,pp1,pp5,tau,kappa);
+  List Q23 = calcQpair(S2,S3,pp2,pp3,tau,kappa);
+  List Q24 = calcQpair(S2,S4,pp2,pp4,tau,kappa);
+  List Q25 = calcQpair(S2,S5,pp2,pp5,tau,kappa);
+  List Q34 = calcQpair(S3,S4,pp3,pp4,tau,kappa);
+  List Q35 = calcQpair(S3,S5,pp3,pp5,tau,kappa);
+  List Q45 = calcQpair(S4,S5,pp4,pp5,tau,kappa);
     
   // const int nmod1 = pp1.size();
   // const int nmod2 = pp2.size();
@@ -208,22 +233,24 @@ List newcalcQ6(const List S1,
 	    const NumericVector& pp3,
 	    const NumericVector& pp4,
 	    const NumericVector& pp5,
-	    const NumericVector& pp6) { // pp for each model for disease 2
-  List Q12 = calcQpair(S1,S2,pp1,pp2);
-  List Q13 = calcQpair(S1,S3,pp1,pp3);
-  List Q14 = calcQpair(S1,S4,pp1,pp4);
-  List Q15 = calcQpair(S1,S5,pp1,pp5);
-  List Q16 = calcQpair(S1,S6,pp1,pp6);
-  List Q23 = calcQpair(S2,S3,pp2,pp3);
-  List Q24 = calcQpair(S2,S4,pp2,pp4);
-  List Q25 = calcQpair(S2,S5,pp2,pp5);
-  List Q26 = calcQpair(S2,S6,pp2,pp6);
-  List Q34 = calcQpair(S3,S4,pp3,pp4);
-  List Q35 = calcQpair(S3,S5,pp3,pp5);
-  List Q36 = calcQpair(S3,S6,pp3,pp6);
-  List Q45 = calcQpair(S4,S5,pp4,pp5);
-  List Q46 = calcQpair(S4,S6,pp4,pp6);
-  List Q56 = calcQpair(S5,S6,pp5,pp6);
+	    const NumericVector& pp6,
+	       const NumericMatrix& tau,
+	       const double kappa) { // pp for each model for disease 2
+  List Q12 = calcQpair(S1,S2,pp1,pp2,tau,kappa);
+  List Q13 = calcQpair(S1,S3,pp1,pp3,tau,kappa);
+  List Q14 = calcQpair(S1,S4,pp1,pp4,tau,kappa);
+  List Q15 = calcQpair(S1,S5,pp1,pp5,tau,kappa);
+  List Q16 = calcQpair(S1,S6,pp1,pp6,tau,kappa);
+  List Q23 = calcQpair(S2,S3,pp2,pp3,tau,kappa);
+  List Q24 = calcQpair(S2,S4,pp2,pp4,tau,kappa);
+  List Q25 = calcQpair(S2,S5,pp2,pp5,tau,kappa);
+  List Q26 = calcQpair(S2,S6,pp2,pp6,tau,kappa);
+  List Q34 = calcQpair(S3,S4,pp3,pp4,tau,kappa);
+  List Q35 = calcQpair(S3,S5,pp3,pp5,tau,kappa);
+  List Q36 = calcQpair(S3,S6,pp3,pp6,tau,kappa);
+  List Q45 = calcQpair(S4,S5,pp4,pp5,tau,kappa);
+  List Q46 = calcQpair(S4,S6,pp4,pp6,tau,kappa);
+  List Q56 = calcQpair(S5,S6,pp5,pp6,tau,kappa);
     
   // const int nmod1 = pp1.size();
   // const int nmod2 = pp2.size();
@@ -245,5 +272,4 @@ List newcalcQ6(const List S1,
 
   return(wrap(Q));
 }
-
 
