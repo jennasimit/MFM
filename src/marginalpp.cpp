@@ -53,13 +53,13 @@ List calcQpair(const List S1, // model matrix - columns are models, rows are SNP
   double k=0.0;
   for(int i=0; i<nmod1; i++) {
     for(int j=0; j<nmod2; j++) {
-      if(i==1 | j==1) { // at least one is null model -> tau=1 & int is empty
+      if(i==0 | j==0) { // at least one is null model -> tau=1 & int is empty
 	k=1.0;
       } else {
 	IntegerVector idx=stroverlap( S1[i], S2[j]);
 	int n1=idx(1);
 	int n2=idx(2);
-	if(idx(0) > 0) {
+	if(idx(0) == 0) {
 	  k = tau(n1,n2);
 	} else {
 	  k = kappa * tau(n1,n2);

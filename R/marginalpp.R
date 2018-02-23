@@ -38,7 +38,8 @@ marginalpp <- function(STR, ABF, PP, pr, kappa, p0, tol=0.0001,N0,ND,nsnps) {
         stop("STR, ABF, PP and pr need to have the same lengths")
     ## if(!(1 %in% kappa))
     ##     kappa <- c(1,kappa)
-
+    if(is.null(names(STR)))
+        names(STR) <- paste0("trait",seq_along(STR))
     dis <- names(STR)
 
     ## add null model if not included
@@ -85,6 +86,7 @@ marginalpp <- function(STR, ABF, PP, pr, kappa, p0, tol=0.0001,N0,ND,nsnps) {
     maxsnps <- max(unlist(nsnpspermodel))
     tau <- outer(0:maxsnps,0:maxsnps,calctau,nsnps=nsnps,kappa=kappa)
     N <- sum(unlist(ND))+N0
+    ABF.orig <- ABF
     for(i in seq_along(STR)) {
         ## Mk <- unlist(lapply(strsplit(STR[[j]],"%"),length)) # model sizes
         eta <- 0.5 * nsnpspermodel[[i]] * log((ND[[i]]+N0)/N) # when eta = 0 the results match for dis=c(t1,t2) and dis=c(t2,t1)
@@ -131,16 +133,24 @@ marginalpp <- function(STR, ABF, PP, pr, kappa, p0, tol=0.0001,N0,ND,nsnps) {
     ## pr <- lapply(pr, addnull, p0)
     ## STR <- lapply(STR,addnull, "1")
     ## alt.pp <- lapply(alt.pp,t)
-   
+
+    
     for(i in seq_along(alt.pp)){
  	names(alt.pp[[i]]) <- STR[[i]]
  	## colnames(alt.pp[[i]]) <- paste("pp",kappa,sep=".")
  	names(alt.prior[[i]]) <- STR[[i]]
  	## colnames(alt.prior[[i]]) <- paste("pp",kappa,sep=".")
  	}
-  
-    list(single.prior = pr, single.pp = PP, shared.prior = alt.prior, 
-         shared.pp = alt.pp, STR = STR, kappa = kappa)
+    ret <- lapply(seq_along(dis), function(i) {
+        data.frame(single.prior=pr[[i]],single.pp=PP[[i]],
+                   shared.prior=alt.prior[[i]],
+                   shared.pp=alt.pp[[i]], #,STR=STR[[i]],stringsAsFactors = FALSE)
+                   ABF=ABF.orig[[i]], ABF.adj=ABF[[i]])
+    })
+    names(ret) <- dis
+    ret
+    ## list(single.prior = pr, single.pp = PP, shared.prior = alt.prior, 
+    ##      shared.pp = alt.pp, STR = STR, kappa = kappa)
 }
 logminus <- function(x,y) {
   my.max <- max(x,y)                              ##take out the maximum value in log form
@@ -225,7 +235,6 @@ dis <- names(STR)
 # Q[j]=b[j]*pr[j]*eta[j]/sum(b*pr*eta) \prop b[j]*pr[j]*eta[j] \prop b[j]*pr[j]*eta[j]/sum(b*pr) = PP[j]*eta[j] \prop PP[j]*eta[j]/sum(PP*eta)
 # so, we set PP=PP*eta/sum(PP*eta) for ease of computing Q.
 # In the adjusted prior we need pr[j]*eta[j], so set pr=pr*eta for ease of computation 
-
 
     N <- sum(unlist(ND))+N0
     Mk <- vector("list",n)
