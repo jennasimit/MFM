@@ -6,15 +6,29 @@
 
 using namespace Rcpp;
 
-// odds_sharing
-double odds_sharing(double kappa, NumericVector p);
-RcppExport SEXP _MTFM_odds_sharing(SEXP kappaSEXP, SEXP pSEXP) {
+// odds_no_sharing
+double odds_no_sharing(const double kappa, const NumericVector p, const int ndis);
+RcppExport SEXP _MTFM_odds_no_sharing(SEXP kappaSEXP, SEXP pSEXP, SEXP ndisSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< double >::type kappa(kappaSEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type p(pSEXP);
-    rcpp_result_gen = Rcpp::wrap(odds_sharing(kappa, p));
+    Rcpp::traits::input_parameter< const double >::type kappa(kappaSEXP);
+    Rcpp::traits::input_parameter< const NumericVector >::type p(pSEXP);
+    Rcpp::traits::input_parameter< const int >::type ndis(ndisSEXP);
+    rcpp_result_gen = Rcpp::wrap(odds_no_sharing(kappa, p, ndis));
+    return rcpp_result_gen;
+END_RCPP
+}
+// odds_sharing
+double odds_sharing(const double kappa, const NumericVector p, const int ndis);
+RcppExport SEXP _MTFM_odds_sharing(SEXP kappaSEXP, SEXP pSEXP, SEXP ndisSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const double >::type kappa(kappaSEXP);
+    Rcpp::traits::input_parameter< const NumericVector >::type p(pSEXP);
+    Rcpp::traits::input_parameter< const int >::type ndis(ndisSEXP);
+    rcpp_result_gen = Rcpp::wrap(odds_sharing(kappa, p, ndis));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -215,7 +229,8 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_MTFM_odds_sharing", (DL_FUNC) &_MTFM_odds_sharing, 2},
+    {"_MTFM_odds_no_sharing", (DL_FUNC) &_MTFM_odds_no_sharing, 3},
+    {"_MTFM_odds_sharing", (DL_FUNC) &_MTFM_odds_sharing, 3},
     {"_MTFM_finnerK", (DL_FUNC) &_MTFM_finnerK, 2},
     {"_MTFM_pp", (DL_FUNC) &_MTFM_pp, 3},
     {"_MTFM_kappa2", (DL_FUNC) &_MTFM_kappa2, 4},

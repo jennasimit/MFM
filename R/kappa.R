@@ -42,12 +42,18 @@ os <- function(kappa,prob) {
 ##' @author Chris Wallace
 ##' @export
 ##' @param nsnps number of snps in the region
-##' @param p probability any snp is causal (assumes a binomial distribution for the number of causal snps, with expected number = p * nsnps)
-##' @param target.odds prior odds of any sharing of causal variants between any pair of traits
-calckappa <- function(nsnps,p,target.odds) {
+##' @param p probability any snp is causal (assumes a binomial
+##'     distribution for the number of causal snps, with expected
+##'     number = p * nsnps)
+##' @param ndis number of diseases
+##' @param target.odds prior odds of NO SHARING of causal variants
+##'     between a single trait and any of the other trait. ie a value
+##'     < 1 indicates a prior expectation that no sharing is less
+##'     likely than sharing.
+calckappa <- function(nsnps,p,ndis,target.odds) {
     prob <- dbinom(0:nsnps,size=nsnps,prob=p)
     f <- function(kappa) {
-        abs(odds_sharing(kappa,prob) - log(target.odds))
+        abs(odds_no_sharing(kappa,prob,ndis) - log(target.odds))
     }
     ## k <- seq(1,10,by=0.1)
     ## o <- sapply(k,odds_sharing,p=prob)

@@ -30,12 +30,12 @@
 ##'     supplied
 ##' @export
 ##' @author Chris Wallace
-marginalpp <- function(STR, ABF, PP, pr, kappa, p0, tol=0.0001,N0,ND,nsnps) {
+marginalpp <- function(STR, ABF, pr, kappa, p0, tol=0.0001,N0,ND,nsnps) {
     n <- length(STR) # number of diseases
     if(n<2)
         stop("Need at least 2 diseases")
-    if( length(ABF)!=n || length(pr)!=n | length(PP)!=n )
-        stop("STR, ABF, PP and pr need to have the same lengths")
+    if( length(ABF)!=n || length(pr)!=n )
+        stop("STR, ABF, and pr need to have the same lengths")
     ## if(!(1 %in% kappa))
     ##     kappa <- c(1,kappa)
     if(is.null(names(STR)))
@@ -91,7 +91,7 @@ marginalpp <- function(STR, ABF, PP, pr, kappa, p0, tol=0.0001,N0,ND,nsnps) {
         ## Mk <- unlist(lapply(strsplit(STR[[j]],"%"),length)) # model sizes
         eta <- 0.5 * nsnpspermodel[[i]] * log((ND[[i]]+N0)/N) # when eta = 0 the results match for dis=c(t1,t2) and dis=c(t2,t1)
         ABF[[i]] <- ABF[[i]] + eta
-        PP[[i]] <- calcpp(pr[[i]],ABF[[i]])
+        PP[[i]] <- calcpp(pr[[i]],ABF[[i]],norm=FALSE) ## unnormalise - just pr * exp(ABF)
     }
   
     ## numeric version of STR, for speed
@@ -592,10 +592,14 @@ addnull <- function(what,val) {
 ##' @title calcpp
 ##' @param pr vector or matrix of priors
 ##' @param lBF vector of log ABF
+##' @param norm if TRUE (default) normalise so sum(pp) (or rowSum(pp)
+##'     if matrix) is 1. otherwise just return pr * exp(lBF)
 ##' @return vector or matrix of pp
 ##' @author Chris Wallace
-calcpp <- function(pr,lBF) {
+calcpp <- function(pr,lBF,norm=TRUE) {
     pp <- log(pr) + lBF
+    if(!norm)
+        return(exp(pp))
     if(is.matrix(pp)) {
         denom <- apply(pp,2,logsum)
         exp(t(pp) - denom)
