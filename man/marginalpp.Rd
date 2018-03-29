@@ -4,7 +4,7 @@
 \alias{marginalpp}
 \title{Marginal PP for models sharing information between diseases}
 \usage{
-marginalpp(STR, ABF, PP, pr, kappa, p0, tol = 1e-04, N0, ND)
+marginalpp(STR, ABF, PP, pr, kappa, p0, tol = 1e-04, N0, ND, nsnps)
 }
 \arguments{
 \item{STR}{list of models for diseases 1, 2, ..., n, each given in

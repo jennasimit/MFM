@@ -6,6 +6,32 @@
 
 using namespace Rcpp;
 
+// odds_no_sharing
+double odds_no_sharing(const double kappa, const NumericVector p, const int ndis);
+RcppExport SEXP _MTFM_odds_no_sharing(SEXP kappaSEXP, SEXP pSEXP, SEXP ndisSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const double >::type kappa(kappaSEXP);
+    Rcpp::traits::input_parameter< const NumericVector >::type p(pSEXP);
+    Rcpp::traits::input_parameter< const int >::type ndis(ndisSEXP);
+    rcpp_result_gen = Rcpp::wrap(odds_no_sharing(kappa, p, ndis));
+    return rcpp_result_gen;
+END_RCPP
+}
+// odds_sharing
+double odds_sharing(const double kappa, const NumericVector p, const int ndis);
+RcppExport SEXP _MTFM_odds_sharing(SEXP kappaSEXP, SEXP pSEXP, SEXP ndisSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const double >::type kappa(kappaSEXP);
+    Rcpp::traits::input_parameter< const NumericVector >::type p(pSEXP);
+    Rcpp::traits::input_parameter< const int >::type ndis(ndisSEXP);
+    rcpp_result_gen = Rcpp::wrap(odds_sharing(kappa, p, ndis));
+    return rcpp_result_gen;
+END_RCPP
+}
 // finnerK
 double finnerK(NumericVector lvec, double n);
 RcppExport SEXP _MTFM_finnerK(SEXP lvecSEXP, SEXP nSEXP) {
@@ -74,7 +100,7 @@ BEGIN_RCPP
 END_RCPP
 }
 // stroverlap
-int stroverlap(const IntegerVector& x, const IntegerVector& y);
+IntegerVector stroverlap(const IntegerVector& x, const IntegerVector& y);
 RcppExport SEXP _MTFM_stroverlap(SEXP xSEXP, SEXP ySEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
@@ -86,8 +112,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // calcQpair
-List calcQpair(const List S1, const List S2, const NumericVector& pp1, const NumericVector& pp2);
-RcppExport SEXP _MTFM_calcQpair(SEXP S1SEXP, SEXP S2SEXP, SEXP pp1SEXP, SEXP pp2SEXP) {
+List calcQpair(const List S1, const List S2, const NumericVector& pp1, const NumericVector& pp2, const NumericMatrix& tau, const double kappa);
+RcppExport SEXP _MTFM_calcQpair(SEXP S1SEXP, SEXP S2SEXP, SEXP pp1SEXP, SEXP pp2SEXP, SEXP tauSEXP, SEXP kappaSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -95,13 +121,15 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const List >::type S2(S2SEXP);
     Rcpp::traits::input_parameter< const NumericVector& >::type pp1(pp1SEXP);
     Rcpp::traits::input_parameter< const NumericVector& >::type pp2(pp2SEXP);
-    rcpp_result_gen = Rcpp::wrap(calcQpair(S1, S2, pp1, pp2));
+    Rcpp::traits::input_parameter< const NumericMatrix& >::type tau(tauSEXP);
+    Rcpp::traits::input_parameter< const double >::type kappa(kappaSEXP);
+    rcpp_result_gen = Rcpp::wrap(calcQpair(S1, S2, pp1, pp2, tau, kappa));
     return rcpp_result_gen;
 END_RCPP
 }
 // newcalcQ2
-List newcalcQ2(const List S1, const List S2, const NumericVector& pp1, const NumericVector& pp2);
-RcppExport SEXP _MTFM_newcalcQ2(SEXP S1SEXP, SEXP S2SEXP, SEXP pp1SEXP, SEXP pp2SEXP) {
+List newcalcQ2(const List S1, const List S2, const NumericVector& pp1, const NumericVector& pp2, const NumericMatrix& tau, const double kappa);
+RcppExport SEXP _MTFM_newcalcQ2(SEXP S1SEXP, SEXP S2SEXP, SEXP pp1SEXP, SEXP pp2SEXP, SEXP tauSEXP, SEXP kappaSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -109,13 +137,15 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const List >::type S2(S2SEXP);
     Rcpp::traits::input_parameter< const NumericVector& >::type pp1(pp1SEXP);
     Rcpp::traits::input_parameter< const NumericVector& >::type pp2(pp2SEXP);
-    rcpp_result_gen = Rcpp::wrap(newcalcQ2(S1, S2, pp1, pp2));
+    Rcpp::traits::input_parameter< const NumericMatrix& >::type tau(tauSEXP);
+    Rcpp::traits::input_parameter< const double >::type kappa(kappaSEXP);
+    rcpp_result_gen = Rcpp::wrap(newcalcQ2(S1, S2, pp1, pp2, tau, kappa));
     return rcpp_result_gen;
 END_RCPP
 }
 // newcalcQ3
-List newcalcQ3(const List S1, const List S2, const List S3, const NumericVector& pp1, const NumericVector& pp2, const NumericVector& pp3);
-RcppExport SEXP _MTFM_newcalcQ3(SEXP S1SEXP, SEXP S2SEXP, SEXP S3SEXP, SEXP pp1SEXP, SEXP pp2SEXP, SEXP pp3SEXP) {
+List newcalcQ3(const List S1, const List S2, const List S3, const NumericVector& pp1, const NumericVector& pp2, const NumericVector& pp3, const NumericMatrix& tau, const double kappa);
+RcppExport SEXP _MTFM_newcalcQ3(SEXP S1SEXP, SEXP S2SEXP, SEXP S3SEXP, SEXP pp1SEXP, SEXP pp2SEXP, SEXP pp3SEXP, SEXP tauSEXP, SEXP kappaSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -125,13 +155,15 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const NumericVector& >::type pp1(pp1SEXP);
     Rcpp::traits::input_parameter< const NumericVector& >::type pp2(pp2SEXP);
     Rcpp::traits::input_parameter< const NumericVector& >::type pp3(pp3SEXP);
-    rcpp_result_gen = Rcpp::wrap(newcalcQ3(S1, S2, S3, pp1, pp2, pp3));
+    Rcpp::traits::input_parameter< const NumericMatrix& >::type tau(tauSEXP);
+    Rcpp::traits::input_parameter< const double >::type kappa(kappaSEXP);
+    rcpp_result_gen = Rcpp::wrap(newcalcQ3(S1, S2, S3, pp1, pp2, pp3, tau, kappa));
     return rcpp_result_gen;
 END_RCPP
 }
 // newcalcQ4
-List newcalcQ4(const List S1, const List S2, const List S3, const List S4, const NumericVector& pp1, const NumericVector& pp2, const NumericVector& pp3, const NumericVector& pp4);
-RcppExport SEXP _MTFM_newcalcQ4(SEXP S1SEXP, SEXP S2SEXP, SEXP S3SEXP, SEXP S4SEXP, SEXP pp1SEXP, SEXP pp2SEXP, SEXP pp3SEXP, SEXP pp4SEXP) {
+List newcalcQ4(const List S1, const List S2, const List S3, const List S4, const NumericVector& pp1, const NumericVector& pp2, const NumericVector& pp3, const NumericVector& pp4, const NumericMatrix& tau, const double kappa);
+RcppExport SEXP _MTFM_newcalcQ4(SEXP S1SEXP, SEXP S2SEXP, SEXP S3SEXP, SEXP S4SEXP, SEXP pp1SEXP, SEXP pp2SEXP, SEXP pp3SEXP, SEXP pp4SEXP, SEXP tauSEXP, SEXP kappaSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -143,13 +175,15 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const NumericVector& >::type pp2(pp2SEXP);
     Rcpp::traits::input_parameter< const NumericVector& >::type pp3(pp3SEXP);
     Rcpp::traits::input_parameter< const NumericVector& >::type pp4(pp4SEXP);
-    rcpp_result_gen = Rcpp::wrap(newcalcQ4(S1, S2, S3, S4, pp1, pp2, pp3, pp4));
+    Rcpp::traits::input_parameter< const NumericMatrix& >::type tau(tauSEXP);
+    Rcpp::traits::input_parameter< const double >::type kappa(kappaSEXP);
+    rcpp_result_gen = Rcpp::wrap(newcalcQ4(S1, S2, S3, S4, pp1, pp2, pp3, pp4, tau, kappa));
     return rcpp_result_gen;
 END_RCPP
 }
 // newcalcQ5
-List newcalcQ5(const List S1, const List S2, const List S3, const List S4, const List S5, const NumericVector& pp1, const NumericVector& pp2, const NumericVector& pp3, const NumericVector& pp4, const NumericVector& pp5);
-RcppExport SEXP _MTFM_newcalcQ5(SEXP S1SEXP, SEXP S2SEXP, SEXP S3SEXP, SEXP S4SEXP, SEXP S5SEXP, SEXP pp1SEXP, SEXP pp2SEXP, SEXP pp3SEXP, SEXP pp4SEXP, SEXP pp5SEXP) {
+List newcalcQ5(const List S1, const List S2, const List S3, const List S4, const List S5, const NumericVector& pp1, const NumericVector& pp2, const NumericVector& pp3, const NumericVector& pp4, const NumericVector& pp5, const NumericMatrix& tau, const double kappa);
+RcppExport SEXP _MTFM_newcalcQ5(SEXP S1SEXP, SEXP S2SEXP, SEXP S3SEXP, SEXP S4SEXP, SEXP S5SEXP, SEXP pp1SEXP, SEXP pp2SEXP, SEXP pp3SEXP, SEXP pp4SEXP, SEXP pp5SEXP, SEXP tauSEXP, SEXP kappaSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -163,13 +197,15 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const NumericVector& >::type pp3(pp3SEXP);
     Rcpp::traits::input_parameter< const NumericVector& >::type pp4(pp4SEXP);
     Rcpp::traits::input_parameter< const NumericVector& >::type pp5(pp5SEXP);
-    rcpp_result_gen = Rcpp::wrap(newcalcQ5(S1, S2, S3, S4, S5, pp1, pp2, pp3, pp4, pp5));
+    Rcpp::traits::input_parameter< const NumericMatrix& >::type tau(tauSEXP);
+    Rcpp::traits::input_parameter< const double >::type kappa(kappaSEXP);
+    rcpp_result_gen = Rcpp::wrap(newcalcQ5(S1, S2, S3, S4, S5, pp1, pp2, pp3, pp4, pp5, tau, kappa));
     return rcpp_result_gen;
 END_RCPP
 }
 // newcalcQ6
-List newcalcQ6(const List S1, const List S2, const List S3, const List S4, const List S5, const List S6, const NumericVector& pp1, const NumericVector& pp2, const NumericVector& pp3, const NumericVector& pp4, const NumericVector& pp5, const NumericVector& pp6);
-RcppExport SEXP _MTFM_newcalcQ6(SEXP S1SEXP, SEXP S2SEXP, SEXP S3SEXP, SEXP S4SEXP, SEXP S5SEXP, SEXP S6SEXP, SEXP pp1SEXP, SEXP pp2SEXP, SEXP pp3SEXP, SEXP pp4SEXP, SEXP pp5SEXP, SEXP pp6SEXP) {
+List newcalcQ6(const List S1, const List S2, const List S3, const List S4, const List S5, const List S6, const NumericVector& pp1, const NumericVector& pp2, const NumericVector& pp3, const NumericVector& pp4, const NumericVector& pp5, const NumericVector& pp6, const NumericMatrix& tau, const double kappa);
+RcppExport SEXP _MTFM_newcalcQ6(SEXP S1SEXP, SEXP S2SEXP, SEXP S3SEXP, SEXP S4SEXP, SEXP S5SEXP, SEXP S6SEXP, SEXP pp1SEXP, SEXP pp2SEXP, SEXP pp3SEXP, SEXP pp4SEXP, SEXP pp5SEXP, SEXP pp6SEXP, SEXP tauSEXP, SEXP kappaSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -185,24 +221,28 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const NumericVector& >::type pp4(pp4SEXP);
     Rcpp::traits::input_parameter< const NumericVector& >::type pp5(pp5SEXP);
     Rcpp::traits::input_parameter< const NumericVector& >::type pp6(pp6SEXP);
-    rcpp_result_gen = Rcpp::wrap(newcalcQ6(S1, S2, S3, S4, S5, S6, pp1, pp2, pp3, pp4, pp5, pp6));
+    Rcpp::traits::input_parameter< const NumericMatrix& >::type tau(tauSEXP);
+    Rcpp::traits::input_parameter< const double >::type kappa(kappaSEXP);
+    rcpp_result_gen = Rcpp::wrap(newcalcQ6(S1, S2, S3, S4, S5, S6, pp1, pp2, pp3, pp4, pp5, pp6, tau, kappa));
     return rcpp_result_gen;
 END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
+    {"_MTFM_odds_no_sharing", (DL_FUNC) &_MTFM_odds_no_sharing, 3},
+    {"_MTFM_odds_sharing", (DL_FUNC) &_MTFM_odds_sharing, 3},
     {"_MTFM_finnerK", (DL_FUNC) &_MTFM_finnerK, 2},
     {"_MTFM_pp", (DL_FUNC) &_MTFM_pp, 3},
     {"_MTFM_kappa2", (DL_FUNC) &_MTFM_kappa2, 4},
     {"_MTFM_kappa3", (DL_FUNC) &_MTFM_kappa3, 4},
     {"_MTFM_kappa4", (DL_FUNC) &_MTFM_kappa4, 4},
     {"_MTFM_stroverlap", (DL_FUNC) &_MTFM_stroverlap, 2},
-    {"_MTFM_calcQpair", (DL_FUNC) &_MTFM_calcQpair, 4},
-    {"_MTFM_newcalcQ2", (DL_FUNC) &_MTFM_newcalcQ2, 4},
-    {"_MTFM_newcalcQ3", (DL_FUNC) &_MTFM_newcalcQ3, 6},
-    {"_MTFM_newcalcQ4", (DL_FUNC) &_MTFM_newcalcQ4, 8},
-    {"_MTFM_newcalcQ5", (DL_FUNC) &_MTFM_newcalcQ5, 10},
-    {"_MTFM_newcalcQ6", (DL_FUNC) &_MTFM_newcalcQ6, 12},
+    {"_MTFM_calcQpair", (DL_FUNC) &_MTFM_calcQpair, 6},
+    {"_MTFM_newcalcQ2", (DL_FUNC) &_MTFM_newcalcQ2, 6},
+    {"_MTFM_newcalcQ3", (DL_FUNC) &_MTFM_newcalcQ3, 8},
+    {"_MTFM_newcalcQ4", (DL_FUNC) &_MTFM_newcalcQ4, 10},
+    {"_MTFM_newcalcQ5", (DL_FUNC) &_MTFM_newcalcQ5, 12},
+    {"_MTFM_newcalcQ6", (DL_FUNC) &_MTFM_newcalcQ6, 14},
     {NULL, NULL, 0}
 };
 
