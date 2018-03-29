@@ -10,8 +10,9 @@
 #' @export
 PPmarginal.multiple.fn <- function (SM2, dis, thr, TOdds, tol = 1e-04, N0, ND,nsnps) 
 {
+	nd <- length(dis)    	
 	kappas <- c()
-	for(j in 1:length(TOdds)) kappas <- c(kappas,calckappa(nsnps=nsnps,p=2/nsnps,ndis=Nd,target.odds=TOdds[j]))
+	for(j in 1:length(TOdds)) kappas <- c(kappas,calckappa(nsnps=nsnps,p=2/nsnps,ndis=nd,target.odds=TOdds[j]))
     traits <- paste(dis, collapse = "-")
     bestmod.thr <- best.models(SM2[dis], cpp.thr = thr)
     M <- lapply(bestmod.thr, "[[", "str")
@@ -27,7 +28,6 @@ PPmarginal.multiple.fn <- function (SM2, dis, thr, TOdds, tol = 1e-04, N0, ND,ns
     message("\n\nCPP threshold = ", thr, "\n\tn.each (", paste(dis, 
         collapse = "/"), ") = ", paste(sapply(M[dis], length), 
         collapse = "/"))
-    nd <- length(dis)    
     pp <- vector("list",length=nd) 
     #mpp <- vector("list",length=nd)  
        
