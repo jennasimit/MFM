@@ -2,40 +2,53 @@
 #' @param SM2 List of snpmod objects for a set of diseases
 #' @param dis Vector of diseases for fine-mapping (subset from those in SM2)
 #' @param thr Threshold such that the smallest set of models has cumulative PP >= thr
-#' @param kappa Vector of sharing values
+#' @param TOdds Vector of target odds of no sharing to sharing
+#'	...
 #' @param N0 number of shared controls
 #' @param ND list of number of cases for a set of diseases
 #' @return List consisting of PP: marginal PP for models and MPP: marginal PP of SNP inclusion
 #' @export
-PPmarginal.multiple.fn <- function(SM2,dis,thr,kappa,tol=0.0001,N0,ND) {
-
-traits <- paste(dis,collapse="-")
-  
-  bestmod.thr <- best.models(SM2[dis],cpp.thr=thr) 
-  M <- lapply(bestmod.thr, "[[", "str") 
-  pr <- lapply(bestmod.thr, "[[", "prior") 
-  abf <- lapply(bestmod.thr, "[[", "logABF") 
-  PP <- lapply(bestmod.thr, "[[", "PP") 
-  p0 <- snpprior(n=nsnps,expected=2)["0"] 
-   
-  STR=M[dis] 
-  ABF=abf[dis] 
-  PP <- PP[dis] 
-  pr=pr[dis]
-  ND=ND[dis]
-  message("\n\nCPP threshold = ",thr, "\n\tn.each (",paste(dis,collapse="/"),") = ",paste(sapply(M[dis],length),collapse="/")) 
-  ret <- marginalpp(STR,ABF,PP,pr,kappa,p0,tol,N0,ND) 
-  pp <- ret$shared.pp
-  mpp <- lapply(pp,MPP.fn)
-  names(pp) <- dis
-  
-  
- MPP <- lapply(mpp,t)
- K <- length(dis)
-for(k in 2:K) MPP <- smartbind(MPP, t(mpp[[k]]),fill=0)
-
-return(list(PP=pp,MPP=MPP))
+PPmarginal.multiple.fn <- function (SM2, dis, thr, TOdds, tol = 1e-04, N0, ND,nsnps) 
+{
+	kappas <- c()
+	for(j in 1:length(TOdds)) kappas <- c(kappas,calckappa(nsnps=nsnps,p=2/nsnps,ndis=Nd,target.odds=TOdds[j]))
+    traits <- paste(dis, collapse = "-")
+    bestmod.thr <- best.models(SM2[dis], cpp.thr = thr)
+    M <- lapply(bestmod.thr, "[[", "str")
+    pr <- lapply(bestmod.thr, "[[", "prior")
+    abf <- lapply(bestmod.thr, "[[", "logABF")
+    PP <- lapply(bestmod.thr, "[[", "PP")
+    p0 <- snpprior(n = nsnps, expected = 2)["0"]
+    STR = M[dis]
+    ABF = abf[dis]
+    PP <- PP[dis]
+    pr = pr[dis]
+    ND = ND[dis]
+    message("\n\nCPP threshold = ", thr, "\n\tn.each (", paste(dis, 
+        collapse = "/"), ") = ", paste(sapply(M[dis], length), 
+        collapse = "/"))
+    nd <- length(dis)    
+    pp <- vector("list",length=nd) 
+    #mpp <- vector("list",length=nd)  
+       
+     for(kappa in kappas) {
+     ret <- marginalpp(STR, ABF, pr, kappa, p0, tol, N0, ND,nsnps)    
+     for(i in 1:nd) pp[[i]] <- cbind(pp[[i]],ret[[i]]$shared.pp)
+     } 
+      for(i in 1:nd) {
+       pp[[i]] <- cbind(ret[[i]]$single.pp/sum(ret[[i]]$single.pp),pp[[i]])
+       colnames(pp[[i]]) <- paste("pp",c("null",round(TOdds,2)),sep=".")
+       rownames(pp[[i]]) <- rownames(ret[[i]])
+     #  mpp[[i]] <- lapply(pp[[i]], MPP.fn)
+       }
+    mpp <- lapply(pp, MPP.fn)
+    names(pp) <- dis
+    MPP <- lapply(mpp, t)
+    K <- length(dis)
+    for (k in 2:K) MPP <- smartbind(MPP, t(mpp[[k]]), fill = 0)
+    return(list(PP = pp, MPP = MPP))
 }
+
 
 #' @title Approximate (fast) marginal PP for models of a set of diseases, sharing information between the diseases
 #' @param SM2 List of snpmod objects for a set of diseases

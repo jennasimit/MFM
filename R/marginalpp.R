@@ -87,6 +87,7 @@ marginalpp <- function(STR, ABF, pr, kappa, p0, tol=0.0001,N0,ND,nsnps) {
     tau <- outer(0:maxsnps,0:maxsnps,calctau,nsnps=nsnps,kappa=kappa)
     N <- sum(unlist(ND))+N0
     ABF.orig <- ABF
+    PP <- vector("list",n)
     for(i in seq_along(STR)) {
         ## Mk <- unlist(lapply(strsplit(STR[[j]],"%"),length)) # model sizes
         eta <- 0.5 * nsnpspermodel[[i]] * log((ND[[i]]+N0)/N) # when eta = 0 the results match for dis=c(t1,t2) and dis=c(t2,t1)

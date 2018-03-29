@@ -4,14 +4,21 @@
 \alias{calckappa}
 \title{calckappa}
 \usage{
-calckappa(nsnps, p, target.odds)
+calckappa(nsnps, p, ndis, target.odds)
 }
 \arguments{
 \item{nsnps}{number of snps in the region}
 
-\item{p}{probability any snp is causal (assumes a binomial distribution for the number of causal snps, with expected number = p * nsnps)}
+\item{p}{probability any snp is causal (assumes a binomial
+distribution for the number of causal snps, with expected
+number = p * nsnps)}
 
-\item{target.odds}{prior odds of any sharing of causal variants between any pair of traits}
+\item{ndis}{number of diseases}
+
+\item{target.odds}{prior odds of NO SHARING of causal variants
+between a single trait and any of the other trait. ie a value
+< 1 indicates a prior expectation that no sharing is less
+likely than sharing.}
 }
 \value{
 the value of kappa corresponding to supplied target.odds

@@ -4,12 +4,15 @@
 \alias{calcpp}
 \title{calcpp}
 \usage{
-calcpp(pr, lBF)
+calcpp(pr, lBF, norm = TRUE)
 }
 \arguments{
 \item{pr}{vector or matrix of priors}
 
 \item{lBF}{vector of log ABF}
+
+\item{norm}{if TRUE (default) normalise so sum(pp) (or rowSum(pp)
+if matrix) is 1. otherwise just return pr * exp(lBF)}
 }
 \value{
 vector or matrix of pp
