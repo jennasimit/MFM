@@ -43,9 +43,10 @@ PPmarginal.multiple.fn <- function (SM2, dis, thr, TOdds, tol = 1e-04, N0, ND,ns
        }
     mpp <- lapply(pp, MPP.fn)
     names(pp) <- dis
-    MPP <- lapply(mpp, t)
+    mpp1 <- lapply(mpp, t)
     K <- length(dis)
-    for (k in 2:K) MPP <- smartbind(MPP, t(mpp[[k]]), fill = 0)
+    MPP <- mpp1[[1]] 
+    for (k in 2:K) MPP <- smartbind(MPP, mpp1[[k]], fill = 0)
     return(list(PP = pp, MPP = MPP))
 }
 
