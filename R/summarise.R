@@ -211,36 +211,43 @@ tmp <- unlist(strsplit(cmpp,"[.]"))[c(TRUE,FALSE,FALSE,FALSE)]
 PPmarg <- pp
 for(k in 1:K) {
 ind <- which(rownames(PPmarg[[k]])=="1")
-if(length(ind)>0) rownames(PPmarg[[k]])[ind] <- "m0.0.0.0"
-PPmarg[[k]] <- rbind(PPmarg[[k]][grep("m0.0.0.0",rownames(PPmarg[[k]])),] ,PPmarg[[k]][grep("rs",rownames(PPmarg[[k]])),])
-rownames(PPmarg[[k]])[1] <- "null.0.0.0"
-tmp <- rownames(PPmarg[[k]])
-rn <- character(length(tmp))
-Grn <- character(length(tmp))
-for(l in 1:length(tmp)) {
- tmp1 <- unlist(strsplit(tmp[l],"%"))
- sp <- unlist(strsplit(tmp1,"[.]"))[c(TRUE,FALSE,FALSE,FALSE)] 
- rn[l] <- paste(sp,collapse=".")
- 
- gg <- NULL
- for(ll in 1:length(sp)) gg<- c(gg,G[grep(sp[ll],colnames(MPP))]) 
- Grn[l] <- paste(gg[order(gg)],collapse=".")
- }
- 
-rownames(PPmarg[[k]]) <- rn
-
- 
- gPPmarg <- PPmarg[[k]]
- rownames(gPPmarg) <- Grn
-
- 
- mods <- unique(rownames(gPPmarg))
- nm <- length(mods)
- gPP[[k]] <- matrix(0,ncol=length(shared),nrow=nm,dimnames=list(mods,shared))
- for(mm in 1:nm)  gPP[[k]][mm,] <- apply(matrix(gPPmarg[Grn==mods[mm],],ncol=length(shared),byrow=FALSE),2,sum)
-}
-
-return(list(mppGS=mppGS,gPP=gPP))
+if (length(ind) > 0) {
+            rownames(PPmarg[[k]])[ind] <- "m0.0.0.0"
+            rsnames <- rownames(PPmarg[[k]])[grep("rs", rownames(PPmarg[[k]]))]
+        PPmarg[[k]] <- as.data.frame(rbind(PPmarg[[k]][grep("m0.0.0.0", rownames(PPmarg[[k]])), 
+            ], PPmarg[[k]][grep("rs", rownames(PPmarg[[k]])), ]))
+        rownames(PPmarg[[k]])[1] <- "null.0.0.0"
+        rownames(PPmarg[[k]])[-1] <- rsnames
+        }
+        tmp <- rownames(PPmarg[[k]])
+        rn <- character(length(tmp))
+        Grn <- character(length(tmp))
+        for (l in 1:length(tmp)) {
+            tmp1 <- unlist(strsplit(tmp[l], "%"))
+            sp <- unlist(strsplit(tmp1, "[.]"))[c(TRUE, FALSE, 
+                FALSE, FALSE)]
+            rn[l] <- paste(sp, collapse = ".")
+            gg <- NULL
+            for (ll in 1:length(sp)) gg <- c(gg, G[grep(sp[ll], 
+                colnames(MPP))])
+            Grn[l] <- paste(gg[order(gg)], collapse = ".")
+            if(Grn[l] == "") Grn[l] <- "null"
+        }
+        rownames(PPmarg[[k]]) <- rn
+        gPPmarg <- PPmarg[[k]]
+        rownames(gPPmarg) <- Grn
+        mods <- unique(rownames(gPPmarg))
+        nm <- length(mods)
+        gPP[[k]] <- matrix(0, ncol = length(shared), nrow = nm, 
+            dimnames = list(mods, shared))
+        for (mm in 1:nm) {
+         mat <- as.matrix(gPPmarg[Grn == mods[mm], ], ncol = length(shared), byrow = FALSE)
+         if(dim(mat)[1]==1) {
+         	gPP[[k]][mm, ] <- as.vector(mat)
+         	} else { gPP[[k]][mm, ] <- apply(mat, 2, sum) }
+         }
+    }
+    return(list(mppGS = mppGS, gPP = gPP))
 }
 
 
