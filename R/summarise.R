@@ -235,8 +235,7 @@ if (length(ind) > 0) {
         }
         rownames(PPmarg[[k]]) <- rn
         gPPmarg <- PPmarg[[k]]
-        rownames(gPPmarg) <- Grn
-        mods <- unique(rownames(gPPmarg))
+        mods <- unique(Grn)
         nm <- length(mods)
         gPP[[k]] <- matrix(0, ncol = length(shared), nrow = nm, 
             dimnames = list(mods, shared))
