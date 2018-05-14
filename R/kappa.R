@@ -58,5 +58,7 @@ calckappa <- function(nsnps,p,ndis,target.odds) {
     ## k <- seq(1,10,by=0.1)
     ## o <- sapply(k,odds_sharing,p=prob)
     ## plot(k,o,type="b")
-    optimize(f, c(1,1000))$minimum
+    out <- optimize(f, c(1,900000))$minimum
+    if(900000-out<0.5) warning("Optimizing kappa near boundary, maximum value 900,000")	
+    return(out)
 }
