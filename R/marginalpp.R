@@ -89,7 +89,7 @@ marginalpp <- function(STR, ABF, pr, kappa, p0, tol=0.0001,N0,ND,nsnps,
     }
     maxsnps <- max(unlist(nsnpspermodel))
     tau <- outer(0:maxsnps,0:maxsnps,calctau,nsnps=nsnps,kappa=kappa)
-    N <- sum(unlist(ND)) + sum(unlist(ID)) + N0
+    N <- sum(unlist(ND)) + sum(unlist(I0)) + N0
     ABF.orig <- ABF
     PP <- vector("list",n)
     for(i in seq_along(STR)) {
