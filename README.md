@@ -36,11 +36,13 @@ biocLite("snpStats")
 ```
 R2GUESS, a dependency of GUESSFM, has the dependency mixOmics, which is available from Bioconductor for R versions >=3.5
 and at cran in archive form for R < 3.5.
-``` R >= 3.5:
+``` R 
+# R >= 3.5:
 source("https://bioconductor.org/biocLite.R")
 biocLite("mixOmics")
 ```
-``` R < 3.5:
+``` R 
+# R < 3.5:
 install.packages("mixOmics")
 ```
 
