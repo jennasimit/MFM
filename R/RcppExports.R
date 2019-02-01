@@ -2,58 +2,58 @@
 # Generator token: 10BE3573-1514-4C36-9D1C-5A225CD40393
 
 odds_no_sharing <- function(kappa, p, ndis) {
-    .Call('_MTFM_odds_no_sharing', PACKAGE = 'MTFM', kappa, p, ndis)
+    .Call('_MFM_odds_no_sharing', PACKAGE = 'MFM', kappa, p, ndis)
 }
 
 odds_sharing <- function(kappa, p, ndis) {
-    .Call('_MTFM_odds_sharing', PACKAGE = 'MTFM', kappa, p, ndis)
+    .Call('_MFM_odds_sharing', PACKAGE = 'MFM', kappa, p, ndis)
 }
 
 finnerK <- function(lvec, n) {
-    .Call('_MTFM_finnerK', PACKAGE = 'MTFM', lvec, n)
+    .Call('_MFM_finnerK', PACKAGE = 'MFM', lvec, n)
 }
 
 pp <- function(l, n, v) {
-    .Call('_MTFM_pp', PACKAGE = 'MTFM', l, n, v)
+    .Call('_MFM_pp', PACKAGE = 'MFM', l, n, v)
 }
 
 kappa2 <- function(pk, n, maxn, LP) {
-    .Call('_MTFM_kappa2', PACKAGE = 'MTFM', pk, n, maxn, LP)
+    .Call('_MFM_kappa2', PACKAGE = 'MFM', pk, n, maxn, LP)
 }
 
 kappa3 <- function(pk, n, maxn, LP) {
-    .Call('_MTFM_kappa3', PACKAGE = 'MTFM', pk, n, maxn, LP)
+    .Call('_MFM_kappa3', PACKAGE = 'MFM', pk, n, maxn, LP)
 }
 
 kappa4 <- function(pk, n, maxn, LP) {
-    .Call('_MTFM_kappa4', PACKAGE = 'MTFM', pk, n, maxn, LP)
+    .Call('_MFM_kappa4', PACKAGE = 'MFM', pk, n, maxn, LP)
 }
 
 stroverlap <- function(x, y) {
-    .Call('_MTFM_stroverlap', PACKAGE = 'MTFM', x, y)
+    .Call('_MFM_stroverlap', PACKAGE = 'MFM', x, y)
 }
 
 calcQpair <- function(S1, S2, pp1, pp2, tau, kappa) {
-    .Call('_MTFM_calcQpair', PACKAGE = 'MTFM', S1, S2, pp1, pp2, tau, kappa)
+    .Call('_MFM_calcQpair', PACKAGE = 'MFM', S1, S2, pp1, pp2, tau, kappa)
 }
 
 newcalcQ2 <- function(S1, S2, pp1, pp2, tau, kappa) {
-    .Call('_MTFM_newcalcQ2', PACKAGE = 'MTFM', S1, S2, pp1, pp2, tau, kappa)
+    .Call('_MFM_newcalcQ2', PACKAGE = 'MFM', S1, S2, pp1, pp2, tau, kappa)
 }
 
 newcalcQ3 <- function(S1, S2, S3, pp1, pp2, pp3, tau, kappa) {
-    .Call('_MTFM_newcalcQ3', PACKAGE = 'MTFM', S1, S2, S3, pp1, pp2, pp3, tau, kappa)
+    .Call('_MFM_newcalcQ3', PACKAGE = 'MFM', S1, S2, S3, pp1, pp2, pp3, tau, kappa)
 }
 
 newcalcQ4 <- function(S1, S2, S3, S4, pp1, pp2, pp3, pp4, tau, kappa) {
-    .Call('_MTFM_newcalcQ4', PACKAGE = 'MTFM', S1, S2, S3, S4, pp1, pp2, pp3, pp4, tau, kappa)
+    .Call('_MFM_newcalcQ4', PACKAGE = 'MFM', S1, S2, S3, S4, pp1, pp2, pp3, pp4, tau, kappa)
 }
 
 newcalcQ5 <- function(S1, S2, S3, S4, S5, pp1, pp2, pp3, pp4, pp5, tau, kappa) {
-    .Call('_MTFM_newcalcQ5', PACKAGE = 'MTFM', S1, S2, S3, S4, S5, pp1, pp2, pp3, pp4, pp5, tau, kappa)
+    .Call('_MFM_newcalcQ5', PACKAGE = 'MFM', S1, S2, S3, S4, S5, pp1, pp2, pp3, pp4, pp5, tau, kappa)
 }
 
 newcalcQ6 <- function(S1, S2, S3, S4, S5, S6, pp1, pp2, pp3, pp4, pp5, pp6, tau, kappa) {
-    .Call('_MTFM_newcalcQ6', PACKAGE = 'MTFM', S1, S2, S3, S4, S5, S6, pp1, pp2, pp3, pp4, pp5, pp6, tau, kappa)
+    .Call('_MFM_newcalcQ6', PACKAGE = 'MFM', S1, S2, S3, S4, S5, S6, pp1, pp2, pp3, pp4, pp5, pp6, tau, kappa)
 }
 

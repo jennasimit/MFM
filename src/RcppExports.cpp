@@ -8,7 +8,7 @@ using namespace Rcpp;
 
 // odds_no_sharing
 double odds_no_sharing(const double kappa, const NumericVector p, const int ndis);
-RcppExport SEXP _MTFM_odds_no_sharing(SEXP kappaSEXP, SEXP pSEXP, SEXP ndisSEXP) {
+RcppExport SEXP _MFM_odds_no_sharing(SEXP kappaSEXP, SEXP pSEXP, SEXP ndisSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -21,7 +21,7 @@ END_RCPP
 }
 // odds_sharing
 double odds_sharing(const double kappa, const NumericVector p, const int ndis);
-RcppExport SEXP _MTFM_odds_sharing(SEXP kappaSEXP, SEXP pSEXP, SEXP ndisSEXP) {
+RcppExport SEXP _MFM_odds_sharing(SEXP kappaSEXP, SEXP pSEXP, SEXP ndisSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -34,7 +34,7 @@ END_RCPP
 }
 // finnerK
 double finnerK(NumericVector lvec, double n);
-RcppExport SEXP _MTFM_finnerK(SEXP lvecSEXP, SEXP nSEXP) {
+RcppExport SEXP _MFM_finnerK(SEXP lvecSEXP, SEXP nSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -46,7 +46,7 @@ END_RCPP
 }
 // pp
 double pp(double l, double n, double v);
-RcppExport SEXP _MTFM_pp(SEXP lSEXP, SEXP nSEXP, SEXP vSEXP) {
+RcppExport SEXP _MFM_pp(SEXP lSEXP, SEXP nSEXP, SEXP vSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -59,7 +59,7 @@ END_RCPP
 }
 // kappa2
 double kappa2(double pk, double n, double maxn, NumericVector LP);
-RcppExport SEXP _MTFM_kappa2(SEXP pkSEXP, SEXP nSEXP, SEXP maxnSEXP, SEXP LPSEXP) {
+RcppExport SEXP _MFM_kappa2(SEXP pkSEXP, SEXP nSEXP, SEXP maxnSEXP, SEXP LPSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -73,7 +73,7 @@ END_RCPP
 }
 // kappa3
 double kappa3(double pk, double n, double maxn, NumericVector LP);
-RcppExport SEXP _MTFM_kappa3(SEXP pkSEXP, SEXP nSEXP, SEXP maxnSEXP, SEXP LPSEXP) {
+RcppExport SEXP _MFM_kappa3(SEXP pkSEXP, SEXP nSEXP, SEXP maxnSEXP, SEXP LPSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -87,7 +87,7 @@ END_RCPP
 }
 // kappa4
 double kappa4(double pk, double n, double maxn, NumericVector LP);
-RcppExport SEXP _MTFM_kappa4(SEXP pkSEXP, SEXP nSEXP, SEXP maxnSEXP, SEXP LPSEXP) {
+RcppExport SEXP _MFM_kappa4(SEXP pkSEXP, SEXP nSEXP, SEXP maxnSEXP, SEXP LPSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -101,7 +101,7 @@ END_RCPP
 }
 // stroverlap
 IntegerVector stroverlap(const IntegerVector& x, const IntegerVector& y);
-RcppExport SEXP _MTFM_stroverlap(SEXP xSEXP, SEXP ySEXP) {
+RcppExport SEXP _MFM_stroverlap(SEXP xSEXP, SEXP ySEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -113,7 +113,7 @@ END_RCPP
 }
 // calcQpair
 List calcQpair(const List S1, const List S2, const NumericVector& pp1, const NumericVector& pp2, const NumericMatrix& tau, const double kappa);
-RcppExport SEXP _MTFM_calcQpair(SEXP S1SEXP, SEXP S2SEXP, SEXP pp1SEXP, SEXP pp2SEXP, SEXP tauSEXP, SEXP kappaSEXP) {
+RcppExport SEXP _MFM_calcQpair(SEXP S1SEXP, SEXP S2SEXP, SEXP pp1SEXP, SEXP pp2SEXP, SEXP tauSEXP, SEXP kappaSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -129,7 +129,7 @@ END_RCPP
 }
 // newcalcQ2
 List newcalcQ2(const List S1, const List S2, const NumericVector& pp1, const NumericVector& pp2, const NumericMatrix& tau, const double kappa);
-RcppExport SEXP _MTFM_newcalcQ2(SEXP S1SEXP, SEXP S2SEXP, SEXP pp1SEXP, SEXP pp2SEXP, SEXP tauSEXP, SEXP kappaSEXP) {
+RcppExport SEXP _MFM_newcalcQ2(SEXP S1SEXP, SEXP S2SEXP, SEXP pp1SEXP, SEXP pp2SEXP, SEXP tauSEXP, SEXP kappaSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -145,7 +145,7 @@ END_RCPP
 }
 // newcalcQ3
 List newcalcQ3(const List S1, const List S2, const List S3, const NumericVector& pp1, const NumericVector& pp2, const NumericVector& pp3, const NumericMatrix& tau, const double kappa);
-RcppExport SEXP _MTFM_newcalcQ3(SEXP S1SEXP, SEXP S2SEXP, SEXP S3SEXP, SEXP pp1SEXP, SEXP pp2SEXP, SEXP pp3SEXP, SEXP tauSEXP, SEXP kappaSEXP) {
+RcppExport SEXP _MFM_newcalcQ3(SEXP S1SEXP, SEXP S2SEXP, SEXP S3SEXP, SEXP pp1SEXP, SEXP pp2SEXP, SEXP pp3SEXP, SEXP tauSEXP, SEXP kappaSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -163,7 +163,7 @@ END_RCPP
 }
 // newcalcQ4
 List newcalcQ4(const List S1, const List S2, const List S3, const List S4, const NumericVector& pp1, const NumericVector& pp2, const NumericVector& pp3, const NumericVector& pp4, const NumericMatrix& tau, const double kappa);
-RcppExport SEXP _MTFM_newcalcQ4(SEXP S1SEXP, SEXP S2SEXP, SEXP S3SEXP, SEXP S4SEXP, SEXP pp1SEXP, SEXP pp2SEXP, SEXP pp3SEXP, SEXP pp4SEXP, SEXP tauSEXP, SEXP kappaSEXP) {
+RcppExport SEXP _MFM_newcalcQ4(SEXP S1SEXP, SEXP S2SEXP, SEXP S3SEXP, SEXP S4SEXP, SEXP pp1SEXP, SEXP pp2SEXP, SEXP pp3SEXP, SEXP pp4SEXP, SEXP tauSEXP, SEXP kappaSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -183,7 +183,7 @@ END_RCPP
 }
 // newcalcQ5
 List newcalcQ5(const List S1, const List S2, const List S3, const List S4, const List S5, const NumericVector& pp1, const NumericVector& pp2, const NumericVector& pp3, const NumericVector& pp4, const NumericVector& pp5, const NumericMatrix& tau, const double kappa);
-RcppExport SEXP _MTFM_newcalcQ5(SEXP S1SEXP, SEXP S2SEXP, SEXP S3SEXP, SEXP S4SEXP, SEXP S5SEXP, SEXP pp1SEXP, SEXP pp2SEXP, SEXP pp3SEXP, SEXP pp4SEXP, SEXP pp5SEXP, SEXP tauSEXP, SEXP kappaSEXP) {
+RcppExport SEXP _MFM_newcalcQ5(SEXP S1SEXP, SEXP S2SEXP, SEXP S3SEXP, SEXP S4SEXP, SEXP S5SEXP, SEXP pp1SEXP, SEXP pp2SEXP, SEXP pp3SEXP, SEXP pp4SEXP, SEXP pp5SEXP, SEXP tauSEXP, SEXP kappaSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -205,7 +205,7 @@ END_RCPP
 }
 // newcalcQ6
 List newcalcQ6(const List S1, const List S2, const List S3, const List S4, const List S5, const List S6, const NumericVector& pp1, const NumericVector& pp2, const NumericVector& pp3, const NumericVector& pp4, const NumericVector& pp5, const NumericVector& pp6, const NumericMatrix& tau, const double kappa);
-RcppExport SEXP _MTFM_newcalcQ6(SEXP S1SEXP, SEXP S2SEXP, SEXP S3SEXP, SEXP S4SEXP, SEXP S5SEXP, SEXP S6SEXP, SEXP pp1SEXP, SEXP pp2SEXP, SEXP pp3SEXP, SEXP pp4SEXP, SEXP pp5SEXP, SEXP pp6SEXP, SEXP tauSEXP, SEXP kappaSEXP) {
+RcppExport SEXP _MFM_newcalcQ6(SEXP S1SEXP, SEXP S2SEXP, SEXP S3SEXP, SEXP S4SEXP, SEXP S5SEXP, SEXP S6SEXP, SEXP pp1SEXP, SEXP pp2SEXP, SEXP pp3SEXP, SEXP pp4SEXP, SEXP pp5SEXP, SEXP pp6SEXP, SEXP tauSEXP, SEXP kappaSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -229,24 +229,24 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_MTFM_odds_no_sharing", (DL_FUNC) &_MTFM_odds_no_sharing, 3},
-    {"_MTFM_odds_sharing", (DL_FUNC) &_MTFM_odds_sharing, 3},
-    {"_MTFM_finnerK", (DL_FUNC) &_MTFM_finnerK, 2},
-    {"_MTFM_pp", (DL_FUNC) &_MTFM_pp, 3},
-    {"_MTFM_kappa2", (DL_FUNC) &_MTFM_kappa2, 4},
-    {"_MTFM_kappa3", (DL_FUNC) &_MTFM_kappa3, 4},
-    {"_MTFM_kappa4", (DL_FUNC) &_MTFM_kappa4, 4},
-    {"_MTFM_stroverlap", (DL_FUNC) &_MTFM_stroverlap, 2},
-    {"_MTFM_calcQpair", (DL_FUNC) &_MTFM_calcQpair, 6},
-    {"_MTFM_newcalcQ2", (DL_FUNC) &_MTFM_newcalcQ2, 6},
-    {"_MTFM_newcalcQ3", (DL_FUNC) &_MTFM_newcalcQ3, 8},
-    {"_MTFM_newcalcQ4", (DL_FUNC) &_MTFM_newcalcQ4, 10},
-    {"_MTFM_newcalcQ5", (DL_FUNC) &_MTFM_newcalcQ5, 12},
-    {"_MTFM_newcalcQ6", (DL_FUNC) &_MTFM_newcalcQ6, 14},
+    {"_MFM_odds_no_sharing", (DL_FUNC) &_MFM_odds_no_sharing, 3},
+    {"_MFM_odds_sharing", (DL_FUNC) &_MFM_odds_sharing, 3},
+    {"_MFM_finnerK", (DL_FUNC) &_MFM_finnerK, 2},
+    {"_MFM_pp", (DL_FUNC) &_MFM_pp, 3},
+    {"_MFM_kappa2", (DL_FUNC) &_MFM_kappa2, 4},
+    {"_MFM_kappa3", (DL_FUNC) &_MFM_kappa3, 4},
+    {"_MFM_kappa4", (DL_FUNC) &_MFM_kappa4, 4},
+    {"_MFM_stroverlap", (DL_FUNC) &_MFM_stroverlap, 2},
+    {"_MFM_calcQpair", (DL_FUNC) &_MFM_calcQpair, 6},
+    {"_MFM_newcalcQ2", (DL_FUNC) &_MFM_newcalcQ2, 6},
+    {"_MFM_newcalcQ3", (DL_FUNC) &_MFM_newcalcQ3, 8},
+    {"_MFM_newcalcQ4", (DL_FUNC) &_MFM_newcalcQ4, 10},
+    {"_MFM_newcalcQ5", (DL_FUNC) &_MFM_newcalcQ5, 12},
+    {"_MFM_newcalcQ6", (DL_FUNC) &_MFM_newcalcQ6, 14},
     {NULL, NULL, 0}
 };
 
-RcppExport void R_init_MTFM(DllInfo *dll) {
+RcppExport void R_init_MFM(DllInfo *dll) {
     R_registerRoutines(dll, NULL, CallEntries, NULL, NULL);
     R_useDynamicSymbols(dll, FALSE);
 }

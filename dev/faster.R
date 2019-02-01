@@ -6,11 +6,11 @@ if(!file.exists(f))
 ## work around for bug in testthat/data.table collaboration
 ## https://stackoverflow.com/questions/13106018/data-table-error-when-used-through-knitr-gwidgetswww/13131555#13131555
 assignInNamespace("cedta.override",
-                  c(data.table:::cedta.override,"MTFM"),
+                  c(data.table:::cedta.override,"MFM"),
                   "data.table")
 
 library(testthat)
-library(MTFM)
+library(MFM)
 library(data.table)
 ## sharing parameter, largish, so we expect to see a big enough difference to check if working
 S <- 100

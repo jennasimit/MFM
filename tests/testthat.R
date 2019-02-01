@@ -1,4 +1,4 @@
 library(testthat)
-library(MTFM)
+library(MFM)
 
-test_check("MTFM")
+test_check("MFM")

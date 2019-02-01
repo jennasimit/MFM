@@ -4,7 +4,8 @@
 \alias{marginalpp}
 \title{Marginal PP for models sharing information between diseases}
 \usage{
-marginalpp(STR, ABF, pr, kappa, p0, tol = 1e-04, N0, ND, nsnps)
+marginalpp(STR, ABF, pr, kappa, p0, tol = 1e-04, N0, ND, nsnps,
+  I0 = as.list(rep(0, length(ND))))
 }
 \arguments{
 \item{STR}{list of models for diseases 1, 2, ..., n, each given in
@@ -26,6 +27,10 @@ included, and if not will be prepended.}
 \item{N0}{number of shared controls}
 
 \item{ND}{list of number of cases for a set of diseases}
+
+\item{nsnps}{number of snps in region}
+
+\item{I0}{list of number of controls for a set of diseases that are only used as controls for a specific disease (ie not shared)}
 
 \item{PP}{list of posterior probability vectors for diseases 1, 2,
 ...}

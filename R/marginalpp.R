@@ -628,7 +628,7 @@ calcpp <- function(pr,lBF,norm=TRUE) {
 ##' @examples
 ##' x <- 1:10
 ##' log(sum(x))
-##' MTFM:::logsum(log(x))
+##' MFM:::logsum(log(x))
 logsum <- function(x) {
   my.max <- max(x)                              ##take out the maximum value in log form
   my.res <- my.max + log(sum(exp(x - my.max )))
@@ -650,7 +650,7 @@ logsum <- function(x) {
 ##' x <- 1001:1010
 ##' y <- 1:10
 ##' log(x-y)
-##' MTFM:::logdiff(log(x),log(y))
+##' MFM:::logdiff(log(x),log(y))
 logdiff <- function(x,y) {
   my.max <- max(x,y)                              ##take out the maximum value in log form
   my.res <- my.max + log(exp(x - my.max ) - exp(y-my.max))

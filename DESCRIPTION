@@ -1,15 +1,17 @@
-Package: MTFM 
-Title: Multi-trait fine-mapping
-Description: A Bayesian multinomial stochastic search with a sharing
-	     scale parameter is used to identify the best SNP models
-	     for each trait.  The sharing scale is used in the joint
-	     prior probabilities to give higher weight to joint models
-	     that have at least one shared variant between the
-	     traits. The best SNP models are summarised in terms of
-	     sets of correlated SNPs that have a similar impact on the
-	     trait. This approach is an extension of the GUESSFM
-	     software for fine-mapping of single traits and relies on
-	     several of the functions from that software.
+Package: MFM 
+Title: Multinomial fine-mapping
+Description: MFM is a computationally efficient approach to simultaneously 
+	     fine-map several related diseases and borrows information 
+	     between diseases in a Bayesian framework. Joint models that 
+	     have at least one shared causal variant between a pair of 
+	     diseases are given higher weight than those without shared 
+	     variants. MFM has greater accuracy than single disease analysis 
+	     when shared causal variants exist, and negligible loss of 
+	     precision otherwise. The best SNP models are summarised in terms of
+             sets of correlated SNPs that have a similar impact on the
+             trait. This approach is an extension of the GUESSFM
+             software for fine-mapping of single traits and relies on
+             several of the functions from that software.
 Version: 0.1 
 Date: 2017-07-17 
 Authors@R: c(person("Jenn", "Asimit", role=c("aut","cre"), email = "ja628@cam.ac.uk"),
@@ -17,7 +19,6 @@ Authors@R: c(person("Jenn", "Asimit", role=c("aut","cre"), email = "ja628@cam.ac
 Maintainer: Jenn Asimit <ja628@cam.ac.uk> 
 Depends: R (>= 3.3.0)
 Imports:
-	annotSnpStats,
 	snpStats,
 	GUESSFM,
 	methods,
@@ -28,7 +29,6 @@ Imports:
 	data.table,
 	gtools,
 	fields,
-	dplyr
 Suggests:
 	testthat,
 	roxygen2

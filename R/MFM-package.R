@@ -1,4 +1,4 @@
-#'@useDynLib MTFM
+#'@useDynLib MFM
 #'@importFrom Rcpp evalCpp
 #' @importFrom methods as
 #' @importFrom stats dbinom model.matrix sd terms
