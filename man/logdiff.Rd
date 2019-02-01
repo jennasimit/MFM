@@ -27,7 +27,7 @@ ie you want log(exp(x) - exp(y))
 x <- 1001:1010
 y <- 1:10
 log(x-y)
-MTFM:::logdiff(log(x),log(y))
+MFM:::logdiff(log(x),log(y))
 }
 \author{
 Chris Wallace

@@ -25,7 +25,7 @@ but logsum(x) should work.
 \examples{
 x <- 1:10
 log(sum(x))
-MTFM:::logsum(log(x))
+MFM:::logsum(log(x))
 }
 \author{
 Claudia Giambartolomei
