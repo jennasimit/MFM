@@ -13,15 +13,18 @@
 ##'     \code{"1"} OR \code{"0"}.  It is assumed that all elements of
 ##'     ABF, PP and pr below follow this same order.
 ##' @param ABF list of log(ABF) vectors for diseases 1, 2, ...
-##' @param PP list of posterior probability vectors for diseases 1, 2,
-##'     ...
 ##' @param pr list of prior probabilities for the models in M
 ##' @param kappa single value or vector of values to consider for the
 ##'     sharing scale parameter.  the value of kappa=1 must be
 ##'     included, and if not will be prepended.
 ##' @param p0 prior probability of the null model
-#' @param N0 number of shared controls
-#' @param ND list of number of cases for a set of diseases
+##' @param tol
+##' @param N0 number of shared controls
+##' @param ND list of number of cases for a set of diseases
+##' @param nsnps number of snps in region
+##' @param I0 list of number of controls for a set of diseases that are only used as controls for a specific disease (ie not shared)
+##' @param PP list of posterior probability vectors for diseases 1, 2,
+##'     ...
 ##' @return list of: - single.pp: list of pp for each model in
 ##'     STR[[i]] for disease i - shared.pp: list of pp for each model
 ##'     in STR[[i]] for disease i, - STR: not quite as input,
@@ -30,7 +33,8 @@
 ##'     supplied
 ##' @export
 ##' @author Chris Wallace
-marginalpp <- function(STR, ABF, pr, kappa, p0, tol=0.0001,N0,ND,nsnps) {
+marginalpp <- function(STR, ABF, pr, kappa, p0, tol=0.0001,N0,ND,nsnps,
+                       I0=as.list(rep(0,length(ND)))) {
     n <- length(STR) # number of diseases
     if(n<2)
         stop("Need at least 2 diseases")
@@ -85,12 +89,12 @@ marginalpp <- function(STR, ABF, pr, kappa, p0, tol=0.0001,N0,ND,nsnps) {
     }
     maxsnps <- max(unlist(nsnpspermodel))
     tau <- outer(0:maxsnps,0:maxsnps,calctau,nsnps=nsnps,kappa=kappa)
-    N <- sum(unlist(ND))+N0
+    N <- sum(unlist(ND)) + sum(unlist(I0)) + N0
     ABF.orig <- ABF
     PP <- vector("list",n)
     for(i in seq_along(STR)) {
         ## Mk <- unlist(lapply(strsplit(STR[[j]],"%"),length)) # model sizes
-        eta <- 0.5 * nsnpspermodel[[i]] * log((ND[[i]]+N0)/N) # when eta = 0 the results match for dis=c(t1,t2) and dis=c(t2,t1)
+        eta <- 0.5 * nsnpspermodel[[i]] * log((ND[[i]]+N0+I0[[i]])/N) # when eta = 0 the results match for dis=c(t1,t2) and dis=c(t2,t1)
         ABF[[i]] <- ABF[[i]] + eta
         PP[[i]] <- calcpp(pr[[i]],ABF[[i]],norm=FALSE) ## unnormalise - just pr * exp(ABF)
     }
@@ -128,6 +132,7 @@ marginalpp <- function(STR, ABF, pr, kappa, p0, tol=0.0001,N0,ND,nsnps) {
         ## tmp <- do.call("cbind", tmp) # matrix with columns indexed by k
         alt.prior[[i]] <- tmp #addnull(tmp, p0)
         alt.pp[[i]] <- calcpp(alt.prior[[i]], ABF[[i]])
+        PP[[i]] <- exp(PP[[i]] - logsum(PP[[i]])) # now normalise regular PP
     }
     
     ## and add back null model with specified p0
