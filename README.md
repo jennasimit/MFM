@@ -30,16 +30,17 @@ install.packages("gtools")
 Some packages (e.g. snpStats) are from Bioconductor.  For these, you need to do
 
 ```R
-## try http:// if https:// URLs are not supported
-source("https://bioconductor.org/biocLite.R")
-biocLite("snpStats")
+if (!requireNamespace("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+BiocManager::install("snpStats")
 ```
 R2GUESS, a dependency of GUESSFM, has the dependency mixOmics, which is available from Bioconductor for R versions >=3.5
 and at cran in archive form for R < 3.5.
 ``` R 
 # R >= 3.5:
-source("https://bioconductor.org/biocLite.R")
-biocLite("mixOmics")
+if (!requireNamespace("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+BiocManager::install("mixOmics")
 ```
 ``` R 
 # R < 3.5:
