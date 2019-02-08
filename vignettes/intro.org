@@ -1,0 +1,85 @@
+#+TITLE: MFM: Multinomial Fine Mapping
+#+AUTHORS: Jenn Asimit and Chris Wallace
+#+EMAIL: ja628@cam.ac.uk and cew54@cam.ac.uk
+#+DATE: 2019-02-05 Tue
+#+DESCRIPTION:
+#+KEYWORDS:
+#+LANGUAGE: en
+#+OPTIONS: H:3 num:t toc:nil \n:nil @:t ::t |:t ^:t -:t f:t *:t <:t
+#+OPTIONS: TeX:t LaTeX:t skip:nil d:(not LOGBOOK) todo:t pri:nil tags:t
+
+#+EXPORT_SELECT_TAGS: export
+#+EXPORT_EXCLUDE_TAGS: noexport
+#+LINK_UP:
+#+LINK_HOME:
+#+XSLT:
+
+#+latex_header: \usepackage{fullpage} +latex: %\VignetteEngine{knitr::knitr}%\VignetteIndexEntry{MFM Introduction}{\Large 
+#\textbf{Jenn Asimit // \href{http://jennasimit.github.io}{web} // \href{mailto:ja628 at cam.ac.uk}{email}
+#\textbf{Chris Wallace // \href{http://chr1swallace.github.io}{web} // \href{mailto:cew54 at cam.ac.uk}{email}
+
+# ---
+# title: "Introduction"
+# output:
+#   html_document:
+#     toc: true
+#     theme: united
+# ---
+
+
+#+begin_html
+<!--
+%\VignetteEngine{knitr}
+%\VignetteIndexEntry{MFM Introduction}
+-->
+<h1>MFM Introduction</h1>
+<font color="grey">
+*Jenn Asimit // [web](http://jennasimit.github.io) // [email](mailto:ja628 at cam.ac.uk)*  
+*Chris Wallace // [web](http://chr1swallace.github.io) // [email](mailto:cew54 at cam.ac.uk)*  
+</font>
+#+end_html
+
+#+TOC: headlines 1
+
+
+
+* Introduction
+
+MFM is a package to simultaneously fine-map (select most likely set of causal variants) multiple related diseases with the 
+same set of controls and share information between them. It relies on output from the package 
+[[https://github.com/chr1swallace/GUESSFM][GUESSFM]], which fine-maps a single disease via stochastic search in a Bayesian 
+framework using [[http://www.bgx.org.uk/software/guess.html][GUESS]].
+
+This vignette introduces MFM, and gives an illustration with simulated data for two diseases with shared controls.
+
+
+* MFM Overview
+
+The computational efficiency of MFM is greatly increased by making use of our approximation to the joint Bayes' factor BF that 
+depends only the individual disease BFs (from a logistic regression model) and the sample and model sizes. In the setting of $d$ 
+diseases, the multinomial BF, $B^M$ is approximated by
+
+$$B^M \approx \eta + \sum_d B_d^L, $$
+
+where $B_d^L$ is the Bayes' factor for disease $d$ and $eta$ is a term that depends on the sample and model sizes.
+
+Rather than reporting posterior probabilities for each SNP model, we focus on SNP groups that we construct such that SNPs in the same group are in LD, have a similar effect on 
+disease, and rarely appear together in a disease model. 
+
+* Simulation Example
+
+Genotype and phenotype data of two diseases with shared controls may be simulated using 
+[[https://github.com/jennasimit/MFMextra][MFMextra]], together with 
+[[http://mathgen.stats.ox.ac.uk/genetics_software/hapgen/hapgen2.html][hapgen2]] and reference panel data (e.g. 
+[ftp://ftp.1000genomes.ebi.ac.uk/vol1/ftp/release/20130502/][CEU of 1000 Genomes]]. 
+
+#+begin_src R :ravel :label=install
+library(devtools)
+install_github("jennasimit/MFMextra")
+#+end_src
+
+
+
+# Local Variables:
+# firestarter: (org-ravel-latex-noweb-dispatch)
+# End:
