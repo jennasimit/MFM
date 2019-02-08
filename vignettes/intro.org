@@ -78,6 +78,133 @@ library(devtools)
 install_github("jennasimit/MFMextra")
 #+end_src
 
+First, we need to simulate some null data from which we will sample to generate the two sets of cases with shared 
+controls. The entire genetic region of interest is simulated to maintain the linkage disequilibrium (LD) structure. 
+In running simulations, there are typically some models of interest that are selected based on analysis of the 
+data. For example, in a [[https://journals.plos.org/plosgenetics/article?id=10.1371/journal.pgen.1005272][previous 
+fine-mapping]] of \textit{IL2RA} in a large international sample, several SNP groups were identified as having the 
+majority of the association signals with the autoimmune diseases multiple sclerosis (MS) and type 1 diabetes (T1D). 
+These groups, together with previously identified lead SNPs for other autoimmune diseases (autoimmune thyroid 
+disease (ATD; rs706799), alopecia areata (AA; rs3118470), rheumatoid arthritis (RA; rs10795791), and ulcerative 
+colitis (UC; rs4147359)) will compose models that contribute to the non-negligible posterior probabilities. 
+Therefore, for computational efficiency, we extract these SNPs from the generated data and focus on these in the 
+fine-mapping simulation analysis.
+
+Below is an example of hapgen2 code to simulate the \textit{IL2RA} region based on the [ftp://ftp.1000genomes.ebi.ac.uk/vol1/ftp/release/20130502/][CEU of 1000 Genomes$
+reference panel, where keep-snps.txt would be the list of snp positions that are to be retained.
+
+#+BEGIN_SRC R :ravel :label=nullsim
+./hapgen2
+-m ./genetic_map_chr10_combined_b37.txt \
+-l ./IL2RA.impute.legend \
+-h ./IL2RA.impute.hap \
+-n 100000 0 # 100,000 \
+-no_haps_output -no_gens_output \
+-t ./keep-snps.txt \
+-Ne 11418 \
+-o ./null_100k \
+#+END_SRC
+
+
+Here is an example where diseases 1 and 2 have two causal variants of which one is shared: both have causal variant rs61839660 in
+group A; disease 1 has additional causal variant rs56382813 in group D; disease 2 has additional causal variant rs11594656 in
+group C. The file null_100k.controls.gen is output from the above hapgen code and needed below.  An example file is provided with
+this vignette, but for efficiency the convert.fn step has been run and the resulting matrix has been transposed for quicker
+reading into R (transposed matrix has SNPs as columns and individuals as rows).
+
+#+begin_src R :ravel :label=sim
+library(MFMextra)
+#g0 <- read.table(null_100k.controls.gen,header=FALSE,as.is=TRUE)
+#Nn <- (dim(g0)[2]-5)/3
+#snpG <- convert.fn(g0) # convert to a genotype matrix (snp rows, indiv cols)
+
+snpG <- read.table(gzfile("null_100k.controls_Gmat.transposed.txt.gz"),header=TRUE) # dim: 100000 x 26
+snpG <- t(snpG) # 26 x 100000
+rownames(snpG) <- paste(rownames(snpG),".0.0.0",sep="")
+
+dis <- c("AD","AC")
+c12 <- grep("rs61839660.0.0.0",rownames(snpG)) # A SNP for both diseases
+c1 <- grep("rs56382813.0.0.0",rownames(snpG))  # D SNP for disease 1
+c2 <- grep("rs11594656.0.0.0",rownames(snpG))  # C SNP for disease 2
+
+causals1.ind <- c(c12,c1)
+causals2.ind <- c(c12,c2)
+prev <- 0.1 # prevalence for purpose of method evaluation
+
+N0 <- 3000 # disease 1 size
+N1 <- 3000 # disease 2 size
+N2 <- 3000 # controls size
+ND=vector("list",2) # vector of sizes for cases
+names(ND) <- dis
+ND[[1]]<-N1
+ND[[2]]<-N2
+
+
+OR1a <- 1.4 # OR for A, disease 1
+OR2a <- 1.25  # OR for D, disease 1
+OR1b <- 1.4 # OR for A, disease 2
+OR2b <- 1.25  # OR for C, disease 2
+
+sim <- phen.gen.fn(beta1=c(log(prev),log(OR1a),log(OR2a)),beta2=c(log(prev),log(OR1b),log(OR2b)),snpG=snpG,N0=N0,N1=N1,N2=N2,causals1.ind,causals2.ind)
+Gm <- new("SnpMatrix",(sim$G+1)) # snp cols, indivs rows # convert to SnpMatrix format, needed for GUESSFM
+Gm
+#+END_SRC
+
+Next, we run GUESSFM on each disease with controls and this is our input to MFM.
+
+#+begin_src R :ravel :label=GFM
+c0 <- grep("control.",rownames(Gm))
+c1 <- grep("case1.",rownames(Gm))
+c2 <- grep("case2.",rownames(Gm))
+
+G1 <- Gm[c(c0,c1),] # SnpMatrix for disease 1 and controls
+G2 <- Gm[c(c0,c2),] # SnpMatrix for disease 2 and	controls
+t1pheno <- c(rep(0,N0),rep(1,N1)) # phenotype vector for disease 1 and  controls
+t2pheno <- c(rep(0,N0),rep(1,N2)) # phenotype vector for disease 2 and  controls
+
+DIRin <- "tmpdirectory" # path to a directory where to save GUESSFM results
+mydir <- paste(DIRin,"/GFMbvs",sep="") # store GUESSFM results in a previously created directory DIRin
+SM2 <- vector("list",2) # collect the GUESSFM output from each disease
+
+  run.bvs(X=G1,Y=t1pheno,tag.r2=.95,nexp=3,nsave=2000,gdir=mydir,wait=TRUE) # run with expected number of causal variants 3 for better mixing
+  d <- read.snpmod(mydir)
+  load(file.path(mydir,"tags.RData"))
+  dx <- expand.tags(d,tags)
+  best <- best.models(dx,pp.thr=0.0001)
+  abf <- abf.calc(y=t1pheno,x=G1,models=best$str,family="binomial")
+  SM2[[1]] <- abf2snpmod(abf,expected=2,nsnps=854) # find approximate Bayes' factors (ABFs) using expected number of causal variants 2 and the number of SNPs in the re$
+
+  run.bvs(X=G2,Y=t2pheno,tag.r2=.95,nexp=3,nsave=2000,gdir=mydir,wait=TRUE)
+  d <- read.snpmod(mydir)
+  load(file.path(mydir,"tags.RData"))
+  dx <- expand.tags(d,tags)
+  best <- best.models(dx,pp.thr=0.0001)
+  abf <- abf.calc(y=t2pheno,x=G2,models=best$str,family="binomial")
+  SM2[[2]] <- abf2snpmod(abf,expected=2,nsnps=854)
+
+names(SM2) <- dis
+
+#+END_SRC
+
+#+begin_src R :ravel :label=MFM
+target.odds <- 1 # could also provide a vector here; this setting corresponds to a 50:50 odds of non-sharing to sharing of causal variants between diseases
+load("IL2RA-snpgroups.RData") # load snpGroups from provided vignettes file
+PP <- PPmarginal.multiple.fn(SM2,dis,thr=0.999,target.odds,tol=0.0001,N0,ND,nsnps=854)
+#+END_SRC
+
+The PP object is a list with components:
+PP, containing the SNP model posterior probabilities for each disease and each target odds
+MPP, containing the SNP marginal posterior probabilities of inclusion and each target odds
+It is easier to interpret in terms of SNP groups, so next run the following:
+
+#+begin_src R :ravel :label=MPP
+mpp.pp <- MPP.PP.groups.fn(PP$MPP,PP$PP,dis,c("null",target.odds),snpGroups)
+#+END_SRC
+
+The mpp.pp object is a list with componets:
+mppGS: matrix of SNP group MPP
+gPP: list of disease SNP group PP matrices
+
 
 
 # Local Variables:
