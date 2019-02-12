@@ -164,8 +164,8 @@ make.snp.groups.fn <- function(groups,rdis,mppi.thr=.05) {
 
 
 #' @title Summarise, for a set of diseases, posterior probabilities and marginal posterior probabilities by SNP groups
-#' @param MPP Matrix of marginal probabilities for a set of diseases and kappa values; output from MPP.fn
-#' @param pp List consisting of posterior probability matrices for each disease; output from PP.fn 
+#' @param MPP Matrix of marginal probabilities for a set of diseases and kappa values; output as MPP from PPmarginal.multiple.fn
+#' @param pp List consisting of posterior probability matrices for each disease; output as PP from PPmarginal.multiple.fn 
 #' @param dis Vector of disease names
 #' @param shared Vector of kappa values
 #' @return List consisting of mppGS: matrix of marginal probabilities by SNP groups; gPP: list of PP matrices by SNP groups
@@ -176,7 +176,7 @@ alltraits <- dis
 
 G <- character(length(colnames(MPP)))
 ind <- which(colnames(MPP)=="1")
-if(length(ind)>0) colnames(MPP)[ind] <- "m0.0.0.0"
+if(length(ind)>0) colnames(MPP)[ind] <- "m0"
 for(k in 1:length(colnames(MPP))) {
 check <- names(snpGroups)[grep(colnames(MPP)[k],snpGroups)];#print(c(k,colnames(MPP)[k],check))
 if(length(check)!=0) {
@@ -194,16 +194,13 @@ notinG <- setdiff(notinG,"m0")
 if(length(notinG)>0) {
 mppS <- matrix(0,ncol=length(notinG),nrow=dim(MPP)[1],dimnames=list(rownames(MPP),notinG))
 for(k in 1:length(notinG)) mppS[,k] <- apply(as.matrix(MPP[,which(G==notinG[k])]),1,sum)
-##colnames(mppS) <- unlist(strsplit(colnames(mppS),"[.]"))[c(TRUE,FALSE,FALSE,FALSE)]
 mppGS <- cbind(mppG,mppS)
 }
-##rownames(mppGS) <- c(paste(alltraits[1],shared,sep="."),paste(alltraits[2],shared,sep="."),paste(alltraits[3],shared,sep="."))
 rownames(mppGS) <- paste(rep(alltraits,each=length(shared)),shared,sep=".")
 
 
 gPP <- vector("list",K)
 cmpp <- colnames(MPP)
-tmp <- unlist(strsplit(cmpp,"[.]"))[c(TRUE,FALSE,FALSE,FALSE)] 
 
 # mppGS output
 # find pp and pp by group
@@ -212,41 +209,34 @@ PPmarg <- pp
 for(k in 1:K) {
 ind <- which(rownames(PPmarg[[k]])=="1")
 if (length(ind) > 0) {
-            rownames(PPmarg[[k]])[ind] <- "m0.0.0.0"
-            rsnames <- rownames(PPmarg[[k]])[grep("rs", rownames(PPmarg[[k]]))]
-        PPmarg[[k]] <- as.data.frame(rbind(PPmarg[[k]][grep("m0.0.0.0", rownames(PPmarg[[k]])), 
-            ], PPmarg[[k]][grep("rs", rownames(PPmarg[[k]])), ]))
-        rownames(PPmarg[[k]])[1] <- "null.0.0.0"
-        rownames(PPmarg[[k]])[-1] <- rsnames
+            rownames(PPmarg[[k]])[ind] <- "null"
         }
-        tmp <- rownames(PPmarg[[k]])
+	tmp <- rownames(PPmarg[[k]])
         rn <- character(length(tmp))
         Grn <- character(length(tmp))
         for (l in 1:length(tmp)) {
             tmp1 <- unlist(strsplit(tmp[l], "%"))
-            sp <- unlist(strsplit(tmp1, "[.]"))[c(TRUE, FALSE, 
-                FALSE, FALSE)]
-            rn[l] <- paste(sp, collapse = ".")
+			rn[l] <- tmp[l]
             gg <- NULL
-            for (ll in 1:length(sp)) gg <- c(gg, G[grep(sp[ll], 
-                colnames(MPP))])
-            Grn[l] <- paste(gg[order(gg)], collapse = ".")
+            for (ll in 1:length(tmp1)) gg <- c(gg, G[grep(tmp1[ll],colnames(MPP))])
+            Grn[l] <- paste(gg[order(gg)], collapse = ".")	
             if(Grn[l] == "") Grn[l] <- "null"
         }
         rownames(PPmarg[[k]]) <- rn
         gPPmarg <- PPmarg[[k]]
         mods <- unique(Grn)
         nm <- length(mods)
-        gPP[[k]] <- matrix(0, ncol = length(shared), nrow = nm, 
+        gPP[[k]] <- matrix(0, ncol = length(shared), nrow = nm,
             dimnames = list(mods, shared))
         for (mm in 1:nm) {
          mat <- as.matrix(gPPmarg[Grn == mods[mm], ], ncol = length(shared), byrow = FALSE)
-         if(dim(mat)[1]==1) {
-         	gPP[[k]][mm, ] <- as.vector(mat)
-         	} else { gPP[[k]][mm, ] <- apply(mat, 2, sum) }
+         if(dim(mat)[2]==1) {
+                gPP[[k]][mm, ] <- as.vector(mat)
+                } else { gPP[[k]][mm, ] <- apply(mat, 2, sum) }
          }
     }
     return(list(mppGS = mppGS, gPP = gPP))
+
 }
 
 
