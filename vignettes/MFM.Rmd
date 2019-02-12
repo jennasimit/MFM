@@ -164,7 +164,7 @@ Next, we run GUESSFM on each disease with controls and this is our input to MFM.
     names(SM2) <- dis
 
     target.odds <- 1 # could also provide a vector here; this setting corresponds to a 50:50 odds of non-sharing to sharing of causal variants between diseases
-    load("IL2RA-snpgroups.RData") # load snpGroups from provided vignettes file
+    # snpGroups included in MFMextra package
     PP <- PPmarginal.multiple.fn(SM2,dis,thr=0.999,target.odds,tol=0.0001,N0,ND,nsnps=854)
 ```
 
