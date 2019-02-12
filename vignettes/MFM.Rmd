@@ -20,14 +20,6 @@ knitr::opts_chunk$set(
 )
 ```
 
-# Table of Contents
-
-1.  [Introduction](#org72673d2)
-2.  [MFM Overview](#orgb256e08)
-3.  [Simulation Example](#org1a577b0)
-
-
-<a id="org72673d2"></a>
 
 # Introduction
 
@@ -39,7 +31,6 @@ framework using [GUESS](http://www.bgx.org.uk/software/guess.html).
 This vignette introduces MFM, and gives an illustration with simulated data for two diseases with shared controls.
 
 
-<a id="orgb256e08"></a>
 
 # MFM Overview
 
@@ -55,7 +46,6 @@ Rather than reporting posterior probabilities for each SNP model, we focus on SN
 disease, and rarely appear together in a disease model. 
 
 
-<a id="org1a577b0"></a>
 
 # Simulation Example
 
