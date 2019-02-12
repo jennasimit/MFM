@@ -16,3 +16,6 @@ make.snp.groups.fn(groups, rdis, mppi.thr = 0.05)
 \value{
 List of SNP groups that summarise fine-mapping results
 }
+\description{
+SNP groups that have marginal PP of inclusion (MPPi) above a threshold for some disease
+}

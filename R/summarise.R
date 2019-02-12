@@ -1,3 +1,44 @@
+check.fn <- function(k,msep,out,gnames) {
+#' called by MPP.fn
+     g <- length(gnames)
+     p1 <- numeric(g) 
+     for(j in 1:g) { 
+     ind1 <- gnames[j] %in% msep[[k]]
+     if(ind1) p1[j] <- out[k] 
+     }
+     return(p1)
+    	}
+
+####
+
+sep.fn <- function(k,mnames) {
+#' called by MPP.fn
+   msep <- unlist(strsplit(as.character(mnames[k]),"%"))
+   return(msep)
+   }
+
+####
+
+#' @title Find marginal PP of inclusion for SNPs (MPPi) in marginal models at each kappa value
+#' @param PP1 is a matrix of marginal model PP for a trait (i.e. one list component of output from sharedmPP.fn),
+#' @return a matrix of MPPi, where rows are SNPs and columns are kappa
+#' @export
+#' @author Jenn Asimit
+MPP.fn<-function(PP1) {
+ mnames <- rownames(PP1) 
+  msep <- apply(matrix(1:length(mnames),ncol=1),1,sep.fn,mnames)
+  gnames <- unique(unlist(msep)) # snps     
+   mpp1 <- NULL
+   for(k in 1:dim(PP1)[2]) {
+    tmp1 <- apply(matrix(1:length(mnames),ncol=1),1,check.fn,msep,PP1[,k],gnames)  
+    mpp1 <- rbind(mpp1,apply(tmp1,1,sum) )
+    }    
+   mpp1 <- data.frame(mpp1,row.names=colnames(PP1))  
+   names(mpp1)<-gnames    
+return(t(mpp1))
+}
+
+
 #' @title Marginal PP for models of a set of diseases, sharing information between the diseases
 #' @param SM2 List of snpmod objects for a set of diseases
 #' @param dis Vector of diseases for fine-mapping (subset from those in SM2)
@@ -8,7 +49,8 @@
 #' @param ND list of number of cases for a set of diseases
 #' @return List consisting of PP: marginal PP for models and MPP: marginal PP of SNP inclusion
 #' @export
-PPmarginal.multiple.fn <- function (SM2, dis, thr, TOdds, tol = 1e-04, N0, ND,nsnps) 
+#' @author Jenn Asimit
+PPmarginal.multiple.fn <- function (SM2, dis, thr, TOdds, N0, ND,nsnps) 
 {
 	nd <- length(dis)    	
 	kappas <- c()
@@ -32,7 +74,7 @@ PPmarginal.multiple.fn <- function (SM2, dis, thr, TOdds, tol = 1e-04, N0, ND,ns
     #mpp <- vector("list",length=nd)  
        
      for(kappa in kappas) {
-     ret <- marginalpp(STR, ABF, pr, kappa, p0, tol, N0, ND,nsnps)    
+     ret <- marginalpp(STR, ABF, pr, kappa, p0, N0, ND,nsnps)    
      for(i in 1:nd) pp[[i]] <- cbind(pp[[i]],ret[[i]]$shared.pp)
      } 
       for(i in 1:nd) {
@@ -61,6 +103,7 @@ PPmarginal.multiple.fn <- function (SM2, dis, thr, TOdds, tol = 1e-04, N0, ND,ns
 #' @param ND list of number of cases for a set of diseases
 #' @return List consisting of PP: marginal PP for models and MPP: marginal PP of SNP inclusion
 #' @export
+#' @author Jenn Asimit
 PPmarginal.multiple.fast.fn <- function(SM2,dis,thr,kappa,tol=0.0001,fthr,N0,ND) {
 
 traits <- paste(dis,collapse="-")
@@ -121,6 +164,7 @@ pp.filter.fn <- function(pp,pthr) {
 #' @param pthr Threshold for keeping probabilities from SNPs/models that are greater than pthr for at least one kappa value
 #' @return Matrix of probabilites that are plotted (only SNPs/models with MPP/PP > pthr at some kappa value are retained)
 #' @export
+#' @author Jenn Asimit
 PP.plot.fn <- function(pp,pthr) { 
  if(!is.na(pthr)) pp1 <- pp.filter.fn(pp,pthr=pthr)
  m <- dim(pp1)[1]
@@ -170,6 +214,7 @@ make.snp.groups.fn <- function(groups,rdis,mppi.thr=.05) {
 #' @param shared Vector of kappa values
 #' @return List consisting of mppGS: matrix of marginal probabilities by SNP groups; gPP: list of PP matrices by SNP groups
 #' @export
+#' @author Jenn Asimit
 MPP.PP.groups.fn <- function(MPP,pp,dis,shared,snpGroups) {
  K <- length(dis)
 alltraits <- dis

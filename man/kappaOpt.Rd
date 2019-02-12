@@ -16,3 +16,6 @@ kappaOpt(Nd, Ps2, nsnps)
 \value{
 Optimal kappa value
 }
+\description{
+Kappa selection
+}

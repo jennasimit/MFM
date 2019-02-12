@@ -153,7 +153,8 @@ Next, we run GUESSFM on each disease with controls and this is our input to MFM.
     DIRin <- "tmpdirectory" # path to a directory where to save GUESSFM results
     mydir <- paste(DIRin,"/GFMbvs",sep="") # store GUESSFM results in a previously created directory DIRin
     SM2 <- vector("list",2) # collect the GUESSFM output from each disease
-    
+
+      library(GUESSFM)	    
       run.bvs(X=G1,Y=t1pheno,tag.r2=.95,nexp=3,nsave=2000,gdir=mydir,wait=TRUE) # run with expected number of causal variants 3 for better mixing
       d <- read.snpmod(mydir)
       load(file.path(mydir,"tags.RData"))

@@ -4,7 +4,7 @@
 \alias{PPmarginal.multiple.fn}
 \title{Marginal PP for models of a set of diseases, sharing information between the diseases}
 \usage{
-PPmarginal.multiple.fn(SM2, dis, thr, TOdds, tol = 1e-04, N0, ND, nsnps)
+PPmarginal.multiple.fn(SM2, dis, thr, TOdds, N0, ND, nsnps)
 }
 \arguments{
 \item{SM2}{List of snpmod objects for a set of diseases}
@@ -22,4 +22,10 @@ PPmarginal.multiple.fn(SM2, dis, thr, TOdds, tol = 1e-04, N0, ND, nsnps)
 }
 \value{
 List consisting of PP: marginal PP for models and MPP: marginal PP of SNP inclusion
+}
+\description{
+Marginal PP for models of a set of diseases, sharing information between the diseases
+}
+\author{
+Jenn Asimit
 }

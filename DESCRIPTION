@@ -12,8 +12,8 @@ Description: MFM is a computationally efficient approach to simultaneously
              trait. This approach is an extension of the GUESSFM
              software for fine-mapping of single traits and relies on
              several of the functions from that software.
-Version: 0.1 
-Date: 2017-07-17 
+Version: 0.2-1
+Date: 2019-02-12
 Authors@R: c(person("Jenn", "Asimit", role=c("aut","cre"), email = "ja628@cam.ac.uk"),
 	     person("Chris", "Wallace", role=c("aut"), email = "cew54@cam.ac.uk"))
 Maintainer: Jenn Asimit <ja628@cam.ac.uk> 
@@ -38,6 +38,6 @@ License: GPL
 Encoding: UTF-8
 LazyData: true
 LinkingTo: Rcpp, RcppArmadillo
-RoxygenNote: 6.0.1
+RoxygenNote: 6.1.1
 Roxygen: list(markdown = TRUE)
 VignetteBuilder: knitr

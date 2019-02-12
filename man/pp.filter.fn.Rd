@@ -14,3 +14,6 @@ pp.filter.fn(pp, pthr)
 \value{
 Probability matrix with the same rows as input matrix, but only columns with the maximum probability greater than the threshold are retained.
 }
+\description{
+Filter probability matrix output by threshold
+}

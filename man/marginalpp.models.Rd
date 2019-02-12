@@ -21,9 +21,9 @@ sharing scale parameter}
 \value{
 list of:
 \itemize{
-\item single.pp: list of pp for each model in M[[i]] for
+\item single.pp: list of pp for each model in M[\link{i}] for
 disease i
-\item shared.pp: list of pp for each model in M[[i]] for
+\item shared.pp: list of pp for each model in M[\link{i}] for
 disease i, M (not quite as input, reordered so null model is
 first row
 \item ABF: not quite as input, repordered so null model
@@ -31,9 +31,6 @@ is first
 \item M: reordered so null model is first row
 \item kappa: as supplied
 }
-
-[[i]: R:[i
-[[i]: R:[i
 }
 \description{
 Calculate marginal model posterior probabilities for each disease

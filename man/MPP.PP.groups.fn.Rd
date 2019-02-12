@@ -7,9 +7,9 @@
 MPP.PP.groups.fn(MPP, pp, dis, shared, snpGroups)
 }
 \arguments{
-\item{MPP}{Matrix of marginal probabilities for a set of diseases and kappa values; output from MPP.fn}
+\item{MPP}{Matrix of marginal probabilities for a set of diseases and kappa values; output as MPP from PPmarginal.multiple.fn}
 
-\item{pp}{List consisting of posterior probability matrices for each disease; output from PP.fn}
+\item{pp}{List consisting of posterior probability matrices for each disease; output as PP from PPmarginal.multiple.fn}
 
 \item{dis}{Vector of disease names}
 
@@ -17,4 +17,10 @@ MPP.PP.groups.fn(MPP, pp, dis, shared, snpGroups)
 }
 \value{
 List consisting of mppGS: matrix of marginal probabilities by SNP groups; gPP: list of PP matrices by SNP groups
+}
+\description{
+Summarise, for a set of diseases, posterior probabilities and marginal posterior probabilities by SNP groups
+}
+\author{
+Jenn Asimit
 }

@@ -16,3 +16,6 @@ p.fn(x, n, v)
 \value{
 Vector of log prior probabilities for each single trait model of given size
 }
+\description{
+Prior probability (in log units) for single trait models
+}

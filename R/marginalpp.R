@@ -18,7 +18,6 @@
 ##'     sharing scale parameter.  the value of kappa=1 must be
 ##'     included, and if not will be prepended.
 ##' @param p0 prior probability of the null model
-##' @param tol
 ##' @param N0 number of shared controls
 ##' @param ND list of number of cases for a set of diseases
 ##' @param nsnps number of snps in region
@@ -33,7 +32,7 @@
 ##'     supplied
 ##' @export
 ##' @author Chris Wallace
-marginalpp <- function(STR, ABF, pr, kappa, p0, tol=0.0001,N0,ND,nsnps,
+marginalpp <- function(STR, ABF, pr, kappa, p0, N0,ND,nsnps,
                        I0=as.list(rep(0,length(ND)))) {
     n <- length(STR) # number of diseases
     if(n<2)

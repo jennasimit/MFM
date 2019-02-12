@@ -14,3 +14,9 @@ PP.plot.fn(pp, pthr)
 \value{
 Matrix of probabilites that are plotted (only SNPs/models with MPP/PP > pthr at some kappa value are retained)
 }
+\description{
+Plot a matrix of probabilities, where rows are kappa values and columns are SNPs (MPP matrix) or models (PP matrix)
+}
+\author{
+Jenn Asimit
+}

@@ -4,7 +4,8 @@
 \alias{marginalone}
 \title{Marginal PP for models sharing information between diseases}
 \usage{
-marginalone(STR, ABF, PP, pr, kappa, p0, tol = 1e-04, fthr = 0.99, N0, ND)
+marginalone(STR, ABF, PP, pr, kappa, p0, tol = 1e-04, fthr = 0.99, N0,
+  ND)
 }
 \arguments{
 \item{STR}{list of models for diseases 1, 2, ..., n, each given in
@@ -37,14 +38,11 @@ facilities allow.}
 }
 \value{
 list of: - single.pp: list of pp for each model in
-STR[[i]] for disease i - shared.pp: list of pp for each model
-in STR[[i]] for disease i, - STR: not quite as input,
+STR[\link{i}] for disease i - shared.pp: list of pp for each model
+in STR[\link{i}] for disease i, - STR: not quite as input,
 reordered so null model is first row - ABF: not quite as
 input, repordered so null model is first row - kappa: as
 supplied
-
-[[i]: R:[i
-[[i]: R:[i
 }
 \description{
 Calculate marginal model posterior probabilities for one disease

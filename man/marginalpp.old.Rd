@@ -32,14 +32,11 @@ included, and if not will be prepended.}
 }
 \value{
 list of: - single.pp: list of pp for each model in
-STR[[i]] for disease i - shared.pp: list of pp for each model
-in STR[[i]] for disease i, - STR: not quite as input,
+STR[\link{i}] for disease i - shared.pp: list of pp for each model
+in STR[\link{i}] for disease i, - STR: not quite as input,
 reordered so null model is first row - ABF: not quite as
 input, repordered so null model is first row - kappa: as
 supplied
-
-[[i]: R:[i
-[[i]: R:[i
 }
 \description{
 Calculate marginal model posterior probabilities for each disease
