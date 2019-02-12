@@ -52,9 +52,9 @@ double odds_sharing(const double kappa, const NumericVector p, const int ndis) {
 double finnerK(NumericVector lvec, double n) {
  int K=lvec.size();
  double t1=0;
- double t2=0;
+// double t2=0;
  double t3=0;
- double tmp=0;
+// double tmp=0;
  // double out=0;
  double lsum=0;
  // int x1=0;
@@ -78,7 +78,7 @@ double finnerK(NumericVector lvec, double n) {
 
 // [[Rcpp::export]]
 double pp(double l, double n, double v) {
-  Rf_dbinom(l,n,v/n,1);
+  return( Rf_dbinom(l,n,v/n,1) );
 }
 
 // [[Rcpp::export]]
