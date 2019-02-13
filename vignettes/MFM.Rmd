@@ -4,7 +4,7 @@ author:
 - name: Jenn Asimit
   email: ja628@cam.ac.uk
 - name: Chris Wallace
-  email:cew54@cam.ac.uk
+  email: cew54@cam.ac.uk
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
