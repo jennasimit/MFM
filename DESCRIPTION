@@ -43,3 +43,5 @@ LinkingTo: Rcpp, RcppArmadillo
 RoxygenNote: 6.1.1
 Roxygen: list(markdown = TRUE)
 VignetteBuilder: knitr
+URL: https://github.com/jennasimit/MFM
+BugReports: https://github.com/jennasimit/MFM/issues
