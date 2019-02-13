@@ -46,7 +46,7 @@ List calcQpair(const List S1, // model matrix - columns are models, rows are SNP
 	       const double kappa) { 
   const int nmod1 = pp1.size();
   const int nmod2 = pp2.size();
-  const int ntau = tau.cols();
+  // const int ntau = tau.cols();
   // const int nsnp = M.nrow();
   NumericVector Q1(nmod1);
   NumericVector Q2(nmod2);
