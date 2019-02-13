@@ -2,6 +2,11 @@
 R package for simultaneous fine-mapping of genetic associations for several diseases, in a
 Bayesian framework that borrows information between the diseases.
 
+Run the following to generate the MFM website:
+```
+Rscript -e "pkgdown::build_site()"
+```
+
 ## Installation
 
 ### Short version
@@ -32,6 +37,7 @@ install.packages("data.table")
 install.packages("gtools")
 install.packages("fields")
 install.packages("cowplot")
+```
  
 Some packages (e.g. snpStats) are from Bioconductor.  For these, you need to do
 

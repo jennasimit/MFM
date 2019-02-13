@@ -40,7 +40,7 @@ diseases, the multinomial BF, \(B^M\) is approximated by
 
 \[B^M \approx \eta + \sum_d B_d^L, \]
 
-where \(B_d^L\) is the Bayes' factor for disease \(d\) and \(eta\) is a term that depends on the sample and model sizes.
+where \(B_d^L\) is the Bayes' factor for disease \(d\) and \(\eta\) is a term that depends on the sample and model sizes.
 
 Rather than reporting posterior probabilities for each SNP model, we focus on SNP groups that we construct such that SNPs in the same group are in LD, have a similar effect on 
 disease, and rarely appear together in a disease model. 
@@ -51,27 +51,32 @@ disease, and rarely appear together in a disease model.
 
 Genotype and phenotype data of two diseases with shared controls may be simulated using 
 [MFMextra](https://github.com/jennasimit/MFMextra), together with 
-[hapgen2](http://mathgen.stats.ox.ac.uk/genetics_software/hapgen/hapgen2.html) and reference panel data (e.g. 
-[<ftp://ftp.1000genomes.ebi.ac.uk/vol1/ftp/release/20130502/>][CEU of 1000 Genomes]]. 
+[hapgen2](http://mathgen.stats.ox.ac.uk/genetics_software/hapgen/hapgen2.html) and 
+reference panel data (e.g. 
+[CEU of 1000 Genomes](ftp://ftp.1000genomes.ebi.ac.uk/vol1/ftp/release/20130502/).
 
 ```{r}
     library(devtools)
     install_github("jennasimit/MFMextra")
 ```
 
-First, we need to simulate some null data from which we will sample to generate the two sets of cases with shared 
-controls. The entire genetic region of interest is simulated to maintain the linkage disequilibrium (LD) structure. 
-In running simulations, there are typically some models of interest that are selected based on analysis of the 
-data. For example, in a [previous 
-fine-mapping](https://journals.plos.org/plosgenetics/article?id=10.1371/journal.pgen.1005272) of \textit{IL2RA} in a large international sample, several SNP groups were identified as having the 
-majority of the association signals with the autoimmune diseases multiple sclerosis (MS) and type 1 diabetes (T1D). 
-These groups, together with previously identified lead SNPs for other autoimmune diseases (autoimmune thyroid 
-disease (ATD; rs706799), alopecia areata (AA; rs3118470), rheumatoid arthritis (RA; rs10795791), and ulcerative 
-colitis (UC; rs4147359)) will compose models that contribute to the non-negligible posterior probabilities. 
-Therefore, for computational efficiency, we extract these SNPs from the generated data and focus on these in the 
-fine-mapping simulation analysis.
+First, we need to simulate some null data from which we will sample to generate the two 
+sets of cases with shared controls. The entire genetic region of interest is simulated 
+to maintain the linkage disequilibrium (LD) structure. In running simulations, there are 
+typically some models of interest that are selected based on analysis of the data. For 
+example, in a [previous 
+fine-mapping](https://journals.plos.org/plosgenetics/article?id=10.1371/journal.pgen.1005272) 
+of \(IL2RA\) in a large international sample, several SNP groups were identified as 
+having the majority of the association signals with the autoimmune diseases multiple 
+sclerosis (MS) and type 1 diabetes (T1D). These groups, together with previously 
+identified lead SNPs for other autoimmune diseases (autoimmune thyroid disease (ATD; 
+rs706799), alopecia areata (AA; rs3118470), rheumatoid arthritis (RA; rs10795791), and 
+ulcerative colitis (UC; rs4147359)) will compose models that contribute to the 
+non-negligible posterior probabilities. Therefore, for computational efficiency, we 
+extract these SNPs from the generated data and focus on these in the fine-mapping 
+simulation analysis.
 
-Below is an example of hapgen2 code to simulate the \textit{IL2RA} region based on the [<ftp://ftp.1000genomes.ebi.ac.uk/vol1/ftp/release/20130502/>][CEU of 1000 Genomes]
+Below is an example of [hapgen2](http://mathgen.stats.ox.ac.uk/genetics_software/hapgen/hapgen2.html) code to simulate the \textit{IL2RA} region based on the [CEU of 1000 Genomes](ftp://ftp.1000genomes.ebi.ac.uk/vol1/ftp/release/20130502/)
 reference panel, where keep-snps.txt would be the list of snp positions that are to be retained.
 
 ```
@@ -86,9 +91,9 @@ reference panel, where keep-snps.txt would be the list of snp positions that are
     -o ./null_100k \
 ```
 
-Here is an example where diseases 1 and 2 have two causal variants of which one is shared: both have causal variant rs61839660 in
+Here is an example where diseases 1 and 2 each have two causal variants of which one is shared: both have causal variant rs61839660 in
 group A; disease 1 has additional causal variant rs56382813 in group D; disease 2 has additional causal variant rs11594656 in
-group C. The file null<sub>100k.controls.gen</sub> is output from the above hapgen code and needed below.  An example file is provided with
+group C. The file "null_100k.controls.gen" is output from the above hapgen code and needed below.  An example file is provided with
 this vignette, but for efficiency the convert.fn step has been run and the resulting matrix has been transposed for quicker
 reading into R (transposed matrix has SNPs as columns and individuals as rows).
 
@@ -178,10 +183,13 @@ package:
 
 ```{r}
     mpp.pp <- MPP.PP.groups.fn(PP$MPP,PP$PP,dis,c("null",target.odds),snpGroups)
+mpp.pp
 ```
 
 The mpp.pp object is a list with componets:
+
 * mppGS: matrix of SNP group MPP
+
 * gPP: list of disease SNP group PP matrices
 
 
