@@ -2,10 +2,19 @@
 % Please edit documentation in R/summarise.R
 \name{sep.fn}
 \alias{sep.fn}
-\title{called by MPP.fn}
+\title{internal function for MPP.fn}
 \usage{
 sep.fn(k, mnames)
 }
+\arguments{
+\item{k}{index}
+
+\item{mnames}{model names}
+}
 \description{
+internal function for MPP.fn
+}
+\author{
+Jenn Asimit
 called by MPP.fn
 }

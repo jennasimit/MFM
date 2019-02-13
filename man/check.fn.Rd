@@ -2,10 +2,22 @@
 % Please edit documentation in R/summarise.R
 \name{check.fn}
 \alias{check.fn}
-\title{called by MPP.fn}
+\title{internal function for MPP.fn}
 \usage{
 check.fn(k, msep, out, gnames)
 }
+\arguments{
+\item{k}{index}
+
+\item{msep}{output from sep.fn}
+
+\item{out}{storage vector for output}
+
+\item{gnames}{SNP group names}
+}
 \description{
-called by MPP.fn
+internal function for MPP.fn
+}
+\author{
+Jenn Asimit
 }

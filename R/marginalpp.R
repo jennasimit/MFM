@@ -180,7 +180,7 @@ calctau <- function(n1,n2,nsnps,kappa) {
     nullfirst <- function(x,wh) {
         c(x[wh],x[-wh])
     }
-#' p*eta/sum(p*eta), but with logs
+
 calc.eta <- function(p,logeta) {
     tmp <- log(p) + logeta
     exp(tmp - logsum(tmp))
@@ -522,60 +522,8 @@ which.null <- function(M) {
 }
 
 
-##' Calculate marginal model posterior probabilities for each disease 
-##'
-##' @title Marginal PP for models sharing information between diseases
-##' @param M1 model matrix for disease 1
-##' @param M2 model matrix for disease 2
-##' @param ABF1 log ABF for models in M1 for disease 1
-##' @param ABF2 log ABF for models in M2 for disease 2
-##' @param pr1 prior for models in M1
-##' @param pr2 prior for models in M2
-##' @param S single value or vector of values to consider for the
-##'     sharing scale parameter
-##' @param p0 prior probability of the null model
-##' @return list of single.pp1 (pp for each model in M1 for disease 1,
-##'     assuming ABF for all other models are approximately 1),
-##' shared
-##' @export
-##' @author Chris Wallace
-marginalpp2 <- function(M1, M2, ABF1, ABF2, pr1, pr2, S, p0) {
-    ## are any of M1, M2 the null model?
-    rs1 <- rowSums(M1)
-    if(any(rs1==0)) {
-        wh <- which(rs1==0)
-        M1 <- M1[-wh,]
-        ABF1 <- ABF1[-wh]
-    }
-    rs2 <- rowSums(M2)
-    if(any(rs2==0)) {
-        wh <- which(rs2==0)
-        M2 <- M2[-wh,]
-        ABF2 <- ABF2[-wh]
-    }
-                 
-    pp1 <- calcpp(addnull(pr1,p0),addnull(ABF1,0))
-    pp2 <- calcpp(addnull(pr2,p0),addnull(ABF2,0))
-    Q <- calcQ2_models(t(M1),t(M2),pp1[-1],pp2[-1])
-    altpr1 <- lapply(S, function(s) {
-        a <- pr1 * (1 + (s-1) * Q[[1]])
-        a/sum(a)
-    })
-    altpr1 <- (1-p0) * do.call("cbind",altpr1)
-    M1 <- addnull(M1,0)
-    app1 <- calcpp(addnull(altpr1,p0),addnull(ABF1,0)) 
 
-    altpr2 <- lapply(S, function(s) {
-        a <- pr2 * (1 + (s-1) * Q[[2]])
-        a/sum(a)
-    })
-    M2 <- addnull(M2,0)
-    altpr2 <- (1-p0) * do.call("cbind",altpr2) 
-    app2 <- calcpp(addnull(altpr2,p0),addnull(ABF2,0)) 
-    list(single.pp1=pp1,shared.pp1=app1,M1=M1,
-         single.pp2=pp2,shared.pp2=app2,M2=M2,
-         S=S)
-}
+
 ##' Internal function to add a null entry
 ##'
 ##' @title addnull

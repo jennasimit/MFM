@@ -1,5 +1,10 @@
+#' @title internal function for MPP.fn
+#' @param k index 
+#' @param msep output from sep.fn
+#' @param out storage vector for output
+#' @param gnames SNP group names
+#' @author Jenn Asimit
 check.fn <- function(k,msep,out,gnames) {
-#' called by MPP.fn
      g <- length(gnames)
      p1 <- numeric(g) 
      for(j in 1:g) { 
@@ -9,8 +14,10 @@ check.fn <- function(k,msep,out,gnames) {
      return(p1)
     	}
 
-####
-
+#' @title internal function for MPP.fn
+#' @param k index
+#' @param mnames model names
+#' @author Jenn Asimit
 sep.fn <- function(k,mnames) {
 #' called by MPP.fn
    msep <- unlist(strsplit(as.character(mnames[k]),"%"))
