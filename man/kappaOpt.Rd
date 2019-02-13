@@ -11,7 +11,7 @@ kappaOpt(Nd, Ps2, nsnps)
 
 \item{Ps2}{Probability of any shared causal variant between a disease pair}
 
-\item{n}{Number of SNPs in region}
+\item{nsnps}{Number of SNPs in region}
 }
 \value{
 Optimal kappa value

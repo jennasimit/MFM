@@ -4,8 +4,7 @@
 \alias{PPmarginal.multiple.fast.fn}
 \title{Approximate (fast) marginal PP for models of a set of diseases, sharing information between the diseases}
 \usage{
-PPmarginal.multiple.fast.fn(SM2, dis, thr, kappa, tol = 1e-04, fthr, N0,
-  ND)
+PPmarginal.multiple.fast.fn(SM2, dis, thr, kappa, fthr, N0, ND, nsnps)
 }
 \arguments{
 \item{SM2}{List of snpmod objects for a set of diseases}
@@ -21,6 +20,8 @@ PPmarginal.multiple.fast.fn(SM2, dis, thr, kappa, tol = 1e-04, fthr, N0,
 \item{N0}{number of shared controls}
 
 \item{ND}{list of number of cases for a set of diseases}
+
+\item{nsnps}{Number of SNPs in region}
 }
 \value{
 List consisting of PP: marginal PP for models and MPP: marginal PP of SNP inclusion

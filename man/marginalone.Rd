@@ -4,8 +4,7 @@
 \alias{marginalone}
 \title{Marginal PP for models sharing information between diseases}
 \usage{
-marginalone(STR, ABF, PP, pr, kappa, p0, tol = 1e-04, fthr = 0.99, N0,
-  ND)
+marginalone(STR, ABF, PP, pr, kappa, p0, fthr = 0.99, N0, ND)
 }
 \arguments{
 \item{STR}{list of models for diseases 1, 2, ..., n, each given in
@@ -28,7 +27,7 @@ included, and if not will be prepended.}
 \item{p0}{prior probability of the null model}
 
 \item{fthr}{models for all but the first disease are retained if
-their cumsum(PP) < fthr.  Ie set PP\link{j}=0 if SNP j is not in the smallest set of SNPs that satisfy cumsum(PP) < fthr.  This is an
+their cumsum(PP) < fthr.  Ie set \code{PP[j]}=0 if SNP j is not in the smallest set of SNPs that satisfy cumsum(PP) < fthr.  This is an
 APPROXIMATION, eps should be as close to 1 as your computing
 facilities allow.}
 
@@ -38,8 +37,8 @@ facilities allow.}
 }
 \value{
 list of: - single.pp: list of pp for each model in
-STR[\link{i}] for disease i - shared.pp: list of pp for each model
-in STR[\link{i}] for disease i, - STR: not quite as input,
+\code{STR[[i]]} for disease i - shared.pp: list of pp for each model
+in \code{STR[[i]]} for disease i, - STR: not quite as input,
 reordered so null model is first row - ABF: not quite as
 input, repordered so null model is first row - kappa: as
 supplied

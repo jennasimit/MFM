@@ -22,11 +22,10 @@
 ##' @param ND list of number of cases for a set of diseases
 ##' @param nsnps number of snps in region
 ##' @param I0 list of number of controls for a set of diseases that are only used as controls for a specific disease (ie not shared)
-##' @param PP list of posterior probability vectors for diseases 1, 2,
 ##'     ...
 ##' @return list of: - single.pp: list of pp for each model in
-##'     STR[[i]] for disease i - shared.pp: list of pp for each model
-##'     in STR[[i]] for disease i, - STR: not quite as input,
+##'     \code{STR[[i]]} for disease i - shared.pp: list of pp for each model
+##'     in \code{STR[[i]]} for disease i, - STR: not quite as input,
 ##'     reordered so null model is first row - ABF: not quite as
 ##'     input, repordered so null model is first row - kappa: as
 ##'     supplied
@@ -212,14 +211,14 @@ calc.eta <- function(p,logeta) {
 #' @param N0 number of shared controls
 #' @param ND list of number of cases for a set of diseases
 ##' @return list of: - single.pp: list of pp for each model in
-##'     STR[[i]] for disease i - shared.pp: list of pp for each model
-##'     in STR[[i]] for disease i, - STR: not quite as input,
+##'     \code{STR[[i]]} for disease i - shared.pp: list of pp for each model
+##'     in \code{STR[[i]]} for disease i, - STR: not quite as input,
 ##'     reordered so null model is first row - ABF: not quite as
 ##'     input, repordered so null model is first row - kappa: as
 ##'     supplied
 ##' @export
 ##' @author Chris Wallace
-marginalpp.old <- function(STR, ABF, PP, pr, kappa, p0, tol=0.0001,N0,ND) {
+marginalpp.old <- function(STR, ABF, PP, pr, kappa, p0, N0,ND) {
     n <- length(STR)
     if(n<2)
         stop("Need at least 2 diseases")
@@ -448,9 +447,9 @@ which.null <- function(M) {
 ##'     sharing scale parameter
 ##' @param p0 prior probability of the null model
 ##' @return list of:
-##' * single.pp: list of pp for each model in M[[i]] for
+##' * single.pp: list of pp for each model in \code{M[[i]]} for
 ##'   disease i
-##' * shared.pp: list of pp for each model in M[[i]] for
+##' * shared.pp: list of pp for each model in \code{M[[i]]} for
 ##'   disease i, M (not quite as input, reordered so null model is
 ##'   first row
 ##' * ABF: not quite as input, repordered so null model

@@ -21,9 +21,9 @@ sharing scale parameter}
 \value{
 list of:
 \itemize{
-\item single.pp: list of pp for each model in M[\link{i}] for
+\item single.pp: list of pp for each model in \code{M[[i]]} for
 disease i
-\item shared.pp: list of pp for each model in M[\link{i}] for
+\item shared.pp: list of pp for each model in \code{M[[i]]} for
 disease i, M (not quite as input, reordered so null model is
 first row
 \item ABF: not quite as input, repordered so null model

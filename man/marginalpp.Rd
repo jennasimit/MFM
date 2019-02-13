@@ -30,15 +30,13 @@ included, and if not will be prepended.}
 
 \item{nsnps}{number of snps in region}
 
-\item{I0}{list of number of controls for a set of diseases that are only used as controls for a specific disease (ie not shared)}
-
-\item{PP}{list of posterior probability vectors for diseases 1, 2,
+\item{I0}{list of number of controls for a set of diseases that are only used as controls for a specific disease (ie not shared)
 ...}
 }
 \value{
 list of: - single.pp: list of pp for each model in
-STR[\link{i}] for disease i - shared.pp: list of pp for each model
-in STR[\link{i}] for disease i, - STR: not quite as input,
+\code{STR[[i]]} for disease i - shared.pp: list of pp for each model
+in \code{STR[[i]]} for disease i, - STR: not quite as input,
 reordered so null model is first row - ABF: not quite as
 input, repordered so null model is first row - kappa: as
 supplied

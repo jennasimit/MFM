@@ -47,6 +47,7 @@ return(t(mpp1))
 #'	...
 #' @param N0 number of shared controls
 #' @param ND list of number of cases for a set of diseases
+#' @param nsnps number of SNPs in the region
 #' @return List consisting of PP: marginal PP for models and MPP: marginal PP of SNP inclusion
 #' @export
 #' @author Jenn Asimit
@@ -101,10 +102,11 @@ PPmarginal.multiple.fn <- function (SM2, dis, thr, TOdds, N0, ND,nsnps)
 #' @param fthr Second level filtering on all but first disease to give a faster approximation; retain SNPs within the smallest set of models such that cumulative PP >= thr
 #' @param N0 number of shared controls
 #' @param ND list of number of cases for a set of diseases
+#' @param nsnps Number of SNPs in region
 #' @return List consisting of PP: marginal PP for models and MPP: marginal PP of SNP inclusion
 #' @export
 #' @author Jenn Asimit
-PPmarginal.multiple.fast.fn <- function(SM2,dis,thr,kappa,tol=0.0001,fthr,N0,ND) {
+PPmarginal.multiple.fast.fn <- function(SM2,dis,thr,kappa,fthr,N0,ND,nsnps) {
 
 traits <- paste(dis,collapse="-")
   
@@ -131,7 +133,7 @@ traits <- paste(dis,collapse="-")
   pr=pr[dis]
   ND=ND[dis]
   message("\n\nCPP threshold = ",thr, "\n\tn.each (",paste(dis,collapse="/"),") = ",paste(sapply(M[dis],length),collapse="/")) 
-  ret <- marginalone(STR,ABF,PP,pr,kappa,p0,tol, fthr=fthr,N0,ND) # need to have each trait as 1st
+  ret <- marginalone(STR,ABF,PP,pr,kappa,p0, fthr=fthr,N0,ND) # need to have each trait as 1st
   pp[[j]] <- ret$shared.pp
   rownames(pp[[j]]) <- ret$STR
   colnames(pp[[j]]) <- paste("pp",kappa,sep=".")
@@ -212,6 +214,7 @@ make.snp.groups.fn <- function(groups,rdis,mppi.thr=.05) {
 #' @param pp List consisting of posterior probability matrices for each disease; output as PP from PPmarginal.multiple.fn 
 #' @param dis Vector of disease names
 #' @param shared Vector of kappa values
+#' @param snpGroups List of SNP groups for region
 #' @return List consisting of mppGS: matrix of marginal probabilities by SNP groups; gPP: list of PP matrices by SNP groups
 #' @export
 #' @author Jenn Asimit

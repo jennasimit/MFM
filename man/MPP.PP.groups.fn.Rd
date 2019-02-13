@@ -14,6 +14,8 @@ MPP.PP.groups.fn(MPP, pp, dis, shared, snpGroups)
 \item{dis}{Vector of disease names}
 
 \item{shared}{Vector of kappa values}
+
+\item{snpGroups}{List of SNP groups for region}
 }
 \value{
 List consisting of mppGS: matrix of marginal probabilities by SNP groups; gPP: list of PP matrices by SNP groups

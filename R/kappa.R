@@ -9,7 +9,7 @@ p.fn <- function(x,n,v) dbinom(x,size=n,prob=v/n,log=TRUE)
 #' @title Kappa selection
 #' @param Nd Number of diseases to fine-map
 #' @param Ps2 Probability of any shared causal variant between a disease pair
-#' @param n Number of SNPs in region
+#' @param nsnps Number of SNPs in region
 #' @return Optimal kappa value
 #' @export
 kappaOpt <-function(Nd,Ps2,nsnps) {

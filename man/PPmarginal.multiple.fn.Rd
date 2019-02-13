@@ -19,6 +19,8 @@ PPmarginal.multiple.fn(SM2, dis, thr, TOdds, N0, ND, nsnps)
 \item{N0}{number of shared controls}
 
 \item{ND}{list of number of cases for a set of diseases}
+
+\item{nsnps}{number of SNPs in the region}
 }
 \value{
 List consisting of PP: marginal PP for models and MPP: marginal PP of SNP inclusion

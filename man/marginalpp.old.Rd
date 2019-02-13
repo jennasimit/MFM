@@ -4,7 +4,7 @@
 \alias{marginalpp.old}
 \title{Marginal PP for models sharing information between diseases}
 \usage{
-marginalpp.old(STR, ABF, PP, pr, kappa, p0, tol = 1e-04, N0, ND)
+marginalpp.old(STR, ABF, PP, pr, kappa, p0, N0, ND)
 }
 \arguments{
 \item{STR}{list of models for diseases 1, 2, ..., n, each given in
@@ -32,8 +32,8 @@ included, and if not will be prepended.}
 }
 \value{
 list of: - single.pp: list of pp for each model in
-STR[\link{i}] for disease i - shared.pp: list of pp for each model
-in STR[\link{i}] for disease i, - STR: not quite as input,
+\code{STR[[i]]} for disease i - shared.pp: list of pp for each model
+in \code{STR[[i]]} for disease i, - STR: not quite as input,
 reordered so null model is first row - ABF: not quite as
 input, repordered so null model is first row - kappa: as
 supplied
