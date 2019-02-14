@@ -14,7 +14,7 @@ cuda	0
 history	1
 time	0
 med_RMSE	0.0316228
-seed	1550084143
+seed	1550088735
 last_sweep	55000
 run_finished	1
 null_marginal_likelihood	-21939.7

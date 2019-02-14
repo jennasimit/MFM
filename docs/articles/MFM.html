@@ -108,7 +108,7 @@
 <p>Genotype and phenotype data of two diseases with shared controls may be simulated using <a href="https://github.com/jennasimit/MFMextra">MFMextra</a>, together with <a href="http://mathgen.stats.ox.ac.uk/genetics_software/hapgen/hapgen2.html">hapgen2</a> and reference panel data (e.g.  <a href="ftp://ftp.1000genomes.ebi.ac.uk/vol1/ftp/release/20130502/">CEU of 1000 Genomes</a>.</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" title="1">    <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(devtools)</a>
 <a class="sourceLine" id="cb1-2" title="2">    <span class="kw"><a href="https://www.rdocumentation.org/packages/devtools/topics/reexports">install_github</a></span>(<span class="st">"jennasimit/MFMextra"</span>)</a>
-<a class="sourceLine" id="cb1-3" title="3"><span class="co">#&gt; Skipping install of 'MFMextra' from a github remote, the SHA1 (56839e69) has not changed since last install.</span></a>
+<a class="sourceLine" id="cb1-3" title="3"><span class="co">#&gt; Skipping install of 'MFMextra' from a github remote, the SHA1 (2e983c44) has not changed since last install.</span></a>
 <a class="sourceLine" id="cb1-4" title="4"><span class="co">#&gt;   Use `force = TRUE` to force installation</span></a></code></pre></div>
 <p>First, we need to simulate some null data from which we will sample to generate the two sets of cases with shared controls. The entire genetic region of interest is simulated to maintain the linkage disequilibrium (LD) structure. In running simulations, there are typically some models of interest that are selected based on analysis of the data. For example, in a <a href="https://journals.plos.org/plosgenetics/article?id=10.1371/journal.pgen.1005272">previous fine-mapping</a> of <span class="math inline">\(IL2RA\)</span> in a large international sample, several SNP groups were identified as having the majority of the association signals with the autoimmune diseases multiple sclerosis (MS) and type 1 diabetes (T1D). These groups, together with previously identified lead SNPs for other autoimmune diseases (autoimmune thyroid disease (ATD; rs706799), alopecia areata (AA; rs3118470), rheumatoid arthritis (RA; rs10795791), and ulcerative colitis (UC; rs4147359)) will compose models that contribute to the non-negligible posterior probabilities. Therefore, for computational efficiency, we extract these SNPs from the generated data and focus on these in the fine-mapping simulation analysis.</p>
 <p>Below is an example of <a href="http://mathgen.stats.ox.ac.uk/genetics_software/hapgen/hapgen2.html">hapgen2</a> code to simulate the  region based on the <a href="ftp://ftp.1000genomes.ebi.ac.uk/vol1/ftp/release/20130502/">CEU of 1000 Genomes</a> reference panel, where keep-snps.txt would be the list of snp positions that are to be retained.</p>
@@ -177,128 +177,113 @@
 <a class="sourceLine" id="cb4-13" title="13"></a>
 <a class="sourceLine" id="cb4-14" title="14">      <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(GUESSFM)      </a>
 <a class="sourceLine" id="cb4-15" title="15">      <span class="kw"><a href="https://www.rdocumentation.org/packages/GUESSFM/topics/run.bvs">run.bvs</a></span>(<span class="dt">X=</span>G1,<span class="dt">Y=</span>t1pheno,<span class="dt">tag.r2=</span>.<span class="dv">95</span>,<span class="dt">nexp=</span><span class="dv">3</span>,<span class="dt">nsave=</span><span class="dv">2000</span>,<span class="dt">gdir=</span>mydir,<span class="dt">wait=</span><span class="ot">TRUE</span>) <span class="co"># run with expected number of causal variants 3 for better mixing</span></a>
-<a class="sourceLine" id="cb4-16" title="16"><span class="co">#&gt; max r2 is now0.942522800912621</span></a>
+<a class="sourceLine" id="cb4-16" title="16"><span class="co">#&gt; max r2 is now0.940072838517544</span></a>
 <a class="sourceLine" id="cb4-17" title="17"><span class="co">#&gt; saving tags object to tmpdirectory/GFMbvs/tags.RData</span></a>
 <a class="sourceLine" id="cb4-18" title="18"><span class="co">#&gt; using 6000 samples 18 SNPs, 0 covariates.</span></a>
-<a class="sourceLine" id="cb4-19" title="19"><span class="co">#&gt; rs2104286    MAF=0.31    p=1.8728e-15</span></a>
-<a class="sourceLine" id="cb4-20" title="20"><span class="co">#&gt; rs56382813   MAF=0.25    p=0.00023829</span></a>
-<a class="sourceLine" id="cb4-21" title="21"><span class="co">#&gt; rs12722508   MAF=0.15    p=2.4288e-05</span></a>
-<a class="sourceLine" id="cb4-22" title="22"><span class="co">#&gt; setting prior parameters nexp, sd: 3 1.58113883008419</span></a>
-<a class="sourceLine" id="cb4-23" title="23"><span class="co">#&gt; creating decode files under tmpdirectory/GFMbvs</span></a>
-<a class="sourceLine" id="cb4-24" title="24"><span class="co">#&gt; conditional analysis suggests a starting model with 0-based columns: 2 6 14</span></a>
-<a class="sourceLine" id="cb4-25" title="25"><span class="co">#&gt; aka: rs2104286 rs56382813 rs12722508</span></a>
-<a class="sourceLine" id="cb4-26" title="26"><span class="co">#&gt; creating input files under tmpdirectory/GFMbvs</span></a>
-<a class="sourceLine" id="cb4-27" title="27"><span class="co">#&gt; writing to tmpdirectory/GFMbvs/init_55000:</span></a>
-<a class="sourceLine" id="cb4-28" title="28"><span class="co">#&gt; 3</span></a>
-<a class="sourceLine" id="cb4-29" title="29"><span class="co">#&gt; 2</span></a>
-<a class="sourceLine" id="cb4-30" title="30"><span class="co">#&gt; 6</span></a>
-<a class="sourceLine" id="cb4-31" title="31"><span class="co">#&gt; 14</span></a>
-<a class="sourceLine" id="cb4-32" title="32"><span class="co">#&gt; running GUESS with command</span></a>
-<a class="sourceLine" id="cb4-33" title="33"><span class="co">#&gt; /Library/Frameworks/R.framework/Versions/3.5/Resources/library/R2GUESS/bin//GUESS -history -X tmpdirectory/GFMbvs/X_55000 -Y tmpdirectory/GFMbvs/Y_55000 -nsweep 55000 -burn_in 5000 -out tmpdirectory/GFMbvs/out_55000 -par tmpdirectory/GFMbvs/par.xml -top 2000 -init tmpdirectory/GFMbvs/init_55000 -Egam 3 -Sgam 1.58113883008419 -n_chain 3 &gt; tmpdirectory/GFMbvs/log</span></a>
-<a class="sourceLine" id="cb4-34" title="34"><span class="co">#&gt; [1] "/Library/Frameworks/R.framework/Versions/3.5/Resources/library/R2GUESS/bin//GUESS -history -X tmpdirectory/GFMbvs/X_55000 -Y tmpdirectory/GFMbvs/Y_55000 -nsweep 55000 -burn_in 5000 -out tmpdirectory/GFMbvs/out_55000 -par tmpdirectory/GFMbvs/par.xml -top 2000 -init tmpdirectory/GFMbvs/init_55000 -Egam 3 -Sgam 1.58113883008419 -n_chain 3 &gt; tmpdirectory/GFMbvs/log"</span></a>
-<a class="sourceLine" id="cb4-35" title="35">      d &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/GUESSFM/topics/read.snpmod">read.snpmod</a></span>(mydir)</a>
-<a class="sourceLine" id="cb4-36" title="36"><span class="co">#&gt; reading filestub: tmpdirectory/GFMbvs/decode_55000</span></a>
-<a class="sourceLine" id="cb4-37" title="37"><span class="co">#&gt; reading filestub: tmpdirectory/GFMbvs/out_55000</span></a>
-<a class="sourceLine" id="cb4-38" title="38"><span class="co">#&gt; reading from tmpdirectory/GFMbvs/out_55000_output_best_visited_models.txt</span></a>
-<a class="sourceLine" id="cb4-39" title="39"><span class="co">#&gt; 387 models, with pp &gt; 7.93e-19, and, cumulatively, to 1</span></a>
-<a class="sourceLine" id="cb4-40" title="40">      <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/load">load</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/file.path">file.path</a></span>(mydir,<span class="st">"tags.RData"</span>))</a>
-<a class="sourceLine" id="cb4-41" title="41">      dx &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/GUESSFM/topics/expand.tags">expand.tags</a></span>(d,tags)</a>
-<a class="sourceLine" id="cb4-42" title="42"><span class="co">#&gt; expanding tags for 387 models over 18 tag SNPs, tagging a total of 26 SNPs.</span></a>
-<a class="sourceLine" id="cb4-43" title="43">      best &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/GUESSFM/topics/best.models">best.models</a></span>(dx,<span class="dt">pp.thr=</span><span class="fl">0.0001</span>)</a>
-<a class="sourceLine" id="cb4-44" title="44">      abf &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/GUESSFM/topics/abf.calc">abf.calc</a></span>(<span class="dt">y=</span>t1pheno,<span class="dt">x=</span>G1,<span class="dt">models=</span>best<span class="op">$</span>str,<span class="dt">family=</span><span class="st">"binomial"</span>)</a>
-<a class="sourceLine" id="cb4-45" title="45"><span class="co">#&gt; Calculating BICs using speedglm</span></a>
-<a class="sourceLine" id="cb4-46" title="46"><span class="co">#&gt; 171 of 171 models can be evaluated directly</span></a>
-<a class="sourceLine" id="cb4-47" title="47"><span class="co">#&gt; calculating ABF</span></a>
-<a class="sourceLine" id="cb4-48" title="48"><span class="co">#&gt; evaluating direct models, n=171</span></a>
-<a class="sourceLine" id="cb4-49" title="49">      SM2[[<span class="dv">1</span>]] &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/GUESSFM/topics/abf2snpmod">abf2snpmod</a></span>(abf,<span class="dt">expected=</span><span class="dv">2</span>,<span class="dt">nsnps=</span><span class="dv">854</span>) <span class="co"># find approximate Bayes' factors (ABFs) using expected number of causal variants 2 and the number of SNPs in the re$</span></a>
-<a class="sourceLine" id="cb4-50" title="50"><span class="co">#&gt; creating snpmod data.frame</span></a>
-<a class="sourceLine" id="cb4-51" title="51"><span class="co">#&gt; calculating marginal SNP inclusion probabilities</span></a>
-<a class="sourceLine" id="cb4-52" title="52">    </a>
-<a class="sourceLine" id="cb4-53" title="53">      <span class="kw"><a href="https://www.rdocumentation.org/packages/GUESSFM/topics/run.bvs">run.bvs</a></span>(<span class="dt">X=</span>G2,<span class="dt">Y=</span>t2pheno,<span class="dt">tag.r2=</span>.<span class="dv">95</span>,<span class="dt">nexp=</span><span class="dv">3</span>,<span class="dt">nsave=</span><span class="dv">2000</span>,<span class="dt">gdir=</span>mydir,<span class="dt">wait=</span><span class="ot">TRUE</span>)</a>
-<a class="sourceLine" id="cb4-54" title="54"><span class="co">#&gt; max r2 is now0.931034178357753</span></a>
-<a class="sourceLine" id="cb4-55" title="55"><span class="co">#&gt; saving tags object to tmpdirectory/GFMbvs/tags.RData</span></a>
-<a class="sourceLine" id="cb4-56" title="56"><span class="co">#&gt; using 6000 samples 18 SNPs, 0 covariates.</span></a>
-<a class="sourceLine" id="cb4-57" title="57"><span class="co">#&gt; rs706779 MAF=0.47    p=&lt; 2.22e-16</span></a>
-<a class="sourceLine" id="cb4-58" title="58"><span class="co">#&gt; rs35285258   MAF=0.24    p=5.5668e-05</span></a>
-<a class="sourceLine" id="cb4-59" title="59"><span class="co">#&gt; rs61839660   MAF=0.13    p=0.00028614</span></a>
-<a class="sourceLine" id="cb4-60" title="60"><span class="co">#&gt; setting prior parameters nexp, sd: 3 1.58113883008419</span></a>
-<a class="sourceLine" id="cb4-61" title="61"><span class="co">#&gt; creating decode files under tmpdirectory/GFMbvs</span></a>
-<a class="sourceLine" id="cb4-62" title="62"><span class="co">#&gt; conditional analysis suggests a starting model with 0-based columns: 3 5 9</span></a>
-<a class="sourceLine" id="cb4-63" title="63"><span class="co">#&gt; aka: rs706779 rs35285258 rs61839660</span></a>
-<a class="sourceLine" id="cb4-64" title="64"><span class="co">#&gt; creating input files under tmpdirectory/GFMbvs</span></a>
-<a class="sourceLine" id="cb4-65" title="65"><span class="co">#&gt; writing to tmpdirectory/GFMbvs/init_55000:</span></a>
+<a class="sourceLine" id="cb4-19" title="19"><span class="co">#&gt; rs56382813   MAF=0.24    p=6.9044e-15</span></a>
+<a class="sourceLine" id="cb4-20" title="20"><span class="co">#&gt; rs61839660   MAF=0.13    p=6.1563e-10</span></a>
+<a class="sourceLine" id="cb4-21" title="21"><span class="co">#&gt; setting prior parameters nexp, sd: 3 1.58113883008419</span></a>
+<a class="sourceLine" id="cb4-22" title="22"><span class="co">#&gt; creating decode files under tmpdirectory/GFMbvs</span></a>
+<a class="sourceLine" id="cb4-23" title="23"><span class="co">#&gt; conditional analysis suggests a starting model with 0-based columns: 2 3 14</span></a>
+<a class="sourceLine" id="cb4-24" title="24"><span class="co">#&gt; aka: rs56382813 rs61839660 rs12722508</span></a>
+<a class="sourceLine" id="cb4-25" title="25"><span class="co">#&gt; creating input files under tmpdirectory/GFMbvs</span></a>
+<a class="sourceLine" id="cb4-26" title="26"><span class="co">#&gt; writing to tmpdirectory/GFMbvs/init_55000:</span></a>
+<a class="sourceLine" id="cb4-27" title="27"><span class="co">#&gt; 3</span></a>
+<a class="sourceLine" id="cb4-28" title="28"><span class="co">#&gt; 2</span></a>
+<a class="sourceLine" id="cb4-29" title="29"><span class="co">#&gt; 3</span></a>
+<a class="sourceLine" id="cb4-30" title="30"><span class="co">#&gt; 14</span></a>
+<a class="sourceLine" id="cb4-31" title="31"><span class="co">#&gt; running GUESS with command</span></a>
+<a class="sourceLine" id="cb4-32" title="32"><span class="co">#&gt; /Library/Frameworks/R.framework/Versions/3.5/Resources/library/R2GUESS/bin//GUESS -history -X tmpdirectory/GFMbvs/X_55000 -Y tmpdirectory/GFMbvs/Y_55000 -nsweep 55000 -burn_in 5000 -out tmpdirectory/GFMbvs/out_55000 -par tmpdirectory/GFMbvs/par.xml -top 2000 -init tmpdirectory/GFMbvs/init_55000 -Egam 3 -Sgam 1.58113883008419 -n_chain 3 &gt; tmpdirectory/GFMbvs/log</span></a>
+<a class="sourceLine" id="cb4-33" title="33"><span class="co">#&gt; [1] "/Library/Frameworks/R.framework/Versions/3.5/Resources/library/R2GUESS/bin//GUESS -history -X tmpdirectory/GFMbvs/X_55000 -Y tmpdirectory/GFMbvs/Y_55000 -nsweep 55000 -burn_in 5000 -out tmpdirectory/GFMbvs/out_55000 -par tmpdirectory/GFMbvs/par.xml -top 2000 -init tmpdirectory/GFMbvs/init_55000 -Egam 3 -Sgam 1.58113883008419 -n_chain 3 &gt; tmpdirectory/GFMbvs/log"</span></a>
+<a class="sourceLine" id="cb4-34" title="34">      d &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/GUESSFM/topics/read.snpmod">read.snpmod</a></span>(mydir)</a>
+<a class="sourceLine" id="cb4-35" title="35"><span class="co">#&gt; reading filestub: tmpdirectory/GFMbvs/decode_55000</span></a>
+<a class="sourceLine" id="cb4-36" title="36"><span class="co">#&gt; reading filestub: tmpdirectory/GFMbvs/out_55000</span></a>
+<a class="sourceLine" id="cb4-37" title="37"><span class="co">#&gt; reading from tmpdirectory/GFMbvs/out_55000_output_best_visited_models.txt</span></a>
+<a class="sourceLine" id="cb4-38" title="38"><span class="co">#&gt; 315 models, with pp &gt; 3.12e-19, and, cumulatively, to 1</span></a>
+<a class="sourceLine" id="cb4-39" title="39">      <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/load">load</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/file.path">file.path</a></span>(mydir,<span class="st">"tags.RData"</span>))</a>
+<a class="sourceLine" id="cb4-40" title="40">      dx &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/GUESSFM/topics/expand.tags">expand.tags</a></span>(d,tags)</a>
+<a class="sourceLine" id="cb4-41" title="41"><span class="co">#&gt; expanding tags for 315 models over 18 tag SNPs, tagging a total of 26 SNPs.</span></a>
+<a class="sourceLine" id="cb4-42" title="42">      best &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/GUESSFM/topics/best.models">best.models</a></span>(dx,<span class="dt">pp.thr=</span><span class="fl">0.0001</span>)</a>
+<a class="sourceLine" id="cb4-43" title="43">      abf &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/GUESSFM/topics/abf.calc">abf.calc</a></span>(<span class="dt">y=</span>t1pheno,<span class="dt">x=</span>G1,<span class="dt">models=</span>best<span class="op">$</span>str,<span class="dt">family=</span><span class="st">"binomial"</span>)</a>
+<a class="sourceLine" id="cb4-44" title="44"><span class="co">#&gt; Calculating BICs using speedglm</span></a>
+<a class="sourceLine" id="cb4-45" title="45"><span class="co">#&gt; 121 of 121 models can be evaluated directly</span></a>
+<a class="sourceLine" id="cb4-46" title="46"><span class="co">#&gt; calculating ABF</span></a>
+<a class="sourceLine" id="cb4-47" title="47"><span class="co">#&gt; evaluating direct models, n=121</span></a>
+<a class="sourceLine" id="cb4-48" title="48">      SM2[[<span class="dv">1</span>]] &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/GUESSFM/topics/abf2snpmod">abf2snpmod</a></span>(abf,<span class="dt">expected=</span><span class="dv">2</span>,<span class="dt">nsnps=</span><span class="dv">854</span>) <span class="co"># find approximate Bayes' factors (ABFs) using expected number of causal variants 2 and the number of SNPs in the re$</span></a>
+<a class="sourceLine" id="cb4-49" title="49"><span class="co">#&gt; creating snpmod data.frame</span></a>
+<a class="sourceLine" id="cb4-50" title="50"><span class="co">#&gt; calculating marginal SNP inclusion probabilities</span></a>
+<a class="sourceLine" id="cb4-51" title="51">    </a>
+<a class="sourceLine" id="cb4-52" title="52">      <span class="kw"><a href="https://www.rdocumentation.org/packages/GUESSFM/topics/run.bvs">run.bvs</a></span>(<span class="dt">X=</span>G2,<span class="dt">Y=</span>t2pheno,<span class="dt">tag.r2=</span>.<span class="dv">95</span>,<span class="dt">nexp=</span><span class="dv">3</span>,<span class="dt">nsave=</span><span class="dv">2000</span>,<span class="dt">gdir=</span>mydir,<span class="dt">wait=</span><span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb4-53" title="53"><span class="co">#&gt; max r2 is now0.932920345364952</span></a>
+<a class="sourceLine" id="cb4-54" title="54"><span class="co">#&gt; saving tags object to tmpdirectory/GFMbvs/tags.RData</span></a>
+<a class="sourceLine" id="cb4-55" title="55"><span class="co">#&gt; using 6000 samples 18 SNPs, 0 covariates.</span></a>
+<a class="sourceLine" id="cb4-56" title="56"><span class="co">#&gt; rs706779 MAF=0.46    p=6.8789e-15</span></a>
+<a class="sourceLine" id="cb4-57" title="57"><span class="co">#&gt; rs35285258   MAF=0.24    p=0.00013469</span></a>
+<a class="sourceLine" id="cb4-58" title="58"><span class="co">#&gt; rs61839660   MAF=0.13    p=3.3574e-05</span></a>
+<a class="sourceLine" id="cb4-59" title="59"><span class="co">#&gt; setting prior parameters nexp, sd: 3 1.58113883008419</span></a>
+<a class="sourceLine" id="cb4-60" title="60"><span class="co">#&gt; creating decode files under tmpdirectory/GFMbvs</span></a>
+<a class="sourceLine" id="cb4-61" title="61"><span class="co">#&gt; conditional analysis suggests a starting model with 0-based columns: 3 5 9</span></a>
+<a class="sourceLine" id="cb4-62" title="62"><span class="co">#&gt; aka: rs706779 rs35285258 rs61839660</span></a>
+<a class="sourceLine" id="cb4-63" title="63"><span class="co">#&gt; creating input files under tmpdirectory/GFMbvs</span></a>
+<a class="sourceLine" id="cb4-64" title="64"><span class="co">#&gt; writing to tmpdirectory/GFMbvs/init_55000:</span></a>
+<a class="sourceLine" id="cb4-65" title="65"><span class="co">#&gt; 3</span></a>
 <a class="sourceLine" id="cb4-66" title="66"><span class="co">#&gt; 3</span></a>
-<a class="sourceLine" id="cb4-67" title="67"><span class="co">#&gt; 3</span></a>
-<a class="sourceLine" id="cb4-68" title="68"><span class="co">#&gt; 5</span></a>
-<a class="sourceLine" id="cb4-69" title="69"><span class="co">#&gt; 9</span></a>
-<a class="sourceLine" id="cb4-70" title="70"><span class="co">#&gt; running GUESS with command</span></a>
-<a class="sourceLine" id="cb4-71" title="71"><span class="co">#&gt; /Library/Frameworks/R.framework/Versions/3.5/Resources/library/R2GUESS/bin//GUESS -history -X tmpdirectory/GFMbvs/X_55000 -Y tmpdirectory/GFMbvs/Y_55000 -nsweep 55000 -burn_in 5000 -out tmpdirectory/GFMbvs/out_55000 -par tmpdirectory/GFMbvs/par.xml -top 2000 -init tmpdirectory/GFMbvs/init_55000 -Egam 3 -Sgam 1.58113883008419 -n_chain 3 &gt; tmpdirectory/GFMbvs/log</span></a>
-<a class="sourceLine" id="cb4-72" title="72"><span class="co">#&gt; [1] "/Library/Frameworks/R.framework/Versions/3.5/Resources/library/R2GUESS/bin//GUESS -history -X tmpdirectory/GFMbvs/X_55000 -Y tmpdirectory/GFMbvs/Y_55000 -nsweep 55000 -burn_in 5000 -out tmpdirectory/GFMbvs/out_55000 -par tmpdirectory/GFMbvs/par.xml -top 2000 -init tmpdirectory/GFMbvs/init_55000 -Egam 3 -Sgam 1.58113883008419 -n_chain 3 &gt; tmpdirectory/GFMbvs/log"</span></a>
-<a class="sourceLine" id="cb4-73" title="73">      d &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/GUESSFM/topics/read.snpmod">read.snpmod</a></span>(mydir)</a>
-<a class="sourceLine" id="cb4-74" title="74"><span class="co">#&gt; reading filestub: tmpdirectory/GFMbvs/decode_55000</span></a>
-<a class="sourceLine" id="cb4-75" title="75"><span class="co">#&gt; reading filestub: tmpdirectory/GFMbvs/out_55000</span></a>
-<a class="sourceLine" id="cb4-76" title="76"><span class="co">#&gt; reading from tmpdirectory/GFMbvs/out_55000_output_best_visited_models.txt</span></a>
-<a class="sourceLine" id="cb4-77" title="77"><span class="co">#&gt; 369 models, with pp &gt; 5.33e-24, and, cumulatively, to 1</span></a>
-<a class="sourceLine" id="cb4-78" title="78">      <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/load">load</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/file.path">file.path</a></span>(mydir,<span class="st">"tags.RData"</span>))</a>
-<a class="sourceLine" id="cb4-79" title="79">      dx &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/GUESSFM/topics/expand.tags">expand.tags</a></span>(d,tags)</a>
-<a class="sourceLine" id="cb4-80" title="80"><span class="co">#&gt; expanding tags for 369 models over 18 tag SNPs, tagging a total of 26 SNPs.</span></a>
-<a class="sourceLine" id="cb4-81" title="81">      best &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/GUESSFM/topics/best.models">best.models</a></span>(dx,<span class="dt">pp.thr=</span><span class="fl">0.0001</span>)</a>
-<a class="sourceLine" id="cb4-82" title="82">      abf &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/GUESSFM/topics/abf.calc">abf.calc</a></span>(<span class="dt">y=</span>t2pheno,<span class="dt">x=</span>G2,<span class="dt">models=</span>best<span class="op">$</span>str,<span class="dt">family=</span><span class="st">"binomial"</span>)</a>
-<a class="sourceLine" id="cb4-83" title="83"><span class="co">#&gt; Calculating BICs using speedglm</span></a>
-<a class="sourceLine" id="cb4-84" title="84"><span class="co">#&gt; 298 of 298 models can be evaluated directly</span></a>
-<a class="sourceLine" id="cb4-85" title="85"><span class="co">#&gt; calculating ABF</span></a>
-<a class="sourceLine" id="cb4-86" title="86"><span class="co">#&gt; evaluating direct models, n=298</span></a>
-<a class="sourceLine" id="cb4-87" title="87">      SM2[[<span class="dv">2</span>]] &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/GUESSFM/topics/abf2snpmod">abf2snpmod</a></span>(abf,<span class="dt">expected=</span><span class="dv">2</span>,<span class="dt">nsnps=</span><span class="dv">854</span>)</a>
-<a class="sourceLine" id="cb4-88" title="88"><span class="co">#&gt; creating snpmod data.frame</span></a>
-<a class="sourceLine" id="cb4-89" title="89"><span class="co">#&gt; calculating marginal SNP inclusion probabilities</span></a>
-<a class="sourceLine" id="cb4-90" title="90">    </a>
-<a class="sourceLine" id="cb4-91" title="91">    <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/names">names</a></span>(SM2) &lt;-<span class="st"> </span>dis</a>
-<a class="sourceLine" id="cb4-92" title="92"></a>
-<a class="sourceLine" id="cb4-93" title="93">    target.odds &lt;-<span class="st"> </span><span class="dv">1</span> <span class="co"># could also provide a vector here; this setting corresponds to a 50:50 odds of non-sharing to sharing of causal variants between diseases</span></a>
-<a class="sourceLine" id="cb4-94" title="94">    <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(MFM)</a>
-<a class="sourceLine" id="cb4-95" title="95">    <span class="co"># snpGroups included in MFMextra package</span></a>
-<a class="sourceLine" id="cb4-96" title="96">    PP &lt;-<span class="st"> </span><span class="kw"><a href="../reference/PPmarginal.multiple.fn.html">PPmarginal.multiple.fn</a></span>(SM2,dis,<span class="dt">thr=</span><span class="fl">0.999</span>,target.odds,N0,ND,<span class="dt">nsnps=</span><span class="dv">854</span>)</a>
+<a class="sourceLine" id="cb4-67" title="67"><span class="co">#&gt; 5</span></a>
+<a class="sourceLine" id="cb4-68" title="68"><span class="co">#&gt; 9</span></a>
+<a class="sourceLine" id="cb4-69" title="69"><span class="co">#&gt; running GUESS with command</span></a>
+<a class="sourceLine" id="cb4-70" title="70"><span class="co">#&gt; /Library/Frameworks/R.framework/Versions/3.5/Resources/library/R2GUESS/bin//GUESS -history -X tmpdirectory/GFMbvs/X_55000 -Y tmpdirectory/GFMbvs/Y_55000 -nsweep 55000 -burn_in 5000 -out tmpdirectory/GFMbvs/out_55000 -par tmpdirectory/GFMbvs/par.xml -top 2000 -init tmpdirectory/GFMbvs/init_55000 -Egam 3 -Sgam 1.58113883008419 -n_chain 3 &gt; tmpdirectory/GFMbvs/log</span></a>
+<a class="sourceLine" id="cb4-71" title="71"><span class="co">#&gt; [1] "/Library/Frameworks/R.framework/Versions/3.5/Resources/library/R2GUESS/bin//GUESS -history -X tmpdirectory/GFMbvs/X_55000 -Y tmpdirectory/GFMbvs/Y_55000 -nsweep 55000 -burn_in 5000 -out tmpdirectory/GFMbvs/out_55000 -par tmpdirectory/GFMbvs/par.xml -top 2000 -init tmpdirectory/GFMbvs/init_55000 -Egam 3 -Sgam 1.58113883008419 -n_chain 3 &gt; tmpdirectory/GFMbvs/log"</span></a>
+<a class="sourceLine" id="cb4-72" title="72">      d &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/GUESSFM/topics/read.snpmod">read.snpmod</a></span>(mydir)</a>
+<a class="sourceLine" id="cb4-73" title="73"><span class="co">#&gt; reading filestub: tmpdirectory/GFMbvs/decode_55000</span></a>
+<a class="sourceLine" id="cb4-74" title="74"><span class="co">#&gt; reading filestub: tmpdirectory/GFMbvs/out_55000</span></a>
+<a class="sourceLine" id="cb4-75" title="75"><span class="co">#&gt; reading from tmpdirectory/GFMbvs/out_55000_output_best_visited_models.txt</span></a>
+<a class="sourceLine" id="cb4-76" title="76"><span class="co">#&gt; 205 models, with pp &gt; 2.07e-18, and, cumulatively, to 1</span></a>
+<a class="sourceLine" id="cb4-77" title="77">      <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/load">load</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/file.path">file.path</a></span>(mydir,<span class="st">"tags.RData"</span>))</a>
+<a class="sourceLine" id="cb4-78" title="78">      dx &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/GUESSFM/topics/expand.tags">expand.tags</a></span>(d,tags)</a>
+<a class="sourceLine" id="cb4-79" title="79"><span class="co">#&gt; expanding tags for 205 models over 18 tag SNPs, tagging a total of 26 SNPs.</span></a>
+<a class="sourceLine" id="cb4-80" title="80">      best &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/GUESSFM/topics/best.models">best.models</a></span>(dx,<span class="dt">pp.thr=</span><span class="fl">0.0001</span>)</a>
+<a class="sourceLine" id="cb4-81" title="81">      abf &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/GUESSFM/topics/abf.calc">abf.calc</a></span>(<span class="dt">y=</span>t2pheno,<span class="dt">x=</span>G2,<span class="dt">models=</span>best<span class="op">$</span>str,<span class="dt">family=</span><span class="st">"binomial"</span>)</a>
+<a class="sourceLine" id="cb4-82" title="82"><span class="co">#&gt; Calculating BICs using speedglm</span></a>
+<a class="sourceLine" id="cb4-83" title="83"><span class="co">#&gt; 315 of 315 models can be evaluated directly</span></a>
+<a class="sourceLine" id="cb4-84" title="84"><span class="co">#&gt; calculating ABF</span></a>
+<a class="sourceLine" id="cb4-85" title="85"><span class="co">#&gt; evaluating direct models, n=315</span></a>
+<a class="sourceLine" id="cb4-86" title="86">      SM2[[<span class="dv">2</span>]] &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/GUESSFM/topics/abf2snpmod">abf2snpmod</a></span>(abf,<span class="dt">expected=</span><span class="dv">2</span>,<span class="dt">nsnps=</span><span class="dv">854</span>)</a>
+<a class="sourceLine" id="cb4-87" title="87"><span class="co">#&gt; creating snpmod data.frame</span></a>
+<a class="sourceLine" id="cb4-88" title="88"><span class="co">#&gt; calculating marginal SNP inclusion probabilities</span></a>
+<a class="sourceLine" id="cb4-89" title="89">    </a>
+<a class="sourceLine" id="cb4-90" title="90">    <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/names">names</a></span>(SM2) &lt;-<span class="st"> </span>dis</a>
+<a class="sourceLine" id="cb4-91" title="91"></a>
+<a class="sourceLine" id="cb4-92" title="92">    target.odds &lt;-<span class="st"> </span><span class="dv">1</span> <span class="co"># could also provide a vector here; this setting corresponds to a 50:50 odds of non-sharing to sharing of causal variants between diseases</span></a>
+<a class="sourceLine" id="cb4-93" title="93">    <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(MFM)</a>
+<a class="sourceLine" id="cb4-94" title="94">    <span class="co"># snpGroups included in MFMextra package</span></a>
+<a class="sourceLine" id="cb4-95" title="95">    PP &lt;-<span class="st"> </span><span class="kw"><a href="../reference/PPmarginal.multiple.fn.html">PPmarginal.multiple.fn</a></span>(SM2,dis,<span class="dt">thr=</span><span class="fl">0.999</span>,target.odds,N0,ND,<span class="dt">nsnps=</span><span class="dv">854</span>)</a>
+<a class="sourceLine" id="cb4-96" title="96"><span class="co">#&gt; </span></a>
 <a class="sourceLine" id="cb4-97" title="97"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb4-98" title="98"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb4-99" title="99"><span class="co">#&gt; CPP threshold = 0.999</span></a>
-<a class="sourceLine" id="cb4-100" title="100"><span class="co">#&gt;  n.each (AD/AC) = 41/42</span></a></code></pre></div>
+<a class="sourceLine" id="cb4-98" title="98"><span class="co">#&gt; CPP threshold = 0.999</span></a>
+<a class="sourceLine" id="cb4-99" title="99"><span class="co">#&gt;  n.each (AD/AC) = 21/20</span></a></code></pre></div>
 <p>The PP object is a list with components: * PP, containing the SNP model posterior probabilities for each disease and each target odds * MPP, containing the SNP marginal posterior probabilities of inclusion and each target odds</p>
 <p>It is easier to interpret in terms of SNP groups, so next run the following, where the snpGroups object is available in the MFMextra package:</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" title="1">    mpp.pp &lt;-<span class="st"> </span><span class="kw"><a href="../reference/MPP.PP.groups.fn.html">MPP.PP.groups.fn</a></span>(PP<span class="op">$</span>MPP,PP<span class="op">$</span>PP,dis,<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"null"</span>,target.odds),snpGroups)</a>
 <a class="sourceLine" id="cb5-2" title="2">mpp.pp</a>
 <a class="sourceLine" id="cb5-3" title="3"><span class="co">#&gt; $mppGS</span></a>
-<a class="sourceLine" id="cb5-4" title="4"><span class="co">#&gt;                A B            C D E F            J          sAA</span></a>
-<a class="sourceLine" id="cb5-5" title="5"><span class="co">#&gt; AD.null 1.000000 0 0.0000000000 1 0 0 0.000000e+00 0.000000e+00</span></a>
-<a class="sourceLine" id="cb5-6" title="6"><span class="co">#&gt; AD.1    1.000026 0 0.0003405729 1 0 0 7.889971e-05 3.452468e-05</span></a>
-<a class="sourceLine" id="cb5-7" title="7"><span class="co">#&gt; AC.null 1.000000 0 1.0000000000 0 0 0 0.000000e+00 0.000000e+00</span></a>
-<a class="sourceLine" id="cb5-8" title="8"><span class="co">#&gt; AC.1    0.996590 0 0.9970383813 0 0 0 4.170396e-03 2.107452e-04</span></a>
-<a class="sourceLine" id="cb5-9" title="9"><span class="co">#&gt;                  sUC          sRA</span></a>
-<a class="sourceLine" id="cb5-10" title="10"><span class="co">#&gt; AD.null 0.000000e+00 0.000000e+00</span></a>
-<a class="sourceLine" id="cb5-11" title="11"><span class="co">#&gt; AD.1    2.596052e-05 2.700061e-05</span></a>
-<a class="sourceLine" id="cb5-12" title="12"><span class="co">#&gt; AC.null 0.000000e+00 0.000000e+00</span></a>
-<a class="sourceLine" id="cb5-13" title="13"><span class="co">#&gt; AC.1    0.000000e+00 1.717710e-05</span></a>
-<a class="sourceLine" id="cb5-14" title="14"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb5-15" title="15"><span class="co">#&gt; $gPP</span></a>
-<a class="sourceLine" id="cb5-16" title="16"><span class="co">#&gt; $gPP[[1]]</span></a>
-<a class="sourceLine" id="cb5-17" title="17"><span class="co">#&gt;         null            1</span></a>
-<a class="sourceLine" id="cb5-18" title="18"><span class="co">#&gt; null       0 1.463500e-14</span></a>
-<a class="sourceLine" id="cb5-19" title="19"><span class="co">#&gt; A.D        1 9.994667e-01</span></a>
-<a class="sourceLine" id="cb5-20" title="20"><span class="co">#&gt; A.D.sAA    0 3.452468e-05</span></a>
-<a class="sourceLine" id="cb5-21" title="21"><span class="co">#&gt; A.D.sUC    0 2.596052e-05</span></a>
-<a class="sourceLine" id="cb5-22" title="22"><span class="co">#&gt; A.D.sRA    0 2.700061e-05</span></a>
-<a class="sourceLine" id="cb5-23" title="23"><span class="co">#&gt; A.C.D      0 3.405729e-04</span></a>
-<a class="sourceLine" id="cb5-24" title="24"><span class="co">#&gt; A.D.J      0 7.889971e-05</span></a>
-<a class="sourceLine" id="cb5-25" title="25"><span class="co">#&gt; A.A.D      0 2.632000e-05</span></a>
-<a class="sourceLine" id="cb5-26" title="26"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb5-27" title="27"><span class="co">#&gt; $gPP[[2]]</span></a>
-<a class="sourceLine" id="cb5-28" title="28"><span class="co">#&gt;         null            1</span></a>
-<a class="sourceLine" id="cb5-29" title="29"><span class="co">#&gt; null       0 1.016979e-19</span></a>
-<a class="sourceLine" id="cb5-30" title="30"><span class="co">#&gt; A.C        1 9.956017e-01</span></a>
-<a class="sourceLine" id="cb5-31" title="31"><span class="co">#&gt; J          0 2.961619e-03</span></a>
-<a class="sourceLine" id="cb5-32" title="32"><span class="co">#&gt; C.J        0 4.483924e-04</span></a>
-<a class="sourceLine" id="cb5-33" title="33"><span class="co">#&gt; A.C.J      0 7.603852e-04</span></a>
-<a class="sourceLine" id="cb5-34" title="34"><span class="co">#&gt; A.C.sAA    0 2.107452e-04</span></a>
-<a class="sourceLine" id="cb5-35" title="35"><span class="co">#&gt; A.C.sRA    0 1.717710e-05</span></a></code></pre></div>
+<a class="sourceLine" id="cb5-4" title="4"><span class="co">#&gt;         A B C D E F            J sAA sUC          sRA</span></a>
+<a class="sourceLine" id="cb5-5" title="5"><span class="co">#&gt; AD.null 1 0 0 1 0 0 0.000000e+00   0   0 0.000000e+00</span></a>
+<a class="sourceLine" id="cb5-6" title="6"><span class="co">#&gt; AD.1    1 0 0 1 0 0 4.742899e-05   0   0 7.907047e-05</span></a>
+<a class="sourceLine" id="cb5-7" title="7"><span class="co">#&gt; AC.null 1 0 1 0 0 0 0.000000e+00   0   0 0.000000e+00</span></a>
+<a class="sourceLine" id="cb5-8" title="8"><span class="co">#&gt; AC.1    1 0 1 0 0 0 0.000000e+00   0   0 0.000000e+00</span></a>
+<a class="sourceLine" id="cb5-9" title="9"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb5-10" title="10"><span class="co">#&gt; $gPP</span></a>
+<a class="sourceLine" id="cb5-11" title="11"><span class="co">#&gt; $gPP[[1]]</span></a>
+<a class="sourceLine" id="cb5-12" title="12"><span class="co">#&gt;         null            1</span></a>
+<a class="sourceLine" id="cb5-13" title="13"><span class="co">#&gt; null       0 9.528900e-16</span></a>
+<a class="sourceLine" id="cb5-14" title="14"><span class="co">#&gt; A.D        1 9.998735e-01</span></a>
+<a class="sourceLine" id="cb5-15" title="15"><span class="co">#&gt; A.D.sRA    0 7.907047e-05</span></a>
+<a class="sourceLine" id="cb5-16" title="16"><span class="co">#&gt; A.D.J      0 4.742899e-05</span></a>
+<a class="sourceLine" id="cb5-17" title="17"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb5-18" title="18"><span class="co">#&gt; $gPP[[2]]</span></a>
+<a class="sourceLine" id="cb5-19" title="19"><span class="co">#&gt;      null            1</span></a>
+<a class="sourceLine" id="cb5-20" title="20"><span class="co">#&gt; null    0 1.435531e-14</span></a>
+<a class="sourceLine" id="cb5-21" title="21"><span class="co">#&gt; A.C     1 1.000000e+00</span></a></code></pre></div>
 <p>The mpp.pp object is a list with componets:</p>
 <ul>
 <li><p>mppGS: matrix of SNP group MPP</p></li>

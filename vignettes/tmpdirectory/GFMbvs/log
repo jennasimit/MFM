@@ -1,6 +1,6 @@
 **********************************************************
 ***************** Setup options **********************
-Random seed 1550084143
+Random seed 1550088735
 nb_chains 3
 n_sweeps 55000
 n_top_models 2000
@@ -143,24 +143,24 @@ List_columns_X
 n_vars_in 3
 
 **************Results, chain 0 -- sweep 0***************
-	log_marg -21886.4
-	log_cond_post -21921.4
+	log_marg -21902.1
+	log_cond_post -21937
 ********************************************************
 List_columns_X
 3 5 9 
 n_vars_in 3
 
 **************Results, chain 1 -- sweep 0***************
-	log_marg -21886.4
-	log_cond_post -21921.4
+	log_marg -21902.1
+	log_cond_post -21937
 ********************************************************
 List_columns_X
 3 5 9 
 n_vars_in 3
 
 **************Results, chain 2 -- sweep 0***************
-	log_marg -21886.4
-	log_cond_post -21921.4
+	log_marg -21902.1
+	log_cond_post -21937
 ********************************************************
 ***************************************
           END OF FIRST SWEEP
@@ -169,13 +169,13 @@ n_vars_in 3
 ***************************************
 ***************************************
            END OF SWEEPS
-       # models evaluated: 662482
+       # models evaluated: 634217
 ***************************************
 ***************************************
 
-Setup Time: 2.67783
-Main Loop Time: 333.052
-Post Processing Time: 0.173851
+Setup Time: 2.83242
+Main Loop Time: 288.424
+Post Processing Time: 0.08552
 ***************************************
 Marginal likelihood null model:-21939.7
 ***************************************
