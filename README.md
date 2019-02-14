@@ -2,8 +2,9 @@
 R package for simultaneous fine-mapping of genetic associations for several diseases, in a
 Bayesian framework that borrows information between the diseases.
 
-Website available at: https://jennasimit.github.io/MFM/
-MFMextra has simulation code and is available at: https://jennasimit.github.io/MFMextra/.
+Website available at: https://jennasimit.github.io/MFM/.
+
+MFMextra has simulation code for evaluating MFM and is available at: https://jennasimit.github.io/MFMextra/.
 
 ## Installation
 
