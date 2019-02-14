@@ -2,10 +2,8 @@
 R package for simultaneous fine-mapping of genetic associations for several diseases, in a
 Bayesian framework that borrows information between the diseases.
 
-Run the following to generate the MFM website:
-```
-Rscript -e "pkgdown::build_site()"
-```
+Website available at: https://jennasimit.github.io/MFM/
+MFMextra has simulation code and is available at: https://jennasimit.github.io/MFMextra/.
 
 ## Installation
 
@@ -71,5 +69,10 @@ Then, to install MFM, also from github, do
 install.packages("devtools") # if you don't already have the package
 library(devtools)
 install_github("jennasimit/MFM")
+```
+
+Run the following to generate the MFM website:
+```
+Rscript -e "pkgdown::build_site()"
 ```
 
