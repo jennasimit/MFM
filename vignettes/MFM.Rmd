@@ -193,7 +193,9 @@ GUESSFM (run.bvs is first step) requires a snpMatrix object and a phenotype vect
 ```
 
 The PP object is a list with components:
+
 * PP, containing the SNP model posterior probabilities for each disease and each target odds
+
 * MPP, containing the SNP marginal posterior probabilities of inclusion and each target odds
 
 It is easier to interpret in terms of SNP groups, so next run the following, where the snpGroups object is available in the MFM 
