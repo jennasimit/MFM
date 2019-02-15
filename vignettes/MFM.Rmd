@@ -211,7 +211,7 @@ The mpp.pp object is a list with componets:
 * gPP: list of disease SNP group PP matrices
 
 
-The entires headed by "null" give the results for indpendent analyses of the diseases and other entries
+The entires headed by "null" give the results for independent analyses of the diseases and other entries
 are headed by the target odds used in MFM.
 
 
