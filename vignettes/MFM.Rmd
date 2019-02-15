@@ -47,7 +47,7 @@ disease, and rarely appear together in a disease model.
 
 
 
-## Simulation Example
+# Simulation Example
 
 Genotype and phenotype data of two diseases with shared controls may be simulated using 
 [MFMextra](https://github.com/jennasimit/MFMextra), together with 
@@ -55,7 +55,7 @@ Genotype and phenotype data of two diseases with shared controls may be simulate
 reference panel data (e.g. 
 [CEU of 1000 Genomes](ftp://ftp.1000genomes.ebi.ac.uk/vol1/ftp/release/20130502/).
 
-```{r}
+```{r,eval=FALSE}
     library(devtools)
     install_github("jennasimit/MFMextra")
 ```
@@ -101,7 +101,7 @@ All steps of simulation and analyses are included here. However, if GUESSFM resu
 each disease then one may skip down to the MFM step. We provide an example of GUESSFM output for simulated data 
 from the steps below, which may input directly into MFM.
 
-# Simulate 2 diseases with shared controls
+## Simulate 2 diseases with shared controls
 ```{r, eval=FALSE}
     library(MFMextra)
     #g0 <- read.table(null_100k.controls.gen,header=FALSE,as.is=TRUE)
@@ -138,7 +138,7 @@ from the steps below, which may input directly into MFM.
     Gm
 ```
 
-# GUESSFM on each disease
+## GUESSFM on each disease
 
 Next, we run GUESSFM on each disease with controls and store in SM2 list; this is our input to MFM. Note that input to
 GUESSFM (run.bvs is first step) requires a snpMatrix object and a phenotype vector. 
@@ -177,7 +177,7 @@ GUESSFM (run.bvs is first step) requires a snpMatrix object and a phenotype vect
     names(SM2) <- dis
 ```
 
-# MFM on both diseases
+## MFM on both diseases
 
 ```{r}
 # SM2 is a list of GUESSFM output for each disease and an example is included in MFM
@@ -211,6 +211,8 @@ The mpp.pp object is a list with componets:
 * gPP: list of disease SNP group PP matrices
 
 
+The entires headed by "null" give the results for indpendent analyses of the diseases and other entries
+are headed by the target odds used in MFM.
 
 
 
