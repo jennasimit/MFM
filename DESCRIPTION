@@ -17,7 +17,7 @@ Date: 2019-02-12
 Authors@R: c(person("Jenn", "Asimit", role=c("aut","cre"), email = "ja628@cam.ac.uk"),
 	     person("Chris", "Wallace", role=c("aut"), email = "cew54@cam.ac.uk"))
 Maintainer: Jenn Asimit <ja628@cam.ac.uk> 
-Depends: R (>= 3.5.0)
+Depends: R (>= 3.3.0)
 Imports:
 	snpStats,
 	GUESSFM,
