@@ -5,12 +5,12 @@ Bayesian framework that borrows information between the diseases.
 Website available at: https://jennasimit.github.io/MFM/.
 
 MFMextra has simulation code for evaluating MFM and is available at: https://jennasimit.github.io/MFMextra/.
-A MFM demo is available in the vignettes of MFM.
+A MFM demo is available in the vignettes of MFM. In our tests in ran in under 5 seconds.
 
 ## System Requirements
 
 MFM could be installed with ease on versions of R > 3.5 and requires additional steps for R < 3.5.
-Installation has been tested on R 3.5.1.
+Installation has been tested on R 3.5.1. Installation time is estimated as 2 minutes.
 
 ## Installation Guide
 
