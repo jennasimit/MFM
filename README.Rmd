@@ -5,8 +5,14 @@ Bayesian framework that borrows information between the diseases.
 Website available at: https://jennasimit.github.io/MFM/.
 
 MFMextra has simulation code for evaluating MFM and is available at: https://jennasimit.github.io/MFMextra/.
+A MFM demo is available in the vignettes of MFM.
 
-## Installation
+## System Requirements
+
+MFM could be installed with ease on versions of R > 3.5 and requires additional steps for R < 3.5.
+Installation has been tested on R 3.5.1.
+
+## Installation Guide
 
 ### Short version
 
@@ -53,10 +59,15 @@ if (!requireNamespace("BiocManager", quietly = TRUE))
     install.packages("BiocManager")
 BiocManager::install("mixOmics")
 ```
-``` R 
-# R < 3.5:
-install.packages("mixOmics")
+
+R < 3.5:
+
+Go to https://cran.r-project.org/src/contrib/Archive/mixOmics/ and download mixOmics_6.3.2.tar.gz. Then, in R:
+```R
+install.packages("mixOmics", repos = "mixOmics_6.3.2.tar.gz", type="source")
 ```
+where if in a different working directory than where the zip file is contained, a file path may be needed for the repos
+argument.
 
 GUESSFM is from github and to install do
 ```R
@@ -71,6 +82,7 @@ install.packages("devtools") # if you don't already have the package
 library(devtools)
 install_github("jennasimit/MFM")
 ```
+
 
 Run the following to generate the MFM website:
 ```

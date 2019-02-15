@@ -47,7 +47,7 @@ disease, and rarely appear together in a disease model.
 
 
 
-# Simulation Example
+## Simulation Example
 
 Genotype and phenotype data of two diseases with shared controls may be simulated using 
 [MFMextra](https://github.com/jennasimit/MFMextra), together with 
@@ -97,7 +97,12 @@ group C. The file "null_100k.controls.gen" is output from the above hapgen code 
 this vignette, but for efficiency the convert.fn step has been run and the resulting matrix has been transposed for quicker
 reading into R (transposed matrix has SNPs as columns and individuals as rows).
 
-```{r}
+All steps of simulation and analyses are included here. However, if GUESSFM results are available for 
+each disease then one may skip down to the MFM step. We provide an example of GUESSFM output for simulated data 
+from the steps below, which may input directly into MFM.
+
+# Simulate 2 diseases with shared controls
+```{r, eval=FALSE}
     library(MFMextra)
     #g0 <- read.table(null_100k.controls.gen,header=FALSE,as.is=TRUE)
     #Nn <- (dim(g0)[2]-5)/3
@@ -133,9 +138,12 @@ reading into R (transposed matrix has SNPs as columns and individuals as rows).
     Gm
 ```
 
-Next, we run GUESSFM on each disease with controls and this is our input to MFM.
+# GUESSFM on each disease
 
-```{r}
+Next, we run GUESSFM on each disease with controls and store in SM2 list; this is our input to MFM. Note that input to
+GUESSFM (run.bvs is first step) requires a snpMatrix object and a phenotype vector. 
+
+```{r,eval=FALSE}
     c0 <- grep("control.",rownames(Gm))
     c1 <- grep("case1.",rownames(Gm))
     c2 <- grep("case2.",rownames(Gm))
@@ -167,9 +175,19 @@ Next, we run GUESSFM on each disease with controls and this is our input to MFM.
       SM2[[2]] <- abf2snpmod(abf,expected=2,nsnps=854)
     
     names(SM2) <- dis
+```
+
+# MFM on both diseases
+
+```{r}
+# SM2 is a list of GUESSFM output for each disease and an example is included in MFM
+    library(MFM)
+    SM2
+    dis <- names(SM2)
+    N0 <- 3000 # disease 1 size
+    ND=list(AD=N0,AC=N0) # vector of sizes for cases, which here, are same size as controls
 
     target.odds <- 1 # could also provide a vector here; this setting corresponds to a 50:50 odds of non-sharing to sharing of causal variants between diseases
-    library(MFM)
     # snpGroups included in MFMextra package
     PP <- PPmarginal.multiple.fn(SM2,dis,thr=0.999,target.odds,N0,ND,nsnps=854)
 ```
@@ -178,7 +196,7 @@ The PP object is a list with components:
 * PP, containing the SNP model posterior probabilities for each disease and each target odds
 * MPP, containing the SNP marginal posterior probabilities of inclusion and each target odds
 
-It is easier to interpret in terms of SNP groups, so next run the following, where the snpGroups object is available in the MFMextra 
+It is easier to interpret in terms of SNP groups, so next run the following, where the snpGroups object is available in the MFM 
 package:
 
 ```{r}

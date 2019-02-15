@@ -21,7 +21,6 @@ Depends: R (>= 3.3.0)
 Imports:
 	snpStats,
 	GUESSFM,
-	MFMextra,
 	methods,
 	BMA,
 	Rcpp,
@@ -31,6 +30,7 @@ Imports:
 	gtools,
 	fields,
 Suggests:
+	MFMextra,
 	testthat,
 	roxygen2,
 	devtools,
