@@ -29,8 +29,7 @@ same set of controls and share information between them. It relies on output fro
 framework using [GUESS](http://www.bgx.org.uk/software/guess.html).
 
 This vignette introduces MFM, and gives an illustration with simulated data for two diseases with shared controls.
-
-
+Custom code for our analyses is available at https://github.com/chr1swallace/MFM-analysis. 
 
 # MFM Overview
 
