@@ -65,7 +65,7 @@ The info object is a list with three objects:
 
 2. groups: the constructed SNP groups; a groups object, each element ordered according to the rows of the summary
 
-3. r2: the calculated \(r2\) matrix
+3. r2: the calculated \(r^2\) matrix
 
 The SNP groups are identified as
 
