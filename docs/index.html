@@ -59,6 +59,18 @@
 <li>
   <a href="reference/index.html">Reference</a>
 </li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Articles
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+<li>
+      <a href="articles/groups.html">Constructing SNP Groups</a>
+    </li>
+  </ul>
+</li>
 <li>
   <a href="news/index.html">Changelog</a>
 </li>
@@ -110,7 +122,7 @@
 <h3 class="hasAnchor">
 <a href="#longer-version-if-this-fails" class="anchor"></a>Longer version (if this fails)</h3>
 <p>MFM is purely an R package and so is platform independent. It depends on the R package GUESSFM, which depends on the software GUESS, available at <a href="http://www.bgx.org.uk/software/guess.html" class="uri">http://www.bgx.org.uk/software/guess.html</a>, but can be more easily installed via the R package R2GUESS, which is a dependency of GUESSFM. GUESSFM is described in the paper <a href="http://journals.plos.org/plosgenetics/article?id=10.1371/journal.pgen.1005272" class="uri">http://journals.plos.org/plosgenetics/article?id=10.1371/journal.pgen.1005272</a> and GUESS is described in the paper <a href="http://journals.plos.org/plosgenetics/article?id=10.1371/journal.pgen.1003657" class="uri">http://journals.plos.org/plosgenetics/article?id=10.1371/journal.pgen.1003657</a>.</p>
-<p>To install, you may first need some R package dependencies, the packages snpStats, GUESSFM, BMA, Rcpp, RcpArmadillo, parallel, data.table, gtools, fields, cowplot. E.g., if you don’t have some of these packages, from inside R, do</p>
+<p>To install, you may first need some R package dependencies, the packages snpStats, GUESSFM, BMA, Rcpp, RcpArmadillo, parallel, data.table, gtools, fields, cowplot, dplyr. E.g., if you don’t have some of these packages, from inside R, do</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/install.packages">install.packages</a></span>(<span class="st">"BMA"</span>) </a>
 <a class="sourceLine" id="cb2-2" title="2"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/install.packages">install.packages</a></span>(<span class="st">"Rcpp"</span>)</a>
 <a class="sourceLine" id="cb2-3" title="3"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/install.packages">install.packages</a></span>(<span class="st">"RcppArmadillo"</span>)</a>
@@ -118,7 +130,8 @@
 <a class="sourceLine" id="cb2-5" title="5"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/install.packages">install.packages</a></span>(<span class="st">"data.table"</span>)</a>
 <a class="sourceLine" id="cb2-6" title="6"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/install.packages">install.packages</a></span>(<span class="st">"gtools"</span>)</a>
 <a class="sourceLine" id="cb2-7" title="7"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/install.packages">install.packages</a></span>(<span class="st">"fields"</span>)</a>
-<a class="sourceLine" id="cb2-8" title="8"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/install.packages">install.packages</a></span>(<span class="st">"cowplot"</span>)</a></code></pre></div>
+<a class="sourceLine" id="cb2-8" title="8"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/install.packages">install.packages</a></span>(<span class="st">"cowplot"</span>)</a>
+<a class="sourceLine" id="cb2-9" title="9"><span class="kw">unstall.packages</span>(<span class="st">"dplyr"</span>)</a></code></pre></div>
 <p>Some packages (e.g. snpStats) are from Bioconductor. For these, you need to do</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" title="1"><span class="cf">if</span> (<span class="op">!</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/ns-load">requireNamespace</a></span>(<span class="st">"BiocManager"</span>, <span class="dt">quietly =</span> <span class="ot">TRUE</span>))</a>
 <a class="sourceLine" id="cb3-2" title="2">    <span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/install.packages">install.packages</a></span>(<span class="st">"BiocManager"</span>)</a>

@@ -54,6 +54,7 @@ library(MFM) # contains objects Gm, SM2
 library(GUESSFM) # contains function group.multi
 # Gm is the SnpMatrix for controls and both diseases. For LD calculations we use only the controls, 
 # identifed as c0 below, Gm[c0,] 
+Gm
 c0 <- grep("control.",rownames(Gm)) # identify controls in Gm SnpMatrix
 info <- group.multi(SM2,Gm[c0,]) 
 Sgroups <- info$groups@.Data
