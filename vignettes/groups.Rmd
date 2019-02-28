@@ -50,7 +50,8 @@ Continuing with the data that was simulated in the MFM
 requires the list of GUESSFM output (SM2) and the SnpMatrix to calculate \(r^2\).
 
 ```{r}
-library(GUESSFM)
+library(MFM) # contains objects Gm, SM2
+library(GUESSFM) # contains function group.multi
 # Gm is the SnpMatrix for controls and both diseases. For LD calculations we use only the controls, 
 # identifed as c0 below, Gm[c0,] 
 c0 <- grep("control.",rownames(Gm)) # identify controls in Gm SnpMatrix
@@ -71,11 +72,11 @@ The SNP groups are identified as
 Sgroups
 ```
 
-These 3 groups coincide with our previously identified SNP groups for C, D, and A, as given in snpGroups.
+These 3 groups match or a subset of our previously identified SNP groups for C, D, and A, as given in snpGroups.
 
 #check
-```{r,eval=FALSE}
-setdiff(snpGroups[["C"]],sgroups$groups@.Data[[1]])
-setdiff(snpGroups[["D"]],sgroups$groups@.Data[[2]])
-setdiff(snpGroups[["A"]],sgroups$groups@.Data[[3]])
+```{r}
+setdiff(snpGroups[["C"]],Sgroups$groups@.Data[[1]])
+setdiff(snpGroups[["D"]],Sgroups$groups@.Data[[2]])
+setdiff(snpGroups[["A"]],Sgroups$groups@.Data[[3]])
 ```

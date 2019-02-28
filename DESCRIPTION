@@ -29,7 +29,6 @@ Imports:
 	data.table,
 	gtools,
 	fields,
-	dplyr
 Suggests:
 	MFMextra,
 	testthat,
