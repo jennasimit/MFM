@@ -77,7 +77,7 @@ These 3 groups match or a subset of our previously identified SNP groups for C, 
 
 #check
 ```{r}
-setdiff(snpGroups[["C"]],Sgroups$groups@.Data[[1]])
-setdiff(snpGroups[["D"]],Sgroups$groups@.Data[[2]])
-setdiff(snpGroups[["A"]],Sgroups$groups@.Data[[3]])
+setdiff(snpGroups[["C"]],Sgroups[[1]])
+setdiff(snpGroups[["D"]],Sgroups[[2]])
+setdiff(snpGroups[["A"]],Sgroups[[3]])
 ```

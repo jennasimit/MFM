@@ -215,12 +215,12 @@
 <a class="sourceLine" id="cb5-4" title="4"><span class="co">#&gt; when loading 'GUESSFM'</span></a>
 <a class="sourceLine" id="cb5-5" title="5">    SM2</a>
 <a class="sourceLine" id="cb5-6" title="6"><span class="co">#&gt; $AD</span></a>
-<a class="sourceLine" id="cb5-7" title="7"><span class="co">#&gt; snpmod object, containing information on 229 models / 26 SNPs.</span></a>
-<a class="sourceLine" id="cb5-8" title="8"><span class="co">#&gt; PP ranges from 0.000-0.393 (sum: 1.000).</span></a>
+<a class="sourceLine" id="cb5-7" title="7"><span class="co">#&gt; snpmod object, containing information on 270 models / 26 SNPs.</span></a>
+<a class="sourceLine" id="cb5-8" title="8"><span class="co">#&gt; PP ranges from 0.000-0.396 (sum: 1.000).</span></a>
 <a class="sourceLine" id="cb5-9" title="9"><span class="co">#&gt; </span></a>
 <a class="sourceLine" id="cb5-10" title="10"><span class="co">#&gt; $AC</span></a>
-<a class="sourceLine" id="cb5-11" title="11"><span class="co">#&gt; snpmod object, containing information on 324 models / 26 SNPs.</span></a>
-<a class="sourceLine" id="cb5-12" title="12"><span class="co">#&gt; PP ranges from 0.000-0.125 (sum: 1.000).</span></a>
+<a class="sourceLine" id="cb5-11" title="11"><span class="co">#&gt; snpmod object, containing information on 207 models / 26 SNPs.</span></a>
+<a class="sourceLine" id="cb5-12" title="12"><span class="co">#&gt; PP ranges from 0.000-0.239 (sum: 1.000).</span></a>
 <a class="sourceLine" id="cb5-13" title="13">    dis &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/names">names</a></span>(SM2)</a>
 <a class="sourceLine" id="cb5-14" title="14">    N0 &lt;-<span class="st"> </span><span class="dv">3000</span> <span class="co"># disease 1 size</span></a>
 <a class="sourceLine" id="cb5-15" title="15">    ND=<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(<span class="dt">AD=</span>N0,<span class="dt">AC=</span>N0) <span class="co"># vector of sizes for cases, which here, are same size as controls</span></a>
@@ -231,7 +231,7 @@
 <a class="sourceLine" id="cb5-20" title="20"><span class="co">#&gt; </span></a>
 <a class="sourceLine" id="cb5-21" title="21"><span class="co">#&gt; </span></a>
 <a class="sourceLine" id="cb5-22" title="22"><span class="co">#&gt; CPP threshold = 0.999</span></a>
-<a class="sourceLine" id="cb5-23" title="23"><span class="co">#&gt;  n.each (AD/AC) = 27/22</span></a></code></pre></div>
+<a class="sourceLine" id="cb5-23" title="23"><span class="co">#&gt;  n.each (AD/AC) = 89/16</span></a></code></pre></div>
 <p>The PP object is a list with components:</p>
 <ul>
 <li><p>PP, containing the SNP model posterior probabilities for each disease and each target odds</p></li>
@@ -241,32 +241,35 @@
 <div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" title="1">    mpp.pp &lt;-<span class="st"> </span><span class="kw"><a href="../reference/MPP.PP.groups.fn.html">MPP.PP.groups.fn</a></span>(PP<span class="op">$</span>MPP,PP<span class="op">$</span>PP,dis,<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"null"</span>,target.odds),snpGroups)</a>
 <a class="sourceLine" id="cb6-2" title="2">mpp.pp</a>
 <a class="sourceLine" id="cb6-3" title="3"><span class="co">#&gt; $mppGS</span></a>
-<a class="sourceLine" id="cb6-4" title="4"><span class="co">#&gt;         A B            C D E F            J          sAA          sUC</span></a>
-<a class="sourceLine" id="cb6-5" title="5"><span class="co">#&gt; AD.null 1 0 0.0000000000 1 0 0 0.0000000000 0.0000000000 0.000000e+00</span></a>
-<a class="sourceLine" id="cb6-6" title="6"><span class="co">#&gt; AD.1    1 0 0.0002187019 1 0 0 0.0007000613 0.0002198699 8.901688e-05</span></a>
-<a class="sourceLine" id="cb6-7" title="7"><span class="co">#&gt; AC.null 1 0 1.0000000000 0 0 0 0.0000000000 0.0000000000 0.000000e+00</span></a>
-<a class="sourceLine" id="cb6-8" title="8"><span class="co">#&gt; AC.1    1 0 1.0000000000 0 0 0 0.0000000000 0.0000000000 0.000000e+00</span></a>
-<a class="sourceLine" id="cb6-9" title="9"><span class="co">#&gt;                 sRA</span></a>
-<a class="sourceLine" id="cb6-10" title="10"><span class="co">#&gt; AD.null 0.000000000</span></a>
-<a class="sourceLine" id="cb6-11" title="11"><span class="co">#&gt; AD.1    0.000237923</span></a>
-<a class="sourceLine" id="cb6-12" title="12"><span class="co">#&gt; AC.null 0.000000000</span></a>
-<a class="sourceLine" id="cb6-13" title="13"><span class="co">#&gt; AC.1    0.000000000</span></a>
+<a class="sourceLine" id="cb6-4" title="4"><span class="co">#&gt;                A            B            C        D E F            J</span></a>
+<a class="sourceLine" id="cb6-5" title="5"><span class="co">#&gt; AD.null 1.000000 0.000000e+00 0.0000000000 1.000000 0 0 0.000000e+00</span></a>
+<a class="sourceLine" id="cb6-6" title="6"><span class="co">#&gt; AD.1    1.000007 3.890584e-06 0.0001494211 1.000197 0 0 4.842034e-05</span></a>
+<a class="sourceLine" id="cb6-7" title="7"><span class="co">#&gt; AC.null 1.000000 0.000000e+00 1.0000000000 0.000000 0 0 0.000000e+00</span></a>
+<a class="sourceLine" id="cb6-8" title="8"><span class="co">#&gt; AC.1    1.000000 0.000000e+00 1.0000000000 0.000000 0 0 0.000000e+00</span></a>
+<a class="sourceLine" id="cb6-9" title="9"><span class="co">#&gt;                  sAA          sUC          sRA</span></a>
+<a class="sourceLine" id="cb6-10" title="10"><span class="co">#&gt; AD.null 0.0000000000 0.0000000000 0.0000000000</span></a>
+<a class="sourceLine" id="cb6-11" title="11"><span class="co">#&gt; AD.1    0.0002426082 0.0001735028 0.0001159202</span></a>
+<a class="sourceLine" id="cb6-12" title="12"><span class="co">#&gt; AC.null 0.0000000000 0.0000000000 0.0000000000</span></a>
+<a class="sourceLine" id="cb6-13" title="13"><span class="co">#&gt; AC.1    0.0000000000 0.0000000000 0.0000000000</span></a>
 <a class="sourceLine" id="cb6-14" title="14"><span class="co">#&gt; </span></a>
 <a class="sourceLine" id="cb6-15" title="15"><span class="co">#&gt; $gPP</span></a>
 <a class="sourceLine" id="cb6-16" title="16"><span class="co">#&gt; $gPP[[1]]</span></a>
 <a class="sourceLine" id="cb6-17" title="17"><span class="co">#&gt;         null            1</span></a>
-<a class="sourceLine" id="cb6-18" title="18"><span class="co">#&gt; null       0 6.881262e-17</span></a>
-<a class="sourceLine" id="cb6-19" title="19"><span class="co">#&gt; A.D        1 9.985344e-01</span></a>
-<a class="sourceLine" id="cb6-20" title="20"><span class="co">#&gt; A.D.J      0 7.000613e-04</span></a>
-<a class="sourceLine" id="cb6-21" title="21"><span class="co">#&gt; A.D.sRA    0 2.379230e-04</span></a>
-<a class="sourceLine" id="cb6-22" title="22"><span class="co">#&gt; A.D.sAA    0 2.198699e-04</span></a>
-<a class="sourceLine" id="cb6-23" title="23"><span class="co">#&gt; A.D.sUC    0 8.901688e-05</span></a>
-<a class="sourceLine" id="cb6-24" title="24"><span class="co">#&gt; A.C.D      0 2.187019e-04</span></a>
-<a class="sourceLine" id="cb6-25" title="25"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb6-26" title="26"><span class="co">#&gt; $gPP[[2]]</span></a>
-<a class="sourceLine" id="cb6-27" title="27"><span class="co">#&gt;      null           1</span></a>
-<a class="sourceLine" id="cb6-28" title="28"><span class="co">#&gt; null    0 2.86791e-16</span></a>
-<a class="sourceLine" id="cb6-29" title="29"><span class="co">#&gt; A.C     1 1.00000e+00</span></a></code></pre></div>
+<a class="sourceLine" id="cb6-18" title="18"><span class="co">#&gt; null       0 1.411368e-13</span></a>
+<a class="sourceLine" id="cb6-19" title="19"><span class="co">#&gt; A.D        1 9.990578e-01</span></a>
+<a class="sourceLine" id="cb6-20" title="20"><span class="co">#&gt; B.D        0 3.890584e-06</span></a>
+<a class="sourceLine" id="cb6-21" title="21"><span class="co">#&gt; A.D.sUC    0 1.735028e-04</span></a>
+<a class="sourceLine" id="cb6-22" title="22"><span class="co">#&gt; A.D.sAA    0 2.426082e-04</span></a>
+<a class="sourceLine" id="cb6-23" title="23"><span class="co">#&gt; A.D.sRA    0 1.159202e-04</span></a>
+<a class="sourceLine" id="cb6-24" title="24"><span class="co">#&gt; A.D.D      0 1.971661e-04</span></a>
+<a class="sourceLine" id="cb6-25" title="25"><span class="co">#&gt; A.C.D      0 1.494211e-04</span></a>
+<a class="sourceLine" id="cb6-26" title="26"><span class="co">#&gt; A.D.J      0 4.842034e-05</span></a>
+<a class="sourceLine" id="cb6-27" title="27"><span class="co">#&gt; A.A.D      0 1.122915e-05</span></a>
+<a class="sourceLine" id="cb6-28" title="28"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb6-29" title="29"><span class="co">#&gt; $gPP[[2]]</span></a>
+<a class="sourceLine" id="cb6-30" title="30"><span class="co">#&gt;      null            1</span></a>
+<a class="sourceLine" id="cb6-31" title="31"><span class="co">#&gt; null    0 6.837469e-24</span></a>
+<a class="sourceLine" id="cb6-32" title="32"><span class="co">#&gt; A.C     1 1.000000e+00</span></a></code></pre></div>
 <p>The mpp.pp object is a list with componets:</p>
 <ul>
 <li><p>mppGS: matrix of SNP group MPP</p></li>
