@@ -92,7 +92,7 @@
 <h1 class="hasAnchor">
 <a href="#introduction" class="anchor"></a>Introduction</h1>
 <p>MFM is a package to simultaneously fine-map (select most likely set of causal variants) multiple related diseases with the same set of controls and share information between them. It relies on output from the package <a href="https://github.com/chr1swallace/GUESSFM">GUESSFM</a>, which fine-maps a single disease via stochastic search in a Bayesian framework using <a href="http://www.bgx.org.uk/software/guess.html">GUESS</a>.</p>
-<p>This vignette introduces MFM, and gives an illustration with simulated data for two diseases with shared controls.</p>
+<p>This vignette introduces MFM, and gives an illustration with simulated data for two diseases with shared controls. Custom code for our analyses is available at <a href="https://github.com/chr1swallace/MFM-analysis" class="uri">https://github.com/chr1swallace/MFM-analysis</a>.</p>
 </div>
 <div id="mfm-overview" class="section level1">
 <h1 class="hasAnchor">
@@ -220,7 +220,11 @@
 <a class="sourceLine" id="cb5-21" title="21"><span class="co">#&gt; </span></a>
 <a class="sourceLine" id="cb5-22" title="22"><span class="co">#&gt; CPP threshold = 0.999</span></a>
 <a class="sourceLine" id="cb5-23" title="23"><span class="co">#&gt;  n.each (AD/AC) = 27/22</span></a></code></pre></div>
-<p>The PP object is a list with components: * PP, containing the SNP model posterior probabilities for each disease and each target odds * MPP, containing the SNP marginal posterior probabilities of inclusion and each target odds</p>
+<p>The PP object is a list with components:</p>
+<ul>
+<li><p>PP, containing the SNP model posterior probabilities for each disease and each target odds</p></li>
+<li><p>MPP, containing the SNP marginal posterior probabilities of inclusion and each target odds</p></li>
+</ul>
 <p>It is easier to interpret in terms of SNP groups, so next run the following, where the snpGroups object is available in the MFM package:</p>
 <div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" title="1">    mpp.pp &lt;-<span class="st"> </span><span class="kw"><a href="../reference/MPP.PP.groups.fn.html">MPP.PP.groups.fn</a></span>(PP<span class="op">$</span>MPP,PP<span class="op">$</span>PP,dis,<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"null"</span>,target.odds),snpGroups)</a>
 <a class="sourceLine" id="cb6-2" title="2">mpp.pp</a>

@@ -1,0 +1,81 @@
+---
+title: "Constructing SNP Groups"
+author: 
+- name: Jenn Asimit
+  email: ja628@cam.ac.uk
+- name: Chris Wallace
+  email: cew54@cam.ac.uk
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Constructing SNP Groups}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+# SNP Groups based on multiple diseases
+
+In the interpretation of MFM results, rather than reporting posterior probabilities for each SNP 
+model, we focus on SNP groups that we construct such that SNPs in the same group are in LD, have a 
+similar effect on disease, and rarely appear together in a disease model. SNP groups and their 
+construction for one disease are detailed in the [GUESSFM Tags/Groups 
+vignette](https://rawgit.com/chr1swallace/GUESSFM/master/inst/doc/groups.html). 
+
+SNPs with marginal posterior probability of inclusion > 0.001 were placed in groups such that those 
+in the same group could be substituted for one another in a model. Following from this, criteria for 
+SNPs to be in the same group are:
+
+1. SNPs are in LD (pairwise \(r^2 > 0.05\), pairwise \(r<0\).
+
+2. SNPs are rarely selected together in models; marginal posterior probability that both are 
+included in a model was \(< 0.01\).
+
+We hierarchically cluster SNPs within each disease according to \(r^2 x sign(r)\) using complete 
+linkage, and group SNPs by cutting the tree according to the above two criteria. We then identify 
+overlapping groups defined in different diseases, and merge or split groups when they meet this 
+criteria. This algorithm is implemented in the 
+[group.multi](https://github.com/chr1swallace/GUESSFM/blob/master/R/groups.R) function in GUESSFM.
+
+## Example 
+
+Continuing with the data that was simulated in the MFM 
+[Introduction](https://jennasimit.github.io/MFM/articles/MFM.html) vignette, the group.multi function 
+requires the list of GUESSFM output (SM2) and the SnpMatrix to calculate \(r^2\).
+
+```{r}
+library(GUESSFM)
+# Gm is the SnpMatrix for controls and both diseases. For LD calculations we use only the controls, 
+# identifed as c0 below, Gm[c0,] 
+c0 <- grep("control.",rownames(Gm)) # identify controls in Gm SnpMatrix
+info <- group.multi(SM2,Gm[c0,]) 
+Sgroups <- info$groups@.Data
+```
+The info object is a list with three objects:
+
+1. summary: a data.frame with each row giving summary statistics for each group 
+
+2. groups: the constructed SNP groups; a groups object, each element ordered according to the rows of the summary
+
+3. r2: the calculated \(r2\) matrix
+
+The SNP groups are identified as
+
+```{r}
+Sgroups
+```
+
+These 3 groups coincide with our previously identified SNP groups for C, D, and A, as given in snpGroups.
+
+#check
+```{r,eval=FALSE}
+setdiff(snpGroups[["C"]],sgroups$groups@.Data[[1]])
+setdiff(snpGroups[["D"]],sgroups$groups@.Data[[2]])
+setdiff(snpGroups[["A"]],sgroups$groups@.Data[[3]])
+```

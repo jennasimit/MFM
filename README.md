@@ -31,7 +31,7 @@ GUESSFM is described in the paper http://journals.plos.org/plosgenetics/article?
 GUESS is described in the paper http://journals.plos.org/plosgenetics/article?id=10.1371/journal.pgen.1003657.
 
 To install, you may first need some R package dependencies, the packages snpStats, GUESSFM, BMA, Rcpp, RcpArmadillo,
-parallel, data.table, gtools, fields, cowplot. E.g., if you don't have some of these packages, from inside R, do
+parallel, data.table, gtools, fields, cowplot, dplyr. E.g., if you don't have some of these packages, from inside R, do
 
 ```R
 install.packages("BMA") 
@@ -42,6 +42,7 @@ install.packages("data.table")
 install.packages("gtools")
 install.packages("fields")
 install.packages("cowplot")
+unstall.packages("dplyr")
 ```
  
 Some packages (e.g. snpStats) are from Bioconductor.  For these, you need to do
