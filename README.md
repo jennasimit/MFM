@@ -1,6 +1,12 @@
 # MFM
 R package for simultaneous fine-mapping of genetic associations for several diseases, in a
-Bayesian framework that borrows information between the diseases.
+Bayesian framework that borrows information between the diseases, detailed in
+
+JL Asimit, DB Rainbow, MD Fortune, NF Grinberg, LS Wicker, C Wallace. (2019). Stochastic search and joint fine-mapping 
+increases accuracy and identifies previously unreported associations in immune-mediated diseases. Nature Communications 10 (1), 
+3216.
+
+which is available (open access) at https://www.nature.com/articles/s41467-019-11271-0.
 
 Website available at: https://jennasimit.github.io/MFM/.
 
